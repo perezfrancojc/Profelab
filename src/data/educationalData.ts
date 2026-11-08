@@ -110,9 +110,9 @@ export const TOPICS: Topic[] = [
 export const VIDEOS: Video[] = [
   {
     id: 'v1',
-    youtubeId: 'dQw4w9WgXcQ',
-    title: 'Cómo resolver ecuaciones de 2º grado completas',
-    description: 'Explicación detallada paso a paso usando la fórmula general.',
+    youtubeId: 'y__Ettmx5r8',
+    title: 'Cálculo y Representación de Intersecciones y Uniones',
+    description: 'Explicación detallada paso a paso.',
     duration: '12:45',
     type: 'explicacion',
     difficulty: 'basico',

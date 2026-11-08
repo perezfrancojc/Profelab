@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
           <span className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            Clases de apoyo y material actualizado para el curso 2025/2026
+            Clases de apoyo y material actualizado para el curso 2026/2027
           </span>
           <a href="#contacto" className="flex items-center gap-1.5 hover:text-white transition-colors">
             <Phone className="w-3.5 h-3.5 text-red-400" />

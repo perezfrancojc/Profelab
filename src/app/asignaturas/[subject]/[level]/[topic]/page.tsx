@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -45,6 +46,20 @@ function createSlug(text: string) {
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)+/g, '');
+}
+
+// Generación de metadatos dinámicos para Google Search Console / SEO
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const resolvedParams = await params;
+  const { level, topic } = resolvedParams;
+
+  const cleanTopic = decodeURIComponent(topic).replace(/-/g, ' ');
+  const cleanLevel = level.replace(/-/g, ' ');
+
+  return {
+    title: `Ejercicios resueltos de ${cleanTopic} (${cleanLevel}) | ProfeLab`,
+    description: `Descarga ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación sobre ${cleanTopic} para ${cleanLevel}.`,
+  };
 }
 
 export default async function TopicPage({ params }: Props) {
@@ -214,7 +229,7 @@ export default async function TopicPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
+            <div className="bg-[#FAF9F5] p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
               <Inbox className="w-5 h-5 text-slate-400 shrink-0" />
               <p className="text-xs font-medium">Aún no hay vídeos explicativos añadidos para esta unidad.</p>
             </div>
@@ -276,7 +291,7 @@ export default async function TopicPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
+            <div className="bg-[#FAF9F5] p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
               <Inbox className="w-5 h-5 text-slate-400 shrink-0" />
               <p className="text-xs font-medium">Aún no se han publicado apartados con ejercicios resueltos.</p>
             </div>
@@ -293,7 +308,7 @@ export default async function TopicPage({ params }: Props) {
           {allQuizzes.length > 0 ? (
             allQuizzes.map((q) => <QuizRunner key={q.id} quiz={q} />)
           ) : (
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
+            <div className="bg-[#FAF9F5] p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
               <Inbox className="w-5 h-5 text-slate-400 shrink-0" />
               <p className="text-xs font-medium">Próximamente estará disponible el test interactivo de autoevaluación.</p>
             </div>
@@ -343,7 +358,7 @@ export default async function TopicPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="bg-white p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
+            <div className="bg-[#FAF9F5] p-6 rounded-2xl border border-slate-200/80 flex items-center gap-3 text-slate-500">
               <Inbox className="w-5 h-5 text-slate-400 shrink-0" />
               <p className="text-xs font-medium">Aún no hay esquemas o resúmenes en PDF subidos para descargar.</p>
             </div>

@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Profelab - Plataforma Educativa",
   description: "Apuntes, vídeos y resoluciones en PDF",
+  verification: {
+    google: "FrzYWFdaXXRO0hNozcbDzEBulH2vFJUEj2elL1na5WQ"
+  },
 };
 
 export default function RootLayout({

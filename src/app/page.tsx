@@ -231,22 +231,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* Pie de página */}
-      <footer className="bg-slate-900 text-white py-12 px-6 text-sm">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-red-600 text-white rounded-lg font-black text-base flex items-center justify-center">
-              PL
-            </div>
-            <div>
-              <span className="font-bold text-white text-base block">ProfeLab</span>
-              <p className="text-xs text-slate-400 mt-0.5">Material de apoyo para estudiantes de ESO y Bachillerato.</p>
-            </div>
-          </div>
-          <p className="text-xs text-slate-400">© 2026 ProfeLab. Hecho con vocación docente.</p>
-        </div>
-      </footer>
       <ContactSection />
     </div>
     

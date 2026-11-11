@@ -36,6 +36,8 @@ const LEVEL_MAP: Record<string, string> = {
   '2-bachillerato': '2bach',
   '1-bach': '1bach',
   '2-bach': '2bach',
+  '1-bach-ccss': '1bachccss',
+  '2-bach-ccss': '2bachccss',
 };
 
 function createSlug(text: string) {
@@ -48,7 +50,6 @@ function createSlug(text: string) {
     .replace(/(^-|-$)+/g, '');
 }
 
-// Generación de metadatos dinámicos para Google Search Console / SEO
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const { level, topic } = resolvedParams;
@@ -67,16 +68,19 @@ export default async function TopicPage({ params }: Props) {
   const { subject, level, topic: rawTopic } = resolvedParams;
   const rawTopicParam = decodeURIComponent(rawTopic).toLowerCase().trim();
 
-  // 1. Identificar la asignatura exacta
+  // 1. Identificar la asignatura exacta contemplando IDs dinámicos de Supabase
+  const rawLevel = level.toLowerCase().trim();
   const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
-  const cleanLevel = LEVEL_MAP[level.toLowerCase()] || level.replace('bachillerato', 'bach').replace('-', '');
-  const targetSubjectId = `${prefix}-${cleanLevel}`;
+  const cleanLevel = LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
+  
+  // Si el nivel ya empieza con el prefijo (ej. mat-1bachccss), se mantiene tal cual
+  const targetSubjectId = cleanLevel.startsWith(prefix) ? cleanLevel : `${prefix}-${cleanLevel}`;
 
-  // 2. Traer el tema de Supabase
+  // 2. Traer el tema de Supabase buscando por los formatos de ID posibles
   const { data: dbTopicsRaw } = await supabase
     .from('topics')
     .select('*')
-    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${prefix}-${level}`);
+    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${prefix}-${rawLevel}`);
 
   const dbTopic = (dbTopicsRaw || []).find((t) => {
     const tId = String(t.id || '').toLowerCase().trim();
@@ -104,7 +108,7 @@ export default async function TopicPage({ params }: Props) {
 
   const currentTopicId = currentTopic.id;
 
-  // 3. Consultar contenidos incluyendo los APARTADOS y PDFs RESUELTOS de ejercicios
+  // 3. Consultar contenidos
   const [dbVidRes, dbSectionsRes, dbMatRes, dbQuizRes] = await Promise.all([
     supabase.from('videos').select('*').eq('topic_id', currentTopicId),
     supabase
@@ -116,7 +120,6 @@ export default async function TopicPage({ params }: Props) {
     supabase.from('quizzes').select('*').eq('topic_id', currentTopicId),
   ]);
 
-  // Vídeos locales + Supabase
   const topicVideos = VIDEOS.filter(
     (v) => String(v.topicId) === currentTopicId || createSlug(String(v.topicId)) === createSlug(currentTopic.slug)
   );
@@ -131,7 +134,6 @@ export default async function TopicPage({ params }: Props) {
     })),
   ];
 
-  // Materiales locales + Supabase
   const topicMaterials = MATERIALS.filter(
     (m) => String(m.topicId) === currentTopicId || createSlug(String(m.topicId)) === createSlug(currentTopic.slug)
   );
@@ -147,7 +149,6 @@ export default async function TopicPage({ params }: Props) {
     })),
   ];
 
-  // Cuestionarios
   const topicQuizzes = QUIZZES.filter((q) => {
     const qTopic = String(q.topicId || '').toLowerCase().trim();
     return (
@@ -173,7 +174,6 @@ export default async function TopicPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
       
-      {/* Navegación */}
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link 
@@ -195,7 +195,6 @@ export default async function TopicPage({ params }: Props) {
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
         
-        {/* Encabezado Principal */}
         <div className="border-b border-slate-200/80 pb-8">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">
             Unidad Didáctica

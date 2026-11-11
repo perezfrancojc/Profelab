@@ -9,7 +9,7 @@ interface Props {
   }>;
 }
 
-// Mapa de conversión universal para ESO y Bachillerato (Matemáticas y Física/Química)
+// Mapa de conversión universal para ESO y Bachillerato
 const LEVEL_MAP: Record<string, string> = {
   '1-eso': '1eso',
   '2-eso': '2eso',
@@ -19,6 +19,12 @@ const LEVEL_MAP: Record<string, string> = {
   '2-bachillerato': '2bach',
   '1-bach': '1bach',
   '2-bach': '2bach',
+  '1-bach-ccss': '1bachccss',
+  '2-bach-ccss': '2bachccss',
+  '1-bachillerato-ccss': '1bachccss',
+  '2-bachillerato-ccss': '2bachccss',
+  '1-bachccss': '1bachccss',
+  '2-bachccss': '2bachccss',
 };
 
 function createSlug(text: string) {
@@ -35,24 +41,22 @@ export default async function SubjectLevelPage({ params }: Props) {
   const resolvedParams = await params;
   const { subject, level } = resolvedParams;
 
-  // 1. Obtener prefijo de asignatura (mat o fq)
+  const rawLevel = level.toLowerCase().trim();
   const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
+  const mappedLevel = LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
   
-  // 2. Traducir el nivel de la URL (ej. "1-bachillerato" -> "1bach", "3-eso" -> "3eso")
-  const cleanLevel = LEVEL_MAP[level.toLowerCase()] || level.replace('bachillerato', 'bach').replace('-', '');
-  
-  // ID normalizado final que coincide 100% con Supabase (ej: 'mat-1bach', 'mat-3eso')
-  const targetSubjectId = `${prefix}-${cleanLevel}`;
+  // Detectar si rawLevel o mappedLevel ya incluye el ID completo de Supabase (ej: mat-1bachccss)
+  const targetSubjectId = mappedLevel.startsWith(prefix) ? mappedLevel : `${prefix}-${mappedLevel}`;
 
-  // 3. Consultar EXCLUSIVAMENTE a Supabase
+  // Consultar Supabase abarcando todos los formatos posibles de subject_id
   const { data: dbTopicsRaw } = await supabase
     .from('topics')
     .select('*')
-    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${prefix}-${level}`);
+    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${mappedLevel},subject_id.eq.${prefix}-${rawLevel}`);
 
   const dbTopics = dbTopicsRaw || [];
 
-  // 4. Mapear y deduplicar únicamente los temas provenientes de Supabase por slug
+  // Deduplicar temas por slug
   const topicsMap = new Map<string, any>();
 
   dbTopics.forEach((t: any) => {
@@ -72,8 +76,8 @@ export default async function SubjectLevelPage({ params }: Props) {
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased">
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-red-600 transition">
-            <ArrowLeft className="w-4 h-4" /> Volver al inicio
+          <Link href={`/asignaturas/${subject}`} className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-red-600 transition">
+            <ArrowLeft className="w-4 h-4" /> Volver a asignaturas
           </Link>
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-3 py-1 rounded-lg">
             {level.replace('-', ' ')}
@@ -85,7 +89,7 @@ export default async function SubjectLevelPage({ params }: Props) {
         <div className="border-b border-slate-200/80 pb-6">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">Temario Oficial</span>
           <h1 className="text-3xl font-black text-slate-900 capitalize">
-            {subject.replace('-', ' ')} {level.replace('-', ' ')}
+            {subject.replace('-', ' ')} ({level.replace('-', ' ')})
           </h1>
           <p className="text-slate-600 text-sm mt-2">
             Selecciona una unidad didáctica para acceder a los contenidos explicados y ejercicios resueltos.

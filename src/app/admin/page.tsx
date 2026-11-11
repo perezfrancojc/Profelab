@@ -7,13 +7,15 @@ import {
   Video, BookOpen, FileText, Layers, HelpCircle, Loader2, Upload, FolderPlus
 } from 'lucide-react';
 
-const COURSES = [
+const INITIAL_COURSES = [
   { id: 'mat-1eso', label: 'Matemáticas 1º ESO' },
   { id: 'mat-2eso', label: 'Matemáticas 2º ESO' },
   { id: 'mat-3eso', label: 'Matemáticas 3º ESO' },
   { id: 'mat-4eso', label: 'Matemáticas 4º ESO' },
   { id: 'mat-1bach', label: 'Matemáticas I (1º Bach)' },
+  { id: 'mat-1bachccss', label: 'Matemáticas I CCSS (1º Bachillerato)' },
   { id: 'mat-2bach', label: 'Matemáticas II (2º Bach)' },
+  { id: 'mat-2bachccss', label: 'Matemáticas II CCSS (2º Bachillerato)' },
   { id: 'fq-2eso', label: 'Física y Química 2º ESO' },
   { id: 'fq-3eso', label: 'Física y Química 3º ESO' },
   { id: 'fq-4eso', label: 'Física y Química 4º ESO' },
@@ -28,6 +30,8 @@ export default function AdminPage() {
   const [status, setStatus] = useState({ type: 'idle', message: '' });
   const [loading, setLoading] = useState(false);
 
+  // Lista dinámica de asignaturas cargadas desde Supabase
+  const [coursesList, setCoursesList] = useState<{ id: string; label: string }[]>(INITIAL_COURSES);
   const [selectedCourse, setSelectedCourse] = useState('mat-1eso');
   const [selectedTopicId, setSelectedTopicId] = useState('');
   
@@ -44,7 +48,7 @@ export default function AdminPage() {
   const [videoTitle, setVideoTitle] = useState('');
   const [youtubeId, setYoutubeId] = useState('');
 
-  // --- NUEVA ESTRUCTURA DE EJERCICIOS (APARTADOS + PDFS RESUELTOS) ---
+  // --- ESTRUCTURA DE EJERCICIOS (APARTADOS + PDFS RESUELTOS) ---
   const [exerciseSections, setExerciseSections] = useState<any[]>([]);
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [selectedSectionId, setSelectedSectionId] = useState('');
@@ -67,6 +71,26 @@ export default function AdminPage() {
   const [opt3, setOpt3] = useState('');
   const [correctOpt, setCorrectOpt] = useState(0);
   const [explanation, setExplanation] = useState('');
+
+  // Cargar asignaturas dinámicamente desde Supabase
+  const loadCourses = useCallback(async () => {
+    const { data: dbSubjects } = await supabase
+      .from('subjects')
+      .select('id, name')
+      .order('id', { ascending: true });
+
+    if (dbSubjects && dbSubjects.length > 0) {
+      const formatted = dbSubjects.map((s) => ({
+        id: s.id,
+        label: s.name || s.id,
+      }));
+      setCoursesList(formatted);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCourses();
+  }, [loadCourses]);
 
   const loadTopics = useCallback(async () => {
     const { data: dbTopics, error } = await supabase
@@ -161,9 +185,9 @@ export default function AdminPage() {
   }, [loadResourceItems]);
 
   const ensureSubjectExists = async (courseId: string) => {
-    const courseObj = COURSES.find((c) => c.id === courseId);
-    const title = courseObj ? courseObj.label : courseId;
-    await supabase.from('subjects').upsert([{ id: courseId, title }], { onConflict: 'id' });
+    const courseObj = coursesList.find((c) => c.id === courseId);
+    const name = courseObj ? courseObj.label : courseId;
+    await supabase.from('subjects').upsert([{ id: courseId, name }], { onConflict: 'id' });
   };
 
   // --- CREACIÓN DE APARTADO DE EJERCICIOS ---
@@ -483,9 +507,9 @@ export default function AdminPage() {
           <label className="block text-xs font-black uppercase tracking-wider text-slate-500">PASO 3: Filtrar por Curso y Tema</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[11px] font-bold text-slate-500 mb-1">Curso</label>
+              <label className="block text-[11px] font-bold text-slate-500 mb-1">Curso / Asignatura</label>
               <select value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)} className="w-full p-3 rounded-xl border border-slate-300 bg-white text-xs font-bold shadow-sm">
-                {COURSES.map((c) => (
+                {coursesList.map((c) => (
                   <option key={c.id} value={c.id}>{c.label}</option>
                 ))}
               </select>

@@ -17,20 +17,33 @@ export function SiteHeader({
 }: SiteHeaderProps) {
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const visibleRef = useRef(true);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+   const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    let nextVisible = visibleRef.current;
 
-      if (currentScrollY < 80) {
-        setVisible(true);
-      } else if (currentScrollY > lastScrollY.current + 5) {
-        setVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 5) {
-        setVisible(true);
-      }
+    if (currentScrollY < 80) {
+        nextVisible = true;
+    } else if (currentScrollY > lastScrollY.current + 5) {
+        nextVisible = false;
+    } else if (currentScrollY < lastScrollY.current - 5) {
+        nextVisible = true;
+    }
 
-      lastScrollY.current = currentScrollY;
+    if (nextVisible !== visibleRef.current) {
+        visibleRef.current = nextVisible;
+        setVisible(nextVisible);
+
+        window.dispatchEvent(
+        new CustomEvent('site-header-visibility', {
+            detail: { visible: nextVisible },
+        })
+        );
+    }
+
+    lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

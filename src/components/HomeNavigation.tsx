@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -84,7 +83,7 @@ export function HomeNavigation() {
             aria-current={isActive ? 'location' : undefined}
             className={`shrink-0 rounded-lg font-bold whitespace-nowrap transition-all duration-300 ${
               compact
-                ? 'px-3 py-2 text-[11px] sm:px-3 sm:text-xs'
+                ? 'px-2 py-2 text-[10px] sm:px-3 sm:text-xs'
                 : 'px-3 py-2 text-xs'
             } ${
               isActive
@@ -102,7 +101,7 @@ export function HomeNavigation() {
         href="#asignaturas"
         className={`shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm whitespace-nowrap ${
           compact
-            ? 'px-3 py-2 text-[10px] sm:px-4 sm:text-[11px]'
+            ? 'px-2.5 py-2 text-[9px] sm:px-4 sm:text-[11px]'
             : 'px-5 py-2.5 text-xs'
         }`}
       >
@@ -117,99 +116,99 @@ export function HomeNavigation() {
       {/* Cabecera única */}
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
         <div
-          className={`h-16 md:h-20 px-4 sm:px-6 flex items-center gap-3 overflow-x-auto md:overflow-visible transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             expanded ? 'max-w-[1500px]' : 'max-w-6xl'
-          } mx-auto`}
+          }`}
         >
-          <div className="w-max min-w-full md:w-auto md:min-w-0 flex items-center gap-3">
-            {/* Identidad de marca: nunca desaparece */}
-            <Link
-              href="/"
-              aria-label="JuancaEduca - Inicio"
-              className="flex items-center gap-2 sm:gap-3 group shrink-0"
-            >
-              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
-                JE
-              </div>
-
-              <div className="flex flex-col">
-                <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
-                  JuancaEduca
-                </span>
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap">
-                  Academia de Ciencias
-                </span>
-              </div>
-            </Link>
-
-            {/* Información académica: se mantiene en escritorio */}
-            <div
-              className={`hidden md:flex min-w-0 flex-1 items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                expanded
-                  ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
-                  : 'max-w-[700px] opacity-100 scale-100'
-              }`}
-            >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="flex flex-col shrink-0">
-                  <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
-                    Curso académico
-                  </span>
-                  <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">
-                    2026/2027
-                  </span>
-                </div>
-
-                <div className="w-px h-8 bg-slate-300/80 shrink-0" />
-
-                <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
-                  <span className="text-xs font-semibold text-slate-700">
-                    Contenidos actualizados
-                  </span>
-                  <span className="text-[10px] text-slate-500">
-                    Temarios y recursos educativos
-                  </span>
-                </div>
-              </div>
+          {/* Identidad de marca: nunca desaparece */}
+          <Link
+            href="/"
+            aria-label="JuancaEduca - Inicio"
+            className="flex items-center gap-2 sm:gap-3 group shrink-0"
+          >
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
+              JE
             </div>
 
-            {/* Contacto inicial */}
-            <a
-              href="#contacto"
-              className={`shrink-0 flex items-center gap-2 rounded-xl px-2.5 sm:px-3 py-2.5 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
-                expanded
-                  ? 'max-w-0 opacity-0 px-0 overflow-hidden pointer-events-none'
-                  : 'max-w-[230px] opacity-100'
-              }`}
-            >
-              <Phone className="w-4 h-4 text-red-500 shrink-0" />
-              <span className="hidden lg:inline whitespace-nowrap">
-                Resuelve tus dudas
+            <div className="flex flex-col">
+              <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
+                JuancaEduca
               </span>
-              <span className="lg:hidden">Contacto</span>
-            </a>
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap">
+                Academia de Ciencias
+              </span>
+            </div>
+          </Link>
 
-            {/* Menú integrado: aparece en la misma fila al bajar */}
-            <nav
-              aria-label="Navegación principal integrada"
-              className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                expanded
-                  ? 'flex-none w-max max-w-none md:flex-1 md:max-w-[1000px] opacity-100 translate-y-0'
-                  : 'w-0 max-w-0 opacity-0 translate-y-2 pointer-events-none'
-              }`}
-            >
-              <div className="flex items-center justify-start md:justify-end gap-0.5 sm:gap-1 whitespace-nowrap">
-                {renderLinks(true)}
-              </div>
-            </nav>
-          </div>
+          
+        {/* Información académica integrada en la cabecera */}
+        <div
+        className={`min-w-0 flex-1 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            expanded
+            ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
+            : 'max-w-[700px] opacity-100 scale-100'
+        }`}
+        >
+        <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex flex-col shrink-0">
+            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                Curso académico
+            </span>
+            <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">
+                2026/2027
+            </span>
+            </div>
+
+            <div className="w-px h-8 bg-slate-300/80 shrink-0" />
+
+            <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
+            <span className="text-xs font-semibold text-slate-700">
+                Contenidos actualizados
+            </span>
+            <span className="text-[10px] text-slate-500">
+                Temarios y recursos educativos
+            </span>
+            </div>
+        </div>
+        </div>
+
+
+          {/* Contacto inicial: se sustituye por la navegación al bajar */}
+          <a
+            href="#contacto"
+            className={`shrink-0 flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
+              expanded
+                ? 'max-w-0 opacity-0 px-0 overflow-hidden pointer-events-none'
+                : 'max-w-[230px] opacity-100'
+            }`}
+          >
+            <Phone className="w-4 h-4 text-red-500 shrink-0" />
+            <span className="hidden lg:inline whitespace-nowrap">
+              Resuelve tus dudas
+            </span>
+            <span className="lg:hidden">Contacto</span>
+          </a>
+
+          {/* Menú integrado: aparece en la misma fila al bajar */}
+          <nav
+            aria-label="Navegación principal integrada"
+            className={`min-w-0 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              expanded
+                ? 'flex-1 max-w-[1000px] opacity-100 translate-y-0'
+                : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
+            }`}
+          >
+            <div className="flex items-center justify-end gap-0.5 sm:gap-1 whitespace-nowrap">
+              {renderLinks(true)}
+            </div>
+          </nav>
         </div>
       </header>
 
       {/* Menú independiente que se integra en la cabecera */}
       <nav
         aria-label="Navegación por la página principal"
-        className={`sticky top-16 md:top-20 z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`sticky top-20 z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           expanded
             ? '-translate-y-full opacity-0 pointer-events-none'
             : 'translate-y-0 opacity-100'

@@ -181,6 +181,7 @@ export default async function TopicPage({ params }: Props) {
     id: String(dbTopic.id),
     title: dbTopic.title,
     description: dbTopic.description,
+    content: dbTopic.content,
     slug: dbTopic.slug || createSlug(dbTopic.title || ''),
     subjectId: dbTopic.subject_id,
   };
@@ -287,6 +288,19 @@ export default async function TopicPage({ params }: Props) {
             </p>
           )}
         </div>
+
+        {/* SECCIÓN: CONTENIDO EDUCATIVO */}
+        {currentTopic.content && (
+          <section className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+              Sobre este tema
+            </h2>
+
+            <div className="text-slate-700 text-sm sm:text-base leading-7 whitespace-pre-line">
+              {currentTopic.content}
+            </div>
+          </section>
+        )}
 
         {/* 1. SECCIÓN: VÍDEOS EXPLICATIVOS */}
         <section className="space-y-4">

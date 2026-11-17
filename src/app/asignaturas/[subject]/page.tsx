@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
+import { SiteHeader } from '@/components/SiteHeader';
 
 interface Props {
   params: Promise<{
@@ -75,19 +76,7 @@ export default async function SubjectPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
       
-      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link 
-            href="/" 
-            className="flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-red-600 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Volver al inicio
-          </Link>
-          <span className="text-xs font-bold uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-1 rounded-md border border-red-100">
-            {subjectTitle}
-          </span>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-10">
         <div className="border-b border-slate-200/80 pb-8">

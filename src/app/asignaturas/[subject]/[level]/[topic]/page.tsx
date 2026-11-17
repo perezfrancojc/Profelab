@@ -289,9 +289,35 @@ export default async function TopicPage({ params }: Props) {
           )}
         </div>
 
+
+        {/* MENÚ DE NAVEGACIÓN DEL TEMA */}
+        <nav
+          aria-label="Navegación por los contenidos del tema"
+          className="sticky top-16 z-40 -mx-6 px-6 py-3 bg-[#FAF9F5]/95 backdrop-blur-md border-y border-slate-200/80"
+        >
+          <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
+            {[
+              { id: 'sobre-el-tema', label: 'Sobre este tema' },
+              { id: 'videos', label: 'Vídeos' },
+              { id: 'ejercicios-pdf', label: 'Ejercicios PDF' },
+              { id: 'autoevaluacion', label: 'Autoevaluación' },
+              { id: 'material-pdf', label: 'Apuntes PDF' },
+            ].map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="shrink-0 px-3 py-2 rounded-lg text-xs font-bold text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
+
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
-          <section className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
+          <section id="sobre-el-tema" className="scroll-mt-28 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
             <h2 className="text-xl font-black text-slate-900 tracking-tight">
               Sobre este tema
             </h2>
@@ -303,7 +329,7 @@ export default async function TopicPage({ params }: Props) {
         )}
 
         {/* 1. SECCIÓN: VÍDEOS EXPLICATIVOS */}
-        <section className="space-y-4">
+        <section id="videos" className="scroll-mt-28 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <PlayCircle className="w-5 h-5 text-red-600" />
             <h2>Vídeos Explicativos</h2>
@@ -329,7 +355,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 2. SECCIÓN: EJERCICIOS RESUELTOS EN PDF POR APARTADOS */}
-        <section className="space-y-6">
+        <section id="ejercicios-pdf" className="scroll-mt-28 space-y-6">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <BookOpen className="w-5 h-5 text-red-600" />
             <h2>Ejercicios Resueltos a Mano (PDF)</h2>
@@ -391,7 +417,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 3. SECCIÓN: AUTOEVALUACIÓN EN LÍNEA */}
-        <section className="space-y-4">
+        <section id="autoevaluacion" className="scroll-mt-28 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <CheckCircle2 className="w-5 h-5 text-red-600" />
             <h2>Autoevaluación en Línea</h2>
@@ -408,7 +434,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 4. SECCIÓN: MATERIAL Y DOCUMENTOS */}
-        <section className="space-y-4">
+        <section id="material-pdf" className="scroll-mt-28 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <FileText className="w-5 h-5 text-red-600" />
             <h2>Material y Documentos</h2>

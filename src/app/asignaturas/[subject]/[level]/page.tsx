@@ -153,10 +153,16 @@ export default async function SubjectLevelPage({ params }: Props) {
   });
 
   const allTopics = Array.from(topicsMap.values());
+  const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
+  const courseTitle = `${subjectTitle} - ${level.replace('-', ' ').toUpperCase()}`;
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased">
-      <SiteHeader />
+      <SiteHeader
+        title={courseTitle}
+        backHref={`/asignaturas/${subject}`}
+        backLabel={subjectTitle}
+      />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-8">
         <div className="border-b border-slate-200/80 pb-6">

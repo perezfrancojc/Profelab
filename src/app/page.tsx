@@ -27,10 +27,10 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
-              PL
+              JE
             </div>
             <div>
-              <span className="font-black text-xl text-slate-900 tracking-tight block leading-none">ProfeLab</span>
+              <span className="font-black text-xl text-slate-900 tracking-tight block leading-none font-serif italic font-black">JuancaEduca</span>
               <span className="text-[10px] uppercase font-bold text-red-600 tracking-wider">Academia de Ciencias</span>
             </div>
           </Link>

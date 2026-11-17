@@ -30,7 +30,7 @@ export default function HomePage() {
               JE
             </div>
             <div>
-              <span className="font-black text-xl text-slate-900 tracking-tight block leading-none font-serif italic font-black">JuancaEduca</span>
+              <span className="font-black text-xl text-slate-900 tracking-tight block leading-none font-black">JuancaEduca</span>
               <span className="text-[10px] uppercase font-bold text-red-600 tracking-wider">Academia de Ciencias</span>
             </div>
           </Link>

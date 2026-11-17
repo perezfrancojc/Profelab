@@ -19,6 +19,7 @@ import {
   FileCode2
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { TopicSectionNav } from '@/components/TopicSectionNav';
 
 interface Props {
   params: Promise<{
@@ -292,32 +293,7 @@ export default async function TopicPage({ params }: Props) {
 
 
         {/* MENÚ DE NAVEGACIÓN DEL TEMA */}
-        <nav
-          aria-label="Navegación por los contenidos del tema"
-          className="sticky top-16 z-40 -mx-6 px-6 py-3 bg-[#FAF9F5]/95 backdrop-blur-md border-y border-slate-200/80"
-        >
-          
-        <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
-          {[
-            ...(currentTopic.content
-              ? [{ id: 'sobre-el-tema', label: 'Sobre este tema' }]
-              : []),
-            { id: 'videos', label: 'Vídeos explicativos' },
-            { id: 'ejercicios-pdf', label: 'Ejercicios PDF' },
-            { id: 'autoevaluacion', label: 'Tests' },
-            { id: 'material-pdf', label: 'Apuntes PDF' },
-          ].map((item) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              className="shrink-0 px-3 py-2 rounded-lg text-xs font-bold text-slate-600 hover:text-red-600 hover:bg-red-50 transition-colors whitespace-nowrap"
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        </nav>
+        <TopicSectionNav hasContent={Boolean(currentTopic.content)} />
 
 
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}

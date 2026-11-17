@@ -18,6 +18,7 @@ import {
   FolderDown,
   FileCode2
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface Props {
   params: Promise<{
@@ -326,9 +327,52 @@ export default async function TopicPage({ params }: Props) {
               Sobre este tema
             </h2>
 
-            <div className="text-slate-700 text-sm sm:text-base leading-7 whitespace-pre-line">
-              {currentTopic.content}
+            
+            <div className="text-slate-700 text-sm sm:text-base leading-7 space-y-4">
+              <ReactMarkdown
+                components={{
+                  h2: ({ children }) => (
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-8 mb-3">
+                      {children}
+                    </h3>
+                  ),
+                  h3: ({ children }) => (
+                    <h4 className="text-base font-bold text-slate-900 mt-6 mb-2">
+                      {children}
+                    </h4>
+                  ),
+                  p: ({ children }) => (
+                    <p className="mb-4">{children}</p>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className="font-bold text-slate-900">
+                      {children}
+                    </strong>
+                  ),
+                  ul: ({ children }) => (
+                    <ul className="list-disc pl-6 space-y-2 mb-4">
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className="list-decimal pl-6 space-y-2 mb-4">
+                      {children}
+                    </ol>
+                  ),
+                  li: ({ children }) => (
+                    <li className="pl-1">{children}</li>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-l-4 border-red-300 pl-4 italic text-slate-600 my-4">
+                      {children}
+                    </blockquote>
+                  ),
+                }}
+              >
+                {currentTopic.content}
+              </ReactMarkdown>
             </div>
+
           </section>
         )}
 

@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
+import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
 
 interface Props {
   params: Promise<{
@@ -76,24 +77,24 @@ export default async function SubjectPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
       
-      <SiteHeader
+      <SectionFusionHeader
         title={subjectTitle}
+        compactTitle={`Cursos de ${subjectTitle}`}
         backHref="/"
         backLabel="Inicio"
+        triggerId="subject-heading"
       />
-
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-10">
-        <div className="border-b border-slate-200/80 pb-8">
-          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">
-            Selecciona tu curso
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Cursos de {subjectTitle}
-          </h1>
-          <p className="text-slate-600 mt-2 text-sm leading-relaxed">
-            Elige tu nivel educativo para acceder a la lista de temas y materiales de estudio.
-          </p>
-        </div>
+        <FusionSection id="subject-heading">
+          <div className="border-b border-slate-200/80 pb-8">
+            <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">
+              Selecciona tu curso
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+              Cursos de {subjectTitle}
+            </h1>
+          </div>
+        </FusionSection>
 
         {/* Tarjetas de Cursos obtenidas dinámicamente de Supabase */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

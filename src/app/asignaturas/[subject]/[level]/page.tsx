@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, BookOpen, ChevronRight, Layers } from 'lucide-react';
 import { Metadata } from 'next';
 import { SiteHeader } from '@/components/SiteHeader';
+import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
 
 interface Props {
   params: Promise<{
@@ -158,22 +159,25 @@ export default async function SubjectLevelPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased">
-      <SiteHeader
+      <SectionFusionHeader
         title={courseTitle}
+        compactTitle={`Temario Oficial · ${courseTitle}`}
         backHref={`/asignaturas/${subject}`}
         backLabel={subjectTitle}
+        triggerId="course-heading"
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-8">
+       <FusionSection id="course-heading">
         <div className="border-b border-slate-200/80 pb-6">
-          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">Temario Oficial</span>
+          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">
+            Temario Oficial
+          </span>
           <h1 className="text-3xl font-black text-slate-900 capitalize">
             {subject.replace('-', ' ')} ({level.replace('-', ' ')})
           </h1>
-          <p className="text-slate-600 text-sm mt-2">
-            Selecciona una unidad didáctica para acceder a los contenidos explicados y ejercicios resueltos.
-          </p>
         </div>
+      </FusionSection>
 
         {allTopics.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">

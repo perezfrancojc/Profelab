@@ -50,18 +50,97 @@ function createSlug(text: string) {
     .replace(/(^-|-$)+/g, '');
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const resolvedParams = await params;
-  const { level, topic } = resolvedParams;
 
-  const cleanTopic = decodeURIComponent(topic).replace(/-/g, ' ');
-  const cleanLevel = level.replace(/-/g, ' ');
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { subject, level, topic } = await params;
+
+  const rawLevel = level.toLowerCase().trim();
+  const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
+
+  const cleanLevel =
+    LEVEL_MAP[rawLevel] ||
+    rawLevel.replace('bachillerato', 'bach').replace('-', '');
+
+  const targetSubjectId = cleanLevel.startsWith(prefix)
+    ? cleanLevel
+    : `${prefix}-${cleanLevel}`;
+
+  const rawTopicParam = decodeURIComponent(topic).toLowerCase().trim();
+
+  // Consultamos el tema y la asignatura en Supabase
+  const [topicsResult, subjectResult] = await Promise.all([
+    supabase
+      .from('topics')
+      .select('id, subject_id, slug, title, description')
+      .or(
+        `subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${prefix}-${rawLevel}`
+      ),
+
+    supabase
+      .from('subjects')
+      .select('name')
+      .eq('id', targetSubjectId)
+      .maybeSingle(),
+  ]);
+
+  // Buscamos el tema por slug, ID o título
+  const dbTopic = (topicsResult.data || []).find((t) => {
+    const tId = String(t.id || '').toLowerCase().trim();
+    const tSlug = String(t.slug || '').toLowerCase().trim();
+    const tTitleSlug = createSlug(t.title || '');
+
+    return (
+      tSlug === rawTopicParam ||
+      tId === rawTopicParam ||
+      tTitleSlug === rawTopicParam
+    );
+  });
+
+  // Si no encontramos el tema, utilizamos un título provisional
+  const topicTitle = dbTopic?.title || topic.replace(/-/g, ' ');
+
+  const subjectName =
+    subjectResult.data?.name ||
+    (prefix === 'fq' ? 'Física y Química' : 'Matemáticas');
+
+  // Título SEO personalizado
+  const title = `${topicTitle} | ${subjectName} | ProfeLab`;
+
+  // Descripción SEO
+  const descriptionBase = dbTopic?.description?.trim()
+    ? `${dbTopic.description.trim()} Encuentra ejercicios resueltos, vídeos explicativos y tests de autoevaluación.`
+    : `Aprende ${topicTitle} de ${subjectName} con ejercicios resueltos en PDF, vídeos explicativos y tests de autoevaluación.`;
+
+  const description =
+    descriptionBase.length > 160
+      ? `${descriptionBase.slice(0, 157).trimEnd()}...`
+      : descriptionBase;
+
+  // URL canónica de esta página
+  const canonical = `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}/${encodeURIComponent(topic)}`;
 
   return {
-    title: `Ejercicios resueltos de ${cleanTopic} (${cleanLevel}) | ProfeLab`,
-    description: `Descarga ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación sobre ${cleanTopic} para ${cleanLevel}.`,
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: 'ProfeLab',
+      locale: 'es_ES',
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
+
 
 export default async function TopicPage({ params }: Props) {
   const resolvedParams = await params;

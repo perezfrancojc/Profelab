@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { TopicSectionNav } from '@/components/TopicSectionNav';
-import { SiteHeader } from '@/components/SiteHeader';
+import { TopicHeader } from '@/components/TopicHeader';
 
 interface Props {
   params: Promise<{
@@ -260,10 +260,11 @@ export default async function TopicPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
       
-     <SiteHeader
+     <TopicHeader
         title={currentTopic.title}
         backHref={backHref}
         backLabel={`${subjectTitle} ${level.replace('-', ' ').toUpperCase()}`}
+        hasContent={Boolean(currentTopic.content)}
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">

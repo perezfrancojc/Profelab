@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -12,6 +11,8 @@ export function TopicSectionNav({ hasContent }: Props) {
     hasContent ? 'sobre-el-tema' : 'videos'
   );
 
+  const [headerExpanded, setHeaderExpanded] = useState(false);
+
   const items = [
     ...(hasContent
       ? [{ id: 'sobre-el-tema', label: 'Sobre este tema' }]
@@ -21,6 +22,19 @@ export function TopicSectionNav({ hasContent }: Props) {
     { id: 'autoevaluacion', label: 'Tests' },
     { id: 'material-pdf', label: 'Apuntes PDF' },
   ];
+
+  useEffect(() => {
+    const handleHeader = (event: Event) => {
+      const customEvent = event as CustomEvent<{ expanded: boolean }>;
+      setHeaderExpanded(customEvent.detail.expanded);
+    };
+
+    window.addEventListener('topic-header-compact', handleHeader);
+
+    return () => {
+      window.removeEventListener('topic-header-compact', handleHeader);
+    };
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,17 +51,14 @@ export function TopicSectionNav({ hasContent }: Props) {
         }
       },
       {
-        rootMargin: '-140px 0px -65% 0px',
+        rootMargin: '-110px 0px -65% 0px',
         threshold: 0,
       }
     );
 
     items.forEach((item) => {
       const section = document.getElementById(item.id);
-
-      if (section) {
-        observer.observe(section);
-      }
+      if (section) observer.observe(section);
     });
 
     return () => observer.disconnect();
@@ -55,8 +66,13 @@ export function TopicSectionNav({ hasContent }: Props) {
 
   return (
     <nav
+      id="topic-section-nav"
       aria-label="Navegación por los contenidos del tema"
-      className="sticky top-[72px] z-40 -mx-6 px-6 py-3 bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70 shadow-sm transition-colors duration-300"
+      className={`sticky top-[72px] z-40 -mx-6 px-6 py-3 bg-[#FAF9F5]/95 backdrop-blur-md border-y border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        headerExpanded
+          ? '-translate-y-full opacity-0 pointer-events-none'
+          : 'translate-y-0 opacity-100'
+      }`}
     >
       <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
         {items.map((item) => {

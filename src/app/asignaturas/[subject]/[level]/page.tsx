@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, BookOpen, ChevronRight, Layers } from 'lucide-react';
+import { Metadata } from 'next';
 
 interface Props {
   params: Promise<{
@@ -36,6 +37,86 @@ function createSlug(text: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)+/g, '');
 }
+
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { subject, level } = await params;
+
+  const rawLevel = level.toLowerCase().trim();
+  const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
+
+  const mappedLevel =
+    LEVEL_MAP[rawLevel] ||
+    rawLevel.replace('bachillerato', 'bach').replace('-', '');
+
+  const targetSubjectId = mappedLevel.startsWith(prefix)
+    ? mappedLevel
+    : `${prefix}-${mappedLevel}`;
+
+  // Obtenemos los datos reales del curso desde Supabase
+  const { data: dbSubject } = await supabase
+    .from('subjects')
+    .select('name, description')
+    .eq('id', targetSubjectId)
+    .maybeSingle();
+
+  const levelNames: Record<string, string> = {
+    '1eso': '1º ESO',
+    '2eso': '2º ESO',
+    '3eso': '3º ESO',
+    '4eso': '4º ESO',
+    '1bach': '1º Bachillerato',
+    '2bach': '2º Bachillerato',
+    '1bachccss': '1º Bachillerato CCSS',
+    '2bachccss': '2º Bachillerato CCSS',
+  };
+
+  const subjectName =
+    prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
+
+  const courseName =
+    dbSubject?.name ||
+    `${subjectName} ${levelNames[mappedLevel] || level}`;
+
+  // Título SEO
+  const title = `${courseName} | Apuntes y ejercicios resueltos | ProfeLab`;
+
+  // Descripción SEO
+  const descriptionBase =
+    dbSubject?.description?.trim() ||
+    `Consulta el temario de ${courseName} con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.`;
+
+  const description =
+    descriptionBase.length > 160
+      ? `${descriptionBase.slice(0, 157).trimEnd()}...`
+      : descriptionBase;
+
+  // URL canónica
+  const canonical =
+    `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: 'ProfeLab',
+      locale: 'es_ES',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
+
 
 export default async function SubjectLevelPage({ params }: Props) {
   const resolvedParams = await params;

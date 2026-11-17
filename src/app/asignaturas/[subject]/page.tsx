@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
 
@@ -8,6 +9,51 @@ interface Props {
     subject: string;
   }>;
 }
+
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { subject } = await params;
+
+  const cleanSubject = subject.toLowerCase();
+  const isPhysics = cleanSubject.includes('fisica');
+
+  const subjectTitle = isPhysics
+    ? 'Física y Química'
+    : 'Matemáticas';
+
+  const title = isPhysics
+    ? 'Física y Química ESO y Bachillerato | Apuntes y ejercicios | ProfeLab'
+    : 'Matemáticas ESO y Bachillerato | Apuntes y ejercicios | ProfeLab';
+
+  const description = isPhysics
+    ? 'Aprende Física y Química de ESO y Bachillerato con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.'
+    : 'Aprende Matemáticas de ESO y Bachillerato con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.';
+
+  const canonical =
+    `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: 'ProfeLab',
+      locale: 'es_ES',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
+
 
 export default async function SubjectPage({ params }: Props) {
   const { subject } = await params;

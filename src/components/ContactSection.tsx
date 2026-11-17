@@ -35,7 +35,7 @@ export function ContactSection() {
   };
 
   return (
-    <section className="py-16 px-6 bg-white border-t border-slate-200/80">
+    <section id="contacto" className="py-16 px-6 bg-white border-t border-slate-200/80">
       <div className="max-w-4xl mx-auto">
         <div className="text-center space-y-3 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-red-600 text-xs font-bold uppercase tracking-wider">

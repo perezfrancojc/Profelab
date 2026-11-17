@@ -56,7 +56,7 @@ export default function RootLayout({
                 <a href="/aviso-legal" className="hover:text-white transition-colors">Aviso Legal</a>
                 <a href="/privacidad" className="hover:text-white transition-colors">Política de Privacidad</a>
               </div>
-              <span>© 2026 ProfeLab. Hecho con vocación docente.</span>
+              <span>© 2026 JuancaEduca. Hecho con vocación docente.</span>
             </div>
           </div>
         </footer>

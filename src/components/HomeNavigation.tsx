@@ -15,6 +15,8 @@ export function HomeNavigation() {
   const [expanded, setExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState('asignaturas');
 
+  // Detectamos el desplazamiento usando un punto de referencia
+  // independiente del menú sticky.
   useEffect(() => {
     let animationFrame = 0;
 
@@ -22,15 +24,15 @@ export function HomeNavigation() {
       cancelAnimationFrame(animationFrame);
 
       animationFrame = requestAnimationFrame(() => {
-        const originalNav = document.getElementById('home-section-nav');
+        const sentinel = document.getElementById('home-nav-sentinel');
 
-        if (!originalNav) return;
+        if (!sentinel) return;
 
-        const navTop = originalNav.getBoundingClientRect().top;
+        const sentinelTop = sentinel.getBoundingClientRect().top;
 
         setExpanded((current) => {
-          if (!current && navTop <= 82) return true;
-          if (current && navTop > 110) return false;
+          if (!current && sentinelTop <= 80) return true;
+          if (current && sentinelTop > 105) return false;
           return current;
         });
       });
@@ -45,6 +47,7 @@ export function HomeNavigation() {
     };
   }, []);
 
+  // Identificamos la sección que está recorriendo el usuario.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -83,9 +86,9 @@ export function HomeNavigation() {
             key={item.id}
             href={`#${item.id}`}
             aria-current={isActive ? 'location' : undefined}
-            className={`shrink-0 rounded-lg font-bold transition-all duration-300 ${
+            className={`shrink-0 rounded-lg font-bold whitespace-nowrap transition-all duration-300 ${
               compact
-                ? 'px-2 py-2 text-[11px] sm:text-xs'
+                ? 'px-2 py-2 text-[10px] sm:px-3 sm:text-xs'
                 : 'px-3 py-2 text-xs'
             } ${
               isActive
@@ -101,44 +104,59 @@ export function HomeNavigation() {
 
       <a
         href="#asignaturas"
-        className={`shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm ${
+        className={`shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm whitespace-nowrap ${
           compact
-            ? 'px-2.5 py-2 text-[10px] sm:px-4 sm:text-[11px]'
+            ? 'px-2.5 py-2 text-[9px] sm:px-4 sm:text-[11px]'
             : 'px-5 py-2.5 text-xs'
         }`}
       >
-        Explorar cursos
+        <span className="hidden sm:inline">Explorar cursos</span>
+        <span className="sm:hidden">Cursos</span>
       </a>
     </>
   );
 
   return (
     <>
-      {/* Barra informativa superior */}
-      <div className="bg-slate-900 text-slate-300 text-xs py-2.5 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <span className="flex items-center gap-2 text-center sm:text-left">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-            Clases de apoyo y material actualizado para el curso 2026/2027
-          </span>
-
-          <a
-            href="#contacto"
-            className="flex items-center gap-1.5 hover:text-white transition-colors"
-          >
-            <Phone className="w-3.5 h-3.5 text-red-400" />
-            <span>Resuelve tus dudas con un docente</span>
-          </a>
-        </div>
-      </div>
-
-      {/* Cabecera principal dinámica */}
+      {/* Cabecera principal */}
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
+
+        {/* Información inicial: desaparece al integrar el menú */}
         <div
-          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-2 sm:gap-3 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            expanded
+              ? 'max-h-0 opacity-0'
+              : 'max-h-12 opacity-100'
+          }`}
+        >
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 h-10 flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-[10px] sm:text-xs font-medium text-slate-600 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span className="truncate">
+                Clases de apoyo y material actualizado para el curso 2026/2027
+              </span>
+            </span>
+
+            <a
+              href="#contacto"
+              className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0"
+            >
+              <Phone className="w-3.5 h-3.5 text-red-500" />
+              <span className="hidden sm:inline">
+                Resuelve tus dudas con un docente
+              </span>
+              <span className="sm:hidden">Contacto</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Marca y navegación integrada */}
+        <div
+          className={`mx-auto px-4 sm:px-6 h-20 flex items-center gap-2 sm:gap-4 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             expanded ? 'max-w-[1500px]' : 'max-w-6xl'
           }`}
         >
+          {/* Identidad de JuancaEduca: permanece siempre visible */}
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"
@@ -148,51 +166,44 @@ export function HomeNavigation() {
               JE
             </div>
 
-            <div
-              className={`overflow-hidden transition-all duration-500 ease-out ${
-                expanded
-                  ? 'max-w-0 opacity-0 sm:max-w-[150px] sm:opacity-100'
-                  : 'max-w-[160px] opacity-100'
-              }`}
-            >
-              <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight block leading-none whitespace-nowrap">
+            <div className="flex flex-col">
+              <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
                 JuancaEduca
               </span>
-              <span
-                className={`text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap transition-all duration-300 ${
-                  expanded ? 'opacity-0' : 'opacity-100'
-                }`}
-              >
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap">
                 Academia de Ciencias
               </span>
             </div>
           </Link>
 
-          {/* Los enlaces se incorporan a la cabecera al bajar */}
+          {/* El menú se incorpora progresivamente a la derecha */}
           <nav
             aria-label="Navegación principal integrada"
             className={`min-w-0 flex-1 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               expanded
-                ? 'max-w-[900px] opacity-100 translate-y-0'
+                ? 'max-w-[1000px] opacity-100 translate-y-0'
                 : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
             }`}
           >
-            <div className="flex items-center justify-end sm:justify-center gap-0.5 sm:gap-1 whitespace-nowrap">
+            <div className="flex items-center justify-end sm:justify-center gap-0.5 sm:gap-1 whitespace-nowrap overflow-x-auto">
               {renderLinks(true)}
             </div>
           </nav>
         </div>
       </header>
 
-      {/* Menú independiente: se integra en la cabecera al bajar */}
+      {/* Punto de referencia: permite detectar también el desplazamiento hacia arriba */}
+      <div id="home-nav-sentinel" className="h-px w-full" />
+
+      {/* Menú independiente */}
       <nav
-        id="home-section-nav"
         aria-label="Navegación por la página principal"
-        className={`sticky top-20 z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`sticky z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           expanded
             ? '-translate-y-full opacity-0 pointer-events-none'
             : 'translate-y-0 opacity-100'
         }`}
+        style={{ top: expanded ? '80px' : '120px' }}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5">
           <div className="flex items-center justify-center gap-2 overflow-x-auto">

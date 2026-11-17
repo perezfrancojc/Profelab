@@ -43,10 +43,10 @@ export default function RootLayout({
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-red-600 text-white rounded-lg font-black text-base flex items-center justify-center">
-                PL
+                JE
               </div>
               <div>
-                <span className="font-bold text-white text-base block">ProfeLab</span>
+                <span className="font-bold text-white text-base block">JuancaEduca</span>
                 <p className="text-xs text-slate-400 mt-0.5">Material de apoyo para estudiantes de ESO y Bachillerato.</p>
               </div>
             </div>

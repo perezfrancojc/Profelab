@@ -289,7 +289,7 @@ export default async function TopicPage({ params }: Props) {
 
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
-          <section id="sobre-el-tema" className="scroll-mt-28 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
+          <section id="sobre-el-tema" className="scroll-mt-36 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
             <h2 className="text-xl font-black text-slate-900 tracking-tight">
               Sobre este tema
             </h2>
@@ -344,7 +344,7 @@ export default async function TopicPage({ params }: Props) {
         )}
 
         {/* 1. SECCIÓN: VÍDEOS EXPLICATIVOS */}
-        <section id="videos" className="scroll-mt-28 space-y-4">
+        <section id="videos" className="scroll-mt-36 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <PlayCircle className="w-5 h-5 text-red-600" />
             <h2>Vídeos Explicativos</h2>
@@ -370,7 +370,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 2. SECCIÓN: EJERCICIOS RESUELTOS EN PDF POR APARTADOS */}
-        <section id="ejercicios-pdf" className="scroll-mt-28 space-y-6">
+        <section id="ejercicios-pdf" className="scroll-mt-36 space-y-6">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <BookOpen className="w-5 h-5 text-red-600" />
             <h2>Ejercicios Resueltos a Mano (PDF)</h2>
@@ -432,7 +432,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 3. SECCIÓN: AUTOEVALUACIÓN EN LÍNEA */}
-        <section id="autoevaluacion" className="scroll-mt-28 space-y-4">
+        <section id="autoevaluacion" className="scroll-mt-36 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <CheckCircle2 className="w-5 h-5 text-red-600" />
             <h2>Autoevaluación en Línea</h2>
@@ -449,7 +449,7 @@ export default async function TopicPage({ params }: Props) {
         </section>
 
         {/* 4. SECCIÓN: MATERIAL Y DOCUMENTOS */}
-        <section id="material-pdf" className="scroll-mt-28 space-y-4">
+        <section id="material-pdf" className="scroll-mt-36 space-y-4">
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <FileText className="w-5 h-5 text-red-600" />
             <h2>Material y Documentos</h2>

@@ -1,7 +1,5 @@
-'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 
 interface SiteHeaderProps {
@@ -15,50 +13,9 @@ export function SiteHeader({
   backHref,
   backLabel = 'Volver',
 }: SiteHeaderProps) {
-  const [visible, setVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const visibleRef = useRef(true);
-
-  useEffect(() => {
-   const handleScroll = () => {
-    const currentScrollY = window.scrollY;
-    let nextVisible = visibleRef.current;
-
-    if (currentScrollY < 80) {
-        nextVisible = true;
-    } else if (currentScrollY > lastScrollY.current + 5) {
-        nextVisible = false;
-    } else if (currentScrollY < lastScrollY.current - 5) {
-        nextVisible = true;
-    }
-
-    if (nextVisible !== visibleRef.current) {
-        visibleRef.current = nextVisible;
-        setVisible(nextVisible);
-
-        window.dispatchEvent(
-        new CustomEvent('site-header-visibility', {
-            detail: { visible: nextVisible },
-        })
-        );
-    }
-
-    lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <header
-      className={`sticky top-0 z-50 w-full border-b border-white/70 bg-[#F1EFE8]/90 backdrop-blur-xl shadow-sm transition-transform duration-300 ease-in-out ${
-        visible ? 'translate-y-0' : '-translate-y-full'
-      }`}
-    >
+    <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
       <div className="max-w-6xl mx-auto px-6 h-[72px] flex items-center justify-between gap-4">
-
         <Link
           href="/"
           className="font-serif italic font-bold text-2xl text-red-600 tracking-tight hover:text-red-700 transition-colors shrink-0"

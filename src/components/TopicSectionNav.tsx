@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,8 +12,6 @@ export function TopicSectionNav({ hasContent }: Props) {
     hasContent ? 'sobre-el-tema' : 'videos'
   );
 
-  const [headerVisible, setHeaderVisible] = useState(true);
-
   const items = [
     ...(hasContent
       ? [{ id: 'sobre-el-tema', label: 'Sobre este tema' }]
@@ -23,27 +22,6 @@ export function TopicSectionNav({ hasContent }: Props) {
     { id: 'material-pdf', label: 'Apuntes PDF' },
   ];
 
-  // Sincronizar la visibilidad con SiteHeader
-  useEffect(() => {
-    const handleHeaderVisibility = (event: Event) => {
-      const customEvent = event as CustomEvent<{ visible: boolean }>;
-      setHeaderVisible(customEvent.detail.visible);
-    };
-
-    window.addEventListener(
-      'site-header-visibility',
-      handleHeaderVisibility
-    );
-
-    return () => {
-      window.removeEventListener(
-        'site-header-visibility',
-        handleHeaderVisibility
-      );
-    };
-  }, []);
-
-  // Detectar la sección activa
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -59,7 +37,7 @@ export function TopicSectionNav({ hasContent }: Props) {
         }
       },
       {
-        rootMargin: '-110px 0px -65% 0px',
+        rootMargin: '-140px 0px -65% 0px',
         threshold: 0,
       }
     );
@@ -78,11 +56,7 @@ export function TopicSectionNav({ hasContent }: Props) {
   return (
     <nav
       aria-label="Navegación por los contenidos del tema"
-      className={`sticky top-16 z-40 -mx-6 px-6 py-3 bg-[#FAF9F5]/95 backdrop-blur-md border-y border-slate-200/80 transition-transform duration-300 ease-in-out ${
-        headerVisible
-          ? 'translate-y-0'
-          : '-translate-y-[140px]'
-      }`}
+      className="sticky top-[72px] z-40 -mx-6 px-6 py-3 bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70 shadow-sm transition-colors duration-300"
     >
       <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
         {items.map((item) => {

@@ -140,33 +140,38 @@ export function HomeNavigation() {
             </div>
           </Link>
 
-          {/* Información destacada: comparte la misma fila que la marca */}
-          <div
-            className={`min-w-0 flex-1 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              expanded
-                ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
-                : 'max-w-[700px] opacity-100 scale-100'
-            }`}
-          >
-            <div className="flex items-center gap-2 sm:gap-3 rounded-xl bg-white/75 border border-slate-200/80 px-2.5 sm:px-4 py-2 shadow-sm whitespace-nowrap">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.12)] shrink-0" />
-
-              <span className="text-[9px] sm:text-xs font-bold text-slate-700">
-                <span className="hidden sm:inline">
-                  Material actualizado
-                </span>
-                <span className="sm:hidden">
-                  Curso 2026/2027
-                </span>
-                <span className="hidden sm:inline text-slate-400 font-medium">
-                  {' '}·{' '}
-                </span>
-                <span className="text-red-600">
-                  2026/2027
-                </span>
-              </span>
+          
+        {/* Información académica integrada en la cabecera */}
+        <div
+        className={`min-w-0 flex-1 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            expanded
+            ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
+            : 'max-w-[700px] opacity-100 scale-100'
+        }`}
+        >
+        <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex flex-col shrink-0">
+            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                Curso académico
+            </span>
+            <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">
+                2026/2027
+            </span>
             </div>
-          </div>
+
+            <div className="w-px h-8 bg-slate-300/80 shrink-0" />
+
+            <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
+            <span className="text-xs font-semibold text-slate-700">
+                Contenidos actualizados
+            </span>
+            <span className="text-[10px] text-slate-500">
+                Temarios y recursos educativos
+            </span>
+            </div>
+        </div>
+        </div>
+
 
           {/* Contacto inicial: se sustituye por la navegación al bajar */}
           <a

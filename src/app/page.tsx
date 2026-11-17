@@ -14,9 +14,13 @@ export default function HomePage() {
       {/* Hero Principal con aire de publicación cuidada */}
       <section className="py-20 px-6 border-b border-slate-200/60">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-red-700 bg-red-50 border border-red-100 px-3.5 py-1.5 rounded-full mb-6">
-            <Sparkles className="w-3.5 h-3.5 text-red-600" /> Refuerzo Escolar de Alto Nivel
-          </span>
+          <div className="flex items-center justify-center gap-3 mb-7">
+            <span className="w-8 h-[2px] bg-red-600" />
+            <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+              Aprendizaje · Claridad · Rigor
+            </span>
+            <span className="w-8 h-[2px] bg-red-600" />
+          </div>
           <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
             Matemáticas, Física y Química
             

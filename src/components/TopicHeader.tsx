@@ -102,7 +102,7 @@ export function TopicHeader({
   return (
     <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
       <div
-        className={`mx-auto h-[72px] px-4 sm:px-6 flex items-center gap-3 transition-[max-width,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`mx-auto h-[72px] px-4 sm:px-6 flex items-center gap-3 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           expanded ? 'max-w-[1500px]' : 'max-w-6xl'
         }`}
       >
@@ -125,7 +125,7 @@ export function TopicHeader({
           aria-label="Navegación rápida del tema"
           className={`min-w-0 flex-1 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             expanded
-              ? 'max-w-[900px] opacity-100 translate-y-0'
+              ? 'max-w-[900px] max-sm:flex-none max-sm:w-max max-sm:max-w-none opacity-100 translate-y-0'
               : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
           }`}
         >

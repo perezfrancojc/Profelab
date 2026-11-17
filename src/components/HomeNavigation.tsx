@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -116,7 +117,7 @@ export function HomeNavigation() {
       {/* Cabecera única */}
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
         <div
-          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden ${
             expanded ? 'max-w-[1500px]' : 'max-w-6xl'
           }`}
         >
@@ -140,38 +141,36 @@ export function HomeNavigation() {
             </div>
           </Link>
 
-          
-        {/* Información académica integrada en la cabecera */}
-        <div
-        className={`min-w-0 flex-1 flex items-center justify-center transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            expanded
-            ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
-            : 'max-w-[700px] opacity-100 scale-100'
-        }`}
-        >
-        <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex flex-col shrink-0">
-            <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
-                Curso académico
-            </span>
-            <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">
-                2026/2027
-            </span>
+          {/* Información académica integrada en la cabecera */}
+          <div
+            className={`min-w-0 flex-1 flex items-center justify-center max-sm:flex-none transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              expanded
+                ? 'max-w-0 opacity-0 scale-95 overflow-hidden'
+                : 'max-w-[700px] opacity-100 scale-100'
+            }`}
+          >
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="flex flex-col shrink-0">
+                <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                  Curso académico
+                </span>
+                <span className="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">
+                  2026/2027
+                </span>
+              </div>
+
+              <div className="w-px h-8 bg-slate-300/80 shrink-0" />
+
+              <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
+                <span className="text-xs font-semibold text-slate-700">
+                  Contenidos actualizados
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  Temarios y recursos educativos
+                </span>
+              </div>
             </div>
-
-            <div className="w-px h-8 bg-slate-300/80 shrink-0" />
-
-            <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
-            <span className="text-xs font-semibold text-slate-700">
-                Contenidos actualizados
-            </span>
-            <span className="text-[10px] text-slate-500">
-                Temarios y recursos educativos
-            </span>
-            </div>
-        </div>
-        </div>
-
+          </div>
 
           {/* Contacto inicial: se sustituye por la navegación al bajar */}
           <a
@@ -194,7 +193,7 @@ export function HomeNavigation() {
             aria-label="Navegación principal integrada"
             className={`min-w-0 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               expanded
-                ? 'flex-1 max-w-[1000px] opacity-100 translate-y-0'
+                ? 'flex-1 max-w-[1000px] max-sm:flex-none max-sm:w-max max-sm:max-w-none opacity-100 translate-y-0'
                 : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
             }`}
           >
@@ -215,7 +214,7 @@ export function HomeNavigation() {
         }`}
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5">
-          <div className="flex items-center justify-center gap-2 overflow-x-auto">
+          <div className="flex items-center justify-center gap-2 overflow-x-auto max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
             {renderLinks(false)}
           </div>
         </div>

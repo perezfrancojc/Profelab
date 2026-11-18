@@ -112,11 +112,7 @@ export function HomeNavigation() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
-        <div
-          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-1.5 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            expanded ? 'max-w-[1500px]' : 'max-w-6xl'
-          }`}
-        >
+        <div className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-4 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding,gap] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${ expanded ? 'max-w-[1500px] max-sm:px-2 max-sm:gap-1' : 'max-w-6xl'}`}>
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"

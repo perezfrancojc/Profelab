@@ -45,6 +45,14 @@ const LEVEL_DISPLAY_MAP: Record<string, string> = {
   '2-bachillerato-ccss': '2.º Bachillerato CCSS',
   '1-bachccss': '1.º Bachillerato CCSS',
   '2-bachccss': '2.º Bachillerato CCSS',
+  '1eso': '1.º ESO',
+  '2eso': '2.º ESO',
+  '3eso': '3.º ESO',
+  '4eso': '4.º ESO',
+  '1bach': '1.º Bachillerato',
+  '2bach': '2.º Bachillerato',
+  '1bachccss': '1.º Bachillerato CCSS',
+  '2bachccss': '2.º Bachillerato CCSS',
 };
 
 function createSlug(text: string) {
@@ -172,7 +180,8 @@ export default async function SubjectLevelPage({ params }: Props) {
 
   const allTopics = Array.from(topicsMap.values());
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
-  const displayLevel = LEVEL_DISPLAY_MAP[rawLevel] || level.replace(/-/g, ' ');
+  const normalizedDisplayLevel = rawLevel.replace(/^(mat|fq)-/, '');
+  const displayLevel = LEVEL_DISPLAY_MAP[rawLevel] || LEVEL_DISPLAY_MAP[normalizedDisplayLevel] || level.replace(/-/g, ' ');
   const courseTitle = `${subjectTitle} ${displayLevel}`;
 
   return (

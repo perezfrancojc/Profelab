@@ -8,7 +8,7 @@ export default function PrivacidadPage() {
 
       <h2 className="text-xl font-semibold mt-6 mb-3">1. Responsable del tratamiento</h2>
       <p className="mb-4">
-        [Juan Carlos Pérez Franco], NIF [32098947D]. Contacto: perezfrancojc@gmail.com.
+        Juan Carlos Pérez Franco, NIF 32098947D. Contacto: perezfrancojc@gmail.com.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-3">2. Datos recopilados</h2>

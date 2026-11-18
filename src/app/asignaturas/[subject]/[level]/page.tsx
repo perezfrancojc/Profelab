@@ -30,6 +30,23 @@ const LEVEL_MAP: Record<string, string> = {
   '2-bachccss': '2bachccss',
 };
 
+const LEVEL_DISPLAY_MAP: Record<string, string> = {
+  '1-eso': '1.º ESO',
+  '2-eso': '2.º ESO',
+  '3-eso': '3.º ESO',
+  '4-eso': '4.º ESO',
+  '1-bachillerato': '1.º Bachillerato',
+  '2-bachillerato': '2.º Bachillerato',
+  '1-bach': '1.º Bachillerato',
+  '2-bach': '2.º Bachillerato',
+  '1-bach-ccss': '1.º Bachillerato CCSS',
+  '2-bach-ccss': '2.º Bachillerato CCSS',
+  '1-bachillerato-ccss': '1.º Bachillerato CCSS',
+  '2-bachillerato-ccss': '2.º Bachillerato CCSS',
+  '1-bachccss': '1.º Bachillerato CCSS',
+  '2-bachccss': '2.º Bachillerato CCSS',
+};
+
 function createSlug(text: string) {
   if (!text) return '';
   return text
@@ -155,7 +172,8 @@ export default async function SubjectLevelPage({ params }: Props) {
 
   const allTopics = Array.from(topicsMap.values());
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
-  const courseTitle = `${subjectTitle} - ${level.replace('-', ' ').toUpperCase()}`;
+  const displayLevel = LEVEL_DISPLAY_MAP[rawLevel] || level.replace(/-/g, ' ');
+  const courseTitle = `${subjectTitle} ${displayLevel}`;
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased">
@@ -173,8 +191,8 @@ export default async function SubjectLevelPage({ params }: Props) {
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">
             Temario Oficial
           </span>
-          <h1 className="text-3xl font-black text-slate-900 capitalize">
-            {subject.replace('-', ' ')} ({level.replace('-', ' ')})
+          <h1 className="text-3xl font-black text-slate-900">
+            {courseTitle}
           </h1>
         </div>
       </FusionSection>

@@ -4,7 +4,7 @@ import { YouTubeFacade } from '@/components/YouTubeFacade';
 import { Phone, ArrowRight, CheckCircle2, BookOpen, PlayCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
-import { GlassBadge, GlassGlow } from '@/components/GlassBadge';
+import { GlassBadge } from '@/components/GlassBadge';
 
 export default function HomePage() {
   return (
@@ -100,7 +100,7 @@ export default function HomePage() {
             href="/asignaturas/matematicas"
             className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
           >
-            <GlassGlow />
+            
             <div>
               <div className="mb-4">
                 <GlassBadge>Materia</GlassBadge>
@@ -123,7 +123,7 @@ export default function HomePage() {
             href="/asignaturas/fisica-y-quimica"
             className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
           >
-            <GlassGlow />
+            
             <div>
               <div className="mb-4">
                 <GlassBadge>Materia</GlassBadge>

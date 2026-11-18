@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, BookOpen, ChevronRight, Layers } from 'lucide-react';
+import { ChevronRight, Layers } from 'lucide-react';
+import { TopicIcon } from '@/components/TopicIcon';
 import { Metadata } from 'next';
 import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
 export const revalidate = 3600;
@@ -208,15 +209,15 @@ export default async function SubjectLevelPage({ params }: Props) {
 
         {allTopics.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
-            {allTopics.map((t: any) => (
+                        {allTopics.map((t: any) => (
               <Link
                 key={t.id}
                 href={`/asignaturas/${subject}/${level}/${t.slug}`}
                 className="group bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:border-red-500/40 hover:shadow-md transition flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition">
-                    <BookOpen className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white group-hover:scale-105 transition">
+                    <TopicIcon slug={t.slug} title={t.title} className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900 text-base group-hover:text-red-600 transition">

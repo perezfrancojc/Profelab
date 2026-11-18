@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
 import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
+import { GlassBadge } from '@/components/GlassBadge';
 export const revalidate = 3600;
 
 interface Props {
@@ -98,12 +99,16 @@ export default async function SubjectPage({ params }: Props) {
 
         {/* Tarjetas de Cursos obtenidas dinámicamente de Supabase */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {dbSubjects.map((subItem) => {
+                    {dbSubjects.map((subItem) => {
             const coursePath = subItem.slug || subItem.id;
+            const levelLabel = String(subItem.level || '')
+              .replace(/^(\d)-eso$/i, '$1º ESO')
+              .replace(/^(\d)-bachillerato$/i, '$1º Bachillerato')
+              .replace(/-/g, ' ');
 
             return (
-              <Link 
-                key={subItem.id} 
+              <Link
+                key={subItem.id}
                 href={`/asignaturas/${subject}/${coursePath}`}
                 className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all group flex flex-col justify-between"
               >
@@ -112,9 +117,7 @@ export default async function SubjectPage({ params }: Props) {
                     <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 font-bold flex items-center justify-center border border-red-100 shrink-0">
                       <GraduationCap className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-extrabold px-3 py-1 rounded-md bg-slate-100 text-slate-700 uppercase tracking-wider border border-slate-200/50">
-                      {subItem.level}
-                    </span>
+                    <GlassBadge>{levelLabel}</GlassBadge>
                   </div>
                   <h2 className="text-xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors uppercase">
                     {subItem.name}

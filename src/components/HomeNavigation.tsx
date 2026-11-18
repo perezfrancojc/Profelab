@@ -85,9 +85,9 @@ export function HomeNavigation() {
               compact
                 ? 'px-2.5 py-2 max-sm:px-2'
                 : 'px-3 py-2'
-            } rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-colors duration-200 ${
+            } rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all duration-200 ${
               isActive
-                ? 'text-red-600 bg-red-50'
+                ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
                 : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
             }`}
           >
@@ -202,6 +202,7 @@ export function HomeNavigation() {
     </>
   );
 }
+
 
 
 

@@ -85,9 +85,9 @@ export function TopicSectionNav({ hasContent }: Props) {
               href={`#${item.id}`}
               aria-current={isActive ? 'location' : undefined}
               onClick={() => setActiveSection(item.id)}
-              className={`shrink-0 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-colors duration-200 ${
+              className={`shrink-0 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                 isActive
-                  ? 'text-red-600 bg-red-50'
+                  ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
                   : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
               }`}
             >

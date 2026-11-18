@@ -85,7 +85,7 @@ export function HomeNavigation() {
                 : 'px-3 py-2 text-xs'
             } ${
               isActive
-                ? 'text-red-600 bg-red-50'
+                ? 'text-red-600 bg-red-50 max-sm:!text-white max-sm:!bg-red-600 max-sm:shadow-sm'
                 : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
             }`}
           >
@@ -97,7 +97,7 @@ export function HomeNavigation() {
 
       <a
         href="#asignaturas"
-        className={`shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm whitespace-nowrap ${
+        className={`hidden sm:inline-flex shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm whitespace-nowrap ${
           compact
             ? 'px-2.5 py-2 text-[9px] sm:px-4 sm:text-[11px]'
             : 'px-5 py-2.5 text-xs'

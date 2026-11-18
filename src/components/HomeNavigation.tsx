@@ -120,25 +120,21 @@ export function HomeNavigation() {
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"
-            className={`flex items-center gap-2 sm:gap-3 group shrink-0 ${
-              expanded ? 'max-sm:gap-0' : ''
-            }`}
-          >
+            className="flex items-center gap-2 sm:gap-3 group shrink-0"
+            >
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
-              JE
+                JE
             </div>
 
-            <div className={`flex flex-col transition-all duration-300 ${
-              expanded ? 'max-sm:max-w-0 max-sm:opacity-0 max-sm:overflow-hidden' : ''
-            }`}>
-              <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
+            <div className="flex flex-col">
+                <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
                 JuancaEduca
-              </span>
-              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap">
+                </span>
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold text-red-600 tracking-wider whitespace-nowrap">
                 Academia de Ciencias
-              </span>
+                </span>
             </div>
-          </Link>
+            </Link>
 
           <div
             className={`min-w-0 flex-1 flex items-center justify-center max-sm:flex-none transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${

@@ -172,7 +172,7 @@ export function TopicHeader({
 
         <Link
           href={backHref}
-          className="flex items-center gap-1.5 max-sm:gap-0.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0 ml-auto max-sm:ml-0"
+          className="flex items-center gap-1.5 max-sm:gap-0.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0 ml-auto"
         >
           <ArrowLeft className="w-4 h-4 shrink-0" />
           <span className="hidden sm:inline">{backLabel}</span>

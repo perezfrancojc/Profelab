@@ -1,7 +1,6 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
-
-const BASE_URL = 'https://profelabjuancaeduca.vercel.app';
+import { SITE_URL } from '@/lib/config';
 
 // Actualizar el sitemap como máximo cada hora.
 export const revalidate = 3600;
@@ -17,95 +16,62 @@ function createSlug(text: string) {
     .replace(/(^-|-$)+/g, '');
 }
 
+// Mismo criterio que usan las páginas: ids fq-* => física y química
+function groupOf(subjectId: string) {
+  return subjectId.startsWith('fq-') ? 'fisica-y-quimica' : 'matematicas';
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 1. Obtener los cursos de Supabase.
-  const { data: subjects, error: subjectsError } = await supabase
-    .from('subjects')
-    .select('id, slug');
+  const [subjectsRes, topicsRes] = await Promise.all([
+    supabase.from('subjects').select('id, slug'),
+    supabase.from('topics').select('id, subject_id, slug, title'),
+  ]);
 
-  if (subjectsError) {
-    console.error('Error obteniendo asignaturas para el sitemap:', subjectsError);
+  if (subjectsRes.error) {
+    console.error('Error obteniendo asignaturas para el sitemap:', subjectsRes.error);
+  }
+  if (topicsRes.error) {
+    console.error('Error obteniendo temas para el sitemap:', topicsRes.error);
   }
 
-  // 2. Obtener los temas de Supabase.
-  const { data: topics, error: topicsError } = await supabase
-    .from('topics')
-    .select('id, subject_id, slug, title');
+  const subjectsList = subjectsRes.data || [];
+  const topicsList = topicsRes.data || [];
 
-  if (topicsError) {
-    console.error('Error obteniendo temas para el sitemap:', topicsError);
-  }
-
-  const sitemapEntries: MetadataRoute.Sitemap = [
-    {
-      url: BASE_URL,
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${BASE_URL}/asignaturas/matematicas`,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/asignaturas/fisica-quimica`,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/aviso-legal`,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${BASE_URL}/privacidad`,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+  const entries: MetadataRoute.Sitemap = [
+    { url: SITE_URL, changeFrequency: 'weekly', priority: 1 },
+    { url: `${SITE_URL}/asignaturas/matematicas`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/asignaturas/fisica-y-quimica`, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/aviso-legal`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/privacidad`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 
-  // 3. Añadir las páginas de cada curso.
-  const subjectsList = subjects || [];
-
+  // Páginas de cada curso (misma ruta que enlazan las tarjetas de la web)
   for (const subject of subjectsList) {
-    const subjectGroup = subject.id.startsWith('fq-')
-      ? 'fisica-quimica'
-      : 'matematicas';
-
-    // Mantener el mismo criterio que utiliza tu página de asignaturas.
     const coursePath = subject.slug || subject.id;
 
-    sitemapEntries.push({
-      url: `${BASE_URL}/asignaturas/${subjectGroup}/${encodeURIComponent(coursePath)}`,
+    entries.push({
+      url: `${SITE_URL}/asignaturas/${groupOf(subject.id)}/${encodeURIComponent(coursePath)}`,
       changeFrequency: 'weekly',
       priority: 0.8,
     });
   }
 
-  // 4. Añadir las páginas individuales de cada tema.
-  const topicsList = topics || [];
+  // Páginas de cada tema
+  const subjectsById = new Map(subjectsList.map((s) => [s.id, s]));
 
   for (const topic of topicsList) {
-    const subject = subjectsList.find(
-      (item) => item.id === topic.subject_id
-    );
-
-    // Evitar incluir temas cuyo curso no exista.
-    if (!subject) continue;
-
-    const subjectGroup = subject.id.startsWith('fq-')
-      ? 'fisica-quimica'
-      : 'matematicas';
+    const subject = subjectsById.get(topic.subject_id);
+    if (!subject) continue; // tema huérfano: sin curso, no se incluye
 
     const coursePath = subject.slug || subject.id;
     const topicPath = topic.slug || createSlug(topic.title || '') || String(topic.id);
 
-    sitemapEntries.push({
-      url: `${BASE_URL}/asignaturas/${subjectGroup}/${encodeURIComponent(coursePath)}/${encodeURIComponent(topicPath)}`,
+    entries.push({
+      url: `${SITE_URL}/asignaturas/${groupOf(subject.id)}/${encodeURIComponent(coursePath)}/${encodeURIComponent(topicPath)}`,
       changeFrequency: 'monthly',
       priority: 0.7,
     });
   }
 
-  return sitemapEntries;
+  return entries;
 }

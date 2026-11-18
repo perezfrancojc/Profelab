@@ -5,6 +5,7 @@ import { Mail, Phone, User, Send, Sparkles, CheckCircle2, AlertCircle } from 'lu
 
 export function ContactSection() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,6 +16,7 @@ export function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
+    setErrorMsg('');
 
     try {
       const res = await fetch('/api/contact', {
@@ -27,9 +29,14 @@ export function ContactSection() {
         setStatus('success');
         setFormData({ name: '', email: '', phone: '', message: '' });
       } else {
+        const json = await res.json().catch(() => ({}));
+        setErrorMsg(
+          json.error || 'Hubo un problema enviando el mensaje. Por favor, inténtalo de nuevo.'
+        );
         setStatus('error');
       }
     } catch {
+      setErrorMsg('Hubo un problema de conexión. Por favor, inténtalo de nuevo.');
       setStatus('error');
     }
   };
@@ -71,14 +78,19 @@ export function ContactSection() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Nombre */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
+                  <label
+                    htmlFor="contact-name"
+                    className="block text-xs font-bold text-slate-700 uppercase mb-2"
+                  >
                     ¿Quién eres? (Nombre)
                   </label>
                   <div className="relative">
                     <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
+                      id="contact-name"
                       type="text"
                       required
+                      maxLength={100}
                       placeholder="Ej. Sofía (Alumna 2º ESO)"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -89,14 +101,19 @@ export function ContactSection() {
 
                 {/* Teléfono */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
+                  <label
+                    htmlFor="contact-phone"
+                    className="block text-xs font-bold text-slate-700 uppercase mb-2"
+                  >
                     Teléfono de contacto
                   </label>
                   <div className="relative">
                     <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                     <input
+                      id="contact-phone"
                       type="tel"
                       required
+                      maxLength={30}
                       placeholder="600 000 000"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -108,14 +125,19 @@ export function ContactSection() {
 
               {/* Correo */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
+                <label
+                  htmlFor="contact-email"
+                  className="block text-xs font-bold text-slate-700 uppercase mb-2"
+                >
                   Correo electrónico
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
+                    id="contact-email"
                     type="email"
                     required
+                    maxLength={150}
                     placeholder="tuemail@ejemplo.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -126,12 +148,17 @@ export function ContactSection() {
 
               {/* Mensaje */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase mb-2">
+                <label
+                  htmlFor="contact-message"
+                  className="block text-xs font-bold text-slate-700 uppercase mb-2"
+                >
                   ¿En qué te puedo ayudar?
                 </label>
                 <textarea
+                  id="contact-message"
                   rows={4}
                   required
+                  maxLength={2000}
                   placeholder="Cuéntame qué curso estudias, qué asignatura necesitas reforzar o tus horarios disponibles..."
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -142,7 +169,7 @@ export function ContactSection() {
               {status === 'error' && (
                 <div className="flex items-center gap-2 text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">
                   <AlertCircle className="w-4 h-4 shrink-0" />
-                  Hubo un problema enviando el mensaje. Por favor, inténtalo de nuevo.
+                  {errorMsg}
                 </div>
               )}
 

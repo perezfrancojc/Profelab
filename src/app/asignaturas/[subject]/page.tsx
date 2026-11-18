@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
 import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
+export const revalidate = 3600;
 
 interface Props {
   params: Promise<{

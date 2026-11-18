@@ -7,7 +7,7 @@ export default function PrivacidadPage() {
       </p>
       <h2 className="text-xl font-semibold mt-6 mb-3">1. Datos recopilados</h2>
       <p className="mb-4">
-        Únicamente recopilamos la información que nos facilitas voluntariamente a través del formulario de contacto (nombre y correo electrónico) y datos anónimos de navegación para analíticas.
+        Únicamente recopilamos la información que nos facilitas voluntariamente a través del formulario de contacto (nombre, correo electrónico y teléfono) y datos anónimos de navegación para analíticas.
       </p>
       <h2 className="text-xl font-semibold mt-6 mb-3">2. Uso de la información</h2>
       <p className="mb-4">

@@ -21,6 +21,7 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { TopicSectionNav } from '@/components/TopicSectionNav';
 import { TopicHeader } from '@/components/TopicHeader';
+export const revalidate = 3600;
 
 interface Props {
   params: Promise<{

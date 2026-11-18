@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const TABLES = [
@@ -10,6 +11,11 @@ const TABLES = [
   'exercise_sections',
   'exercise_files',
 ];
+
+function refreshPublicPages() {
+  revalidatePath('/', 'layout');
+  revalidatePath('/sitemap.xml');
+}
 
 export async function POST(req: Request) {
   try {
@@ -26,6 +32,7 @@ export async function POST(req: Request) {
         .select()
         .single();
       if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      refreshPublicPages();
       return NextResponse.json({ data });
     }
 
@@ -34,6 +41,7 @@ export async function POST(req: Request) {
         .from(table)
         .upsert([payload], { onConflict });
       if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      refreshPublicPages();
       return NextResponse.json({ data: null });
     }
 
@@ -41,6 +49,7 @@ export async function POST(req: Request) {
       if (!id) return NextResponse.json({ error: 'Falta id' }, { status: 400 });
       const { error } = await supabaseAdmin.from(table).update(payload).eq('id', id);
       if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      refreshPublicPages();
       return NextResponse.json({ data: null });
     }
 
@@ -48,6 +57,7 @@ export async function POST(req: Request) {
       if (!id) return NextResponse.json({ error: 'Falta id' }, { status: 400 });
       const { error } = await supabaseAdmin.from(table).delete().eq('id', id);
       if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      refreshPublicPages();
       return NextResponse.json({ data: null });
     }
 

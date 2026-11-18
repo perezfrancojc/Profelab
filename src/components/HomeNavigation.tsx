@@ -12,31 +12,11 @@ const navigationItems = [
   { id: 'contacto', label: 'Contacto', short: 'Contacto' },
 ];
 
-const activeGlassClass = `
-  text-red-700
-  border border-red-300/90
-  ring-1 ring-red-200/70
-  bg-gradient-to-br from-white/90 via-rose-50/85 to-red-100/80
-  backdrop-blur-2xl
-  shadow-[0_4px_14px_rgba(190,24,93,0.16),0_1px_4px_rgba(15,23,42,0.08),inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(225,29,72,0.18)]
-  before:absolute before:inset-x-1 before:top-0 before:h-1/2
-  before:rounded-t-[inherit]
-  before:bg-gradient-to-b before:from-white/95 before:via-white/45 before:to-transparent
-  before:pointer-events-none
-  after:absolute after:inset-x-2 after:bottom-0 after:h-px
-  after:bg-gradient-to-r after:from-transparent after:via-red-400/70 after:to-transparent
-  after:pointer-events-none
-`;
+const activeGlassClass =
+  'text-red-700 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,245,246,0.72)_55%,rgba(254,226,226,0.48))] border border-red-200/70 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(220,38,38,0.08),0_2px_6px_rgba(127,29,29,0.06)]';
 
-const inactiveGlassClass = `
-  border border-transparent
-  text-slate-600
-  hover:text-red-700
-  hover:border-red-200/80
-  hover:bg-gradient-to-br hover:from-white/75 hover:via-rose-50/45 hover:to-red-100/40
-  hover:backdrop-blur-xl
-  hover:shadow-[0_3px_10px_rgba(190,24,93,0.09),inset_0_1px_0_rgba(255,255,255,0.9)]
-`;
+const inactiveGlassClass =
+  'text-slate-600 border border-transparent hover:text-red-700 hover:bg-white/45 hover:border-white/70 hover:backdrop-blur-lg';
 
 export function HomeNavigation() {
   const [expanded, setExpanded] = useState(false);
@@ -106,18 +86,17 @@ export function HomeNavigation() {
             key={item.id}
             href={`#${item.id}`}
             aria-current={isActive ? 'location' : undefined}
-            className={`relative isolate overflow-hidden shrink-0 rounded-xl font-bold whitespace-nowrap transition-all duration-500 ease-out ${
+            onClick={() => setActiveSection(item.id)}
+            className={`shrink-0 rounded-xl ${
               compact
-                ? 'px-2 py-2 text-[10px] sm:px-3 sm:text-xs'
-                : 'px-3 py-2 text-xs'
-            } ${
+                ? 'px-2.5 py-2 max-sm:px-2'
+                : 'px-3 py-2'
+            } text-[11px] sm:text-xs font-bold whitespace-nowrap border transition-all duration-300 ease-out ${
               isActive ? activeGlassClass : inactiveGlassClass
             }`}
           >
-            <span className="relative z-10">
-              <span className="hidden sm:inline">{item.label}</span>
-              <span className="sm:hidden">{item.short}</span>
-            </span>
+            <span className="hidden sm:inline">{item.label}</span>
+            <span className="sm:hidden">{item.short}</span>
           </a>
         );
       })}
@@ -142,7 +121,6 @@ export function HomeNavigation() {
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
               JE
             </div>
-
             <div className="flex flex-col">
               <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
                 JuancaEduca
@@ -169,9 +147,7 @@ export function HomeNavigation() {
                   2026/2027
                 </span>
               </div>
-
               <div className="w-px h-8 bg-slate-300/80 shrink-0" />
-
               <div className="hidden sm:flex flex-col gap-0.5 min-w-0">
                 <span className="text-xs font-semibold text-slate-700">
                   Contenidos actualizados
@@ -230,3 +206,4 @@ export function HomeNavigation() {
     </>
   );
 }
+

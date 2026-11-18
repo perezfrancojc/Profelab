@@ -12,6 +12,12 @@ interface TopicHeaderProps {
   hasContent: boolean;
 }
 
+const activeGlassClass =
+  'text-red-700 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,245,246,0.72)_55%,rgba(254,226,226,0.48))] border border-red-200/70 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(220,38,38,0.08),0_2px_6px_rgba(127,29,29,0.06)]';
+
+const inactiveGlassClass =
+  'text-slate-600 border border-transparent hover:text-red-700 hover:bg-white/45 hover:border-white/70 hover:backdrop-blur-lg';
+
 export function TopicHeader({
   title,
   backHref,
@@ -156,10 +162,10 @@ export function TopicHeader({
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`shrink-0 px-2 py-2 max-sm:px-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-300 ${
-                    isActive
-                      ? 'text-red-600 bg-red-50'
-                      : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
+                  aria-current={isActive ? 'location' : undefined}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`shrink-0 px-2 py-2 max-sm:px-1.5 rounded-xl text-[11px] sm:text-xs font-bold border transition-all duration-300 ease-out ${
+                    isActive ? activeGlassClass : inactiveGlassClass
                   }`}
                 >
                   <span className="hidden xl:inline">{item.label}</span>

@@ -79,14 +79,14 @@ export function HomeNavigation() {
             key={item.id}
             href={`#${item.id}`}
             aria-current={isActive ? 'location' : undefined}
-            className={`shrink-0 rounded-lg font-bold whitespace-nowrap transition-all duration-300 ${
+            className={`relative isolate shrink-0 rounded-xl font-bold whitespace-nowrap transition-all duration-500 ease-out ${
               compact
                 ? 'px-2 py-2 text-[10px] sm:px-3 sm:text-xs'
                 : 'px-3 py-2 text-xs'
             } ${
               isActive
-                ? 'text-red-600 bg-red-50 max-sm:!text-white max-sm:!bg-red-600 max-sm:shadow-sm'
-                : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
+                ? 'text-red-700 bg-white/35 backdrop-blur-xl border border-white/70 shadow-[0_2px_12px_rgba(15,23,42,0.07),inset_0_1px_1px_rgba(255,255,255,0.85)] before:absolute before:inset-0 before:-z-10 before:rounded-xl before:bg-gradient-to-br before:from-white/55 before:via-white/15 before:to-red-100/25 max-sm:after:absolute max-sm:after:inset-0 max-sm:after:-z-20 max-sm:after:rounded-xl max-sm:after:bg-red-500/5'
+                : 'border border-transparent text-slate-600 hover:text-red-600 hover:bg-white/30 hover:backdrop-blur-md'
             }`}
           >
             <span className="hidden sm:inline">{item.label}</span>

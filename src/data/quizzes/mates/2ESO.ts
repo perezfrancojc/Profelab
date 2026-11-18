@@ -1,19 +1,4 @@
-export interface Question {
-  id: string;
-  text: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
-
-export interface Quiz {
-  id: string;
-  topicId: string;
-  title: string;
-  description: string;
-  estimatedMinutes: number;
-  questions: Question[];
-}
+import type { Quiz } from '@/types';
 
 export const QUIZZES_2ESO: Quiz[] = [
   // 1. NÚMEROS ENTEROS Y DIVISIBILIDAD
@@ -289,7 +274,7 @@ export const QUIZZES_2ESO: Quiz[] = [
       { id: 'q15', text: 'En un triángulo rectángulo, los lados que forman el ángulo recto se llaman:', options: ['Hipotenusas', 'Catetos', 'Apotemas', 'Diagonales'], correctAnswer: 1, explanation: 'Definición de catetos.' },
       { id: 'q16', text: 'Área de un rectángulo de lados 6 cm y 4 cm:', options: ['24 cm²', '20 cm²', '10 cm²', '12 cm²'], correctAnswer: 0, explanation: 'Base · Altura = 6 · 4 = 24 cm².' },
       { id: 'q17', text: 'Área de un sector circular de 90° en un círculo de radio 2 cm:', options: ['π cm²', '2π cm²', '4π cm²', '0.5π cm²'], correctAnswer: 0, explanation: '(π · r² · 90) / 360 = (π · 4) / 4 = π cm².' },
-      { id: 'q18', text: 'Triángulo inscatable con lados 2 cm, 3 cm y 6 cm porque:', options: ['Suma de los dos menores debe ser mayor que el tercero', 'Es rectángulo', 'Tiene lados pares', 'No tiene apotema'], correctAnswer: 0, explanation: 'Desigualdad triangular: 2 + 3 = 5 < 6.' },
+      { id: 'q18', text: '¿Por qué no se puede construir un triángulo con lados 2 cm, 3 cm y 6 cm?', options: ['Suma de los dos menores debe ser mayor que el tercero', 'Es rectángulo', 'Tiene lados pares', 'No tiene apotema'], correctAnswer: 0, explanation: 'Desigualdad triangular: 2 + 3 = 5 < 6.' },
       { id: 'q19', text: 'Ángulo central de un hexágono regular:', options: ['60°', '90°', '45°', '120°'], correctAnswer: 0, explanation: '360° / 6 = 60°.' },
       { id: 'q20', text: 'Perímetro de un hexágono regular de lado 5 cm:', options: ['25 cm', '30 cm', '35 cm', '20 cm'], correctAnswer: 1, explanation: '6 · 5 = 30 cm.' }
     ]

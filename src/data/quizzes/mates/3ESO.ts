@@ -1,19 +1,4 @@
-export interface Question {
-  id: string;
-  text: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
-
-export interface Quiz {
-  id: string;
-  topicId: string;
-  title: string;
-  description: string;
-  estimatedMinutes: number;
-  questions: Question[];
-}
+import type { Quiz } from '@/types';
 
 export const QUIZZES_3ESO: Quiz[] = [
   // 1. NÚMEROS RACIONALES E IRRACIONALES
@@ -160,7 +145,7 @@ export const QUIZZES_3ESO: Quiz[] = [
       { id: 'q10', text: 'Calcula el 5º término de la PA: 1, 4, 7, 10...', options: ['12', '13', '14', '15'], correctAnswer: 1, explanation: 'a_5 = 10 + 3 = 13.' },
       { id: 'q11', text: 'En la sucesión de Fibonacci 1, 1, 2, 3, 5, 8... el siguiente término es:', options: ['11', '13', '10', '12'], correctAnswer: 1, explanation: '5 + 8 = 13.' },
       { id: 'q12', text: 'Fórmula del término general de una Progresión Geométrica:', options: ['a_n = a_1 · rⁿ⁻¹', 'a_n = a_1 + (n-1)r', 'a_n = a_1 · rⁿ', 'a_n = rⁿ'], correctAnswer: 0, explanation: 'Fórmula estándar de la PG.' },
-      { id: 'q13', text: 'Suma de una PG ilimitada con |r| < 1:', options: ['S = a_1 / (1 - r)', 'S = a_1 / (r - 1)', 'S = a_1 · r', 'S = ∞'], correctAnswer: 0, explanation: 'Fórmula de la suma infinita convergerte.' },
+      { id: 'q13', text: 'Suma de una PG ilimitada con |r| < 1:', options: ['S = a_1 / (1 - r)', 'S = a_1 / (r - 1)', 'S = a_1 · r', 'S = ∞'], correctAnswer: 0, explanation: 'Fórmula de la suma infinita convergente.' },
       { id: 'q14', text: 'En una PA con a_1 = 5 y d = 4, halla a_10:', options: ['41', '45', '36', '40'], correctAnswer: 0, explanation: 'a_10 = 5 + (9 · 4) = 5 + 36 = 41.' },
       { id: 'q15', text: 'En una PG con a_1 = 16 y r = 1/2, halla a_3:', options: ['8', '4', '2', '1'], correctAnswer: 1, explanation: 'a_3 = 16 · (1/2)² = 16 / 4 = 4.' },
       { id: 'q16', text: 'Una sucesión dada por recurrencia se caracteriza por:', options: ['Calcular cada término usando los anteriores', 'Tener infinitos términos iguales', 'Ser siempre creciente', 'No tener fórmula'], correctAnswer: 0, explanation: 'Definición de sucesión recurrente.' },

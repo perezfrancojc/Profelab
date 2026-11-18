@@ -137,9 +137,7 @@ export const EXERCISES: Exercise[] = [
   }
 ];
 
-export const QUIZZES: Quiz[] = [
-  ...(ALL_QUIZZES as any[]),
-];
+export const QUIZZES: Quiz[] = [...ALL_QUIZZES];
 
 export const MATERIALS: Material[] = [
   {

@@ -22,23 +22,22 @@ export interface Exercise {
 }
 
 export interface Question {
-  id: string;
-  prompt: string;
-  type: 'multiple-choice' | 'boolean' | 'numeric';
-  options?: string[];
-  correctAnswer: string | number | boolean;
-  explanation: string;
+  id: string | number;
+  text: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
 }
 
 export interface Quiz {
   id: string;
+  topicId: string;
+  subjectId?: string;
   title: string;
   description: string;
-  topicId: string;
   estimatedMinutes: number;
   questions: Question[];
 }
-
 export interface Material {
   id: string;
   title: string;

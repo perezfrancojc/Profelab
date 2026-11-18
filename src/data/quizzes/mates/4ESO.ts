@@ -1,19 +1,4 @@
-export interface Question {
-  id: string;
-  text: string;
-  options: string[];
-  correctAnswer: number;
-  explanation?: string;
-}
-
-export interface Quiz {
-  id: string;
-  topicId: string;
-  title: string;
-  description: string;
-  estimatedMinutes: number;
-  questions: Question[];
-}
+import type { Quiz } from '@/types';
 
 export const QUIZZES_4ESO: Quiz[] = [
   // 1. NÚMEROS REALES Y PORCENTAJES
@@ -149,7 +134,7 @@ export const QUIZZES_4ESO: Quiz[] = [
     estimatedMinutes: 20,
     questions: [
       { id: 'q1', text: 'Resuelve la inecuación de primer grado: 2x - 4 > 6', options: ['x > 5', 'x < 5', 'x > 1', 'x > 2'], correctAnswer: 0, explanation: '2x > 10 → x > 5.' },
-      { id: 'q2', text: 'La solución de la inecuación x² - 4 < 0 en forma de intervalo es:', options: ['(-2, 2)', '[-2, 2]', '(-∞, -2) ∪ (2, ∞)', '(0, 2)'], correctAnswer: 0, explanation: 'Parábola convexa negativa entre sus raíces x = -2 y x = 2.' },
+      { id: 'q2', text: 'La solución de la inecuación x² - 4 < 0 en forma de intervalo es:', options: ['(-2, 2)', '[-2, 2]', '(-∞, -2) ∪ (2, ∞)', '(0, 2)'], correctAnswer: 0, explanation: 'La parábola es negativa entre sus raíces x = -2 y x = 2.' },
       { id: 'q3', text: 'Si multiplicamos los dos miembros de una inecuación por un número negativo:', options: ['Cambia el sentido de la desigualdad', 'Se mantiene igual', 'Se convierte en igualdad', 'No se puede hacer'], correctAnswer: 0, explanation: 'Regla fundamental para operar con inecuaciones.' },
       { id: 'q4', text: 'Resuelve la inecuación con valor absoluto |x| < 3:', options: ['(-3, 3)', '[-3, 3]', 'x > 3', '(-∞, -3) ∪ (3, ∞)'], correctAnswer: 0, explanation: '|x| < 3 equivale a -3 < x < 3.' },
       { id: 'q5', text: 'Resuelve el sistema de inecuaciones: x > 1 ; x ≤ 4', options: ['(1, 4]', '[1, 4]', '(1, 4)', '[1, 4)'], correctAnswer: 0, explanation: 'Conjunto solución: números mayores que 1 y menores o iguales a 4.' },

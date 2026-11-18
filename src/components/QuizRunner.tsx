@@ -15,21 +15,19 @@ export function QuizRunner({ quiz }: QuizProps) {
   const [score, setScore] = useState(0);
 
   const questions = quiz.questions || [];
-  const currentQuestion = questions[currentQuestionIndex] as any;
-
   if (!questions.length) return null;
 
-  // Garantiza lectura correcta sea cual sea el nombre del campo en src/types/index.ts
-  const questionText = 
-    currentQuestion?.question || 
-    currentQuestion?.text || 
-    currentQuestion?.statement || 
-    currentQuestion?.prompt || 
-    '';
+  const isCompleted = currentQuestionIndex >= questions.length;
+  const current = (questions[currentQuestionIndex] ?? {}) as any;
 
-  const options: string[] = currentQuestion?.options || [];
-  const correctAnswer: number = currentQuestion?.correctAnswer ?? currentQuestion?.correctOption ?? 0;
-  const explanation: string | undefined = currentQuestion?.explanation;
+  // Acepta el formato nuevo (text/correctAnswer) y el antiguo guardado en Supabase (question)
+  const questionText: string =
+    current.text ?? current.question ?? current.statement ?? current.prompt ?? '';
+  const options: string[] = current.options ?? [];
+  const correctAnswer: number = Number(
+    current.correctAnswer ?? current.correctOptionIndex ?? current.correctOption ?? 0
+  );
+  const explanation: string | undefined = current.explanation;
 
   const handleSelectOption = (index: number) => {
     if (isSubmitted) return;
@@ -57,8 +55,6 @@ export function QuizRunner({ quiz }: QuizProps) {
     setScore(0);
   };
 
-  const isCompleted = currentQuestionIndex >= questions.length;
-
   return (
     <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
@@ -81,17 +77,19 @@ export function QuizRunner({ quiz }: QuizProps) {
 
           <div className="space-y-2.5">
             {options.map((option, idx) => {
-              let buttonStyle = "bg-slate-50 border-slate-200/80 text-slate-700 hover:bg-slate-100";
-              
+              let buttonStyle =
+                'bg-slate-50 border-slate-200/80 text-slate-700 hover:bg-slate-100';
+
               if (selectedOption === idx) {
-                buttonStyle = "bg-slate-900 text-white border-slate-900 font-semibold";
+                buttonStyle = 'bg-slate-900 text-white border-slate-900 font-semibold';
               }
 
               if (isSubmitted) {
                 if (idx === correctAnswer) {
-                  buttonStyle = "bg-emerald-50 border-emerald-500 text-emerald-900 font-bold";
+                  buttonStyle =
+                    'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
                 } else if (selectedOption === idx) {
-                  buttonStyle = "bg-red-50 border-red-400 text-red-900";
+                  buttonStyle = 'bg-red-50 border-red-400 text-red-900';
                 }
               }
 
@@ -135,7 +133,9 @@ export function QuizRunner({ quiz }: QuizProps) {
                 onClick={handleNext}
                 className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition"
               >
-                Siguiente pregunta
+                {currentQuestionIndex === questions.length - 1
+                  ? 'Ver resultado'
+                  : 'Siguiente pregunta'}
               </button>
             )}
           </div>
@@ -146,9 +146,12 @@ export function QuizRunner({ quiz }: QuizProps) {
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <div>
-            <h4 className="text-lg font-extrabold text-slate-900">¡Cuestionario completado!</h4>
+            <h4 className="text-lg font-extrabold text-slate-900">
+              ¡Cuestionario completado!
+            </h4>
             <p className="text-xs text-slate-600 mt-1">
-              Has acertado <strong className="text-slate-900">{score}</strong> de <strong className="text-slate-900">{questions.length}</strong> preguntas.
+              Has acertado <strong className="text-slate-900">{score}</strong> de{' '}
+              <strong className="text-slate-900">{questions.length}</strong> preguntas.
             </p>
           </div>
           <button

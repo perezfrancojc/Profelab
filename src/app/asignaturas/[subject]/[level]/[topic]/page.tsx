@@ -250,7 +250,10 @@ export default async function TopicPage({ params }: Props) {
     })),
   ];
 
-  const topicQuizzes = QUIZZES.filter((q) => {
+    const topicQuizzes = QUIZZES.filter((q) => {
+    // Si el test indica curso, debe coincidir con el del tema
+    if (q.subjectId && q.subjectId !== currentTopic.subjectId) return false;
+
     const qTopic = String(q.topicId || '').toLowerCase().trim();
     return (
       qTopic === currentTopicId.toLowerCase().trim() ||

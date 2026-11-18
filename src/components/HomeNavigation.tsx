@@ -112,11 +112,11 @@ export function HomeNavigation() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
-        <div className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-4 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding,gap] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${ expanded ? 'max-w-[1500px] max-sm:px-2 max-sm:gap-0' : 'max-w-6xl'}`}>
+        <div className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-4 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding,gap] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${ expanded ? 'max-w-[1500px] max-sm:px-2 max-sm:gap-1' : 'max-w-6xl'}`}>
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"
-            className="flex items-center gap-1 sm:gap-3 group shrink-0"
+            className="flex items-center gap-2 sm:gap-3 group shrink-0"
             >
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
                 JE
@@ -139,7 +139,7 @@ export function HomeNavigation() {
                 : 'max-w-[700px] opacity-100 scale-100'
             }`}
           >
-            <div className="flex items-center gap-2 sm:gap-4 max-sm:gap-1">
+            <div className="flex items-center gap-3 sm:gap-4 max-sm:gap-2">
               <div className="flex flex-col shrink-0">
                 <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
                   Curso académico
@@ -164,7 +164,7 @@ export function HomeNavigation() {
 
           <a
             href="#contacto"
-            className={`shrink-0 flex items-center gap-2 max-sm:gap-1 rounded-xl px-3 py-2.5 max-sm:px-1 max-sm:ml-[-12px] text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
+            className={`shrink-0 flex items-center gap-2 max-sm:gap-1 rounded-xl px-3 py-2.5 max-sm:px-1.5 max-sm:ml-[-8px] text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
               expanded
                 ? 'max-w-0 opacity-0 px-0 overflow-hidden pointer-events-none'
                 : 'max-w-[230px] opacity-100'
@@ -185,7 +185,7 @@ export function HomeNavigation() {
                 : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
             }`}
           >
-            <div className="flex items-center justify-start gap-0 whitespace-nowrap">
+            <div className="flex items-center justify-end gap-0.5 sm:gap-1 max-sm:gap-0 whitespace-nowrap">
               {renderLinks(true)}
             </div>
           </nav>

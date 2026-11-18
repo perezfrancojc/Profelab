@@ -6,9 +6,9 @@ export default function AvisoLegalPage() {
         En cumplimiento con el artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSI-CE), se exponen los datos identificativos del titular del sitio web:
       </p>
       <ul className="list-disc pl-6 mb-4 space-y-2">
-        <li><strong>Titular:</strong> [Tu nombre y apellidos]</li>
-        <li><strong>NIF:</strong> [Tu NIF]</li>
-        <li><strong>Domicilio:</strong> [Tu dirección o localidad]</li>
+        <li><strong>Titular:</strong> [Juan Carlos Pérez Franco]</li>
+        <li><strong>NIF:</strong> [32098947D]</li>
+        <li><strong>Domicilio:</strong> [C/ Diego Gómez Salido, 3, 1b, Jerez de la Frontera, Cádiz]</li>
         <li><strong>Marca / sitio web:</strong> JuancaEduca (profelabjuancaeduca.vercel.app)</li>
         <li><strong>Contacto:</strong> perezfrancojc@gmail.com</li>
         <li><strong>Actividad:</strong> Plataforma de contenidos educativos y ejercicios resueltos, y tutorías online.</li>

@@ -13,10 +13,10 @@ const navigationItems = [
 ];
 
 const activeGlassClass =
-  'relative text-red-700 bg-[linear-gradient(145deg,rgba(255,255,255,0.68),rgba(255,255,255,0.34)_45%,rgba(255,235,238,0.30))] border border-white/55 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_1px_rgba(255,255,255,0.85),inset_0_-1px_1px_rgba(255,255,255,0.18),0_3px_12px_rgba(71,85,105,0.055)]';
+  'text-[#a51f2b] bg-[linear-gradient(145deg,rgba(255,255,255,0.88),rgba(255,255,255,0.66)_48%,rgba(255,239,241,0.78))] border border-white/75 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_1px_rgba(255,255,255,0.98),inset_0_-1px_1px_rgba(255,255,255,0.45),0_3px_10px_rgba(100,30,40,0.07)]';
 
 const inactiveGlassClass =
-  'text-slate-600 border border-transparent hover:text-red-700 hover:bg-white/[0.28] hover:border-white/35 hover:backdrop-blur-xl hover:backdrop-saturate-150 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.65),0_2px_8px_rgba(71,85,105,0.035)]';
+  'text-slate-600 border border-transparent hover:text-[#a51f2b] hover:bg-white/35 hover:backdrop-blur-xl hover:backdrop-saturate-150';
 
 export function HomeNavigation() {
   const [expanded, setExpanded] = useState(false);
@@ -87,11 +87,11 @@ export function HomeNavigation() {
             href={`#${item.id}`}
             aria-current={isActive ? 'location' : undefined}
             onClick={() => setActiveSection(item.id)}
-            className={`shrink-0 rounded-xl ${
+            className={`shrink-0 rounded-full ${
               compact
                 ? 'px-2.5 py-2 max-sm:px-2'
                 : 'px-3 py-2'
-            } text-[11px] sm:text-xs font-bold whitespace-nowrap border backdrop-saturate-150 transition-all duration-500 ease-out ${
+            } text-[11px] sm:text-xs font-bold whitespace-nowrap border transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isActive ? activeGlassClass : inactiveGlassClass
             }`}
           >
@@ -206,5 +206,6 @@ export function HomeNavigation() {
     </>
   );
 }
+
 
 

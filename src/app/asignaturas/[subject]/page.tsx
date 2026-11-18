@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
-import { SiteHeader } from '@/components/SiteHeader';
 import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
 export const revalidate = 3600;
 
@@ -25,8 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     : 'Matemáticas';
 
   const title = isPhysics
-    ? 'Física y Química ESO y Bachillerato | Apuntes y ejercicios | ProfeLab'
-    : 'Matemáticas ESO y Bachillerato | Apuntes y ejercicios | ProfeLab';
+    ? 'Física y Química ESO y Bachillerato | Apuntes y ejercicios | JuancaEduca'
+    : 'Matemáticas ESO y Bachillerato | Apuntes y ejercicios | JuancaEduca';
 
   const description = isPhysics
     ? 'Aprende Física y Química de ESO y Bachillerato con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.'
@@ -45,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: canonical,
-      siteName: 'ProfeLab',
+      siteName: 'JuancaEduca',
       locale: 'es_ES',
       type: 'website',
     },

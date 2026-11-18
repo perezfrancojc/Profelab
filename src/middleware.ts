@@ -5,7 +5,7 @@ function unauthorized() {
   return new NextResponse('Acceso Denegado', {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="Panel de Administracion Profelab"',
+      'WWW-Authenticate': 'Basic realm="Panel de Administracion JuancaEduca"',
     },
   });
 }

@@ -26,7 +26,7 @@ const INITIAL_COURSES = [
 // Escrituras en la base de datos: van por el servidor (/admin/api/db)
 async function adminDb(body: {
   table: string;
-  action: 'insert' | 'update' | 'upsert' | 'delete';
+  action: 'insert' | 'update' | 'upsert' | 'delete' | 'cleanup';
   payload?: any;
   id?: string | null;
   onConflict?: string;
@@ -291,6 +291,7 @@ export default function AdminPage() {
     });
 
     if (error) {
+    if (finalUrl) await adminDb({ table: 'exercise_files', action: 'cleanup', payload: { fileUrl: finalUrl } });
       setStatus({ type: 'error', message: error.message });
     } else {
       setStatus({ type: 'success', message: editingItemId ? '¡PDF actualizado!' : '¡PDF resuelto añadido con éxito!' });
@@ -374,8 +375,10 @@ export default function AdminPage() {
       payload,
     });
 
-    if (error) setStatus({ type: 'error', message: error.message });
-    else {
+    if (error) {
+      if (matFile) await adminDb({ table: 'materials', action: 'cleanup', payload: { fileUrl: finalUrl } });
+      setStatus({ type: 'error', message: error.message });
+    } else {
       setStatus({ type: 'success', message: editingItemId ? '¡Documento actualizado!' : '¡Documento guardado!' });
       resetForm();
       if (actionMode !== 'create') loadResourceItems();

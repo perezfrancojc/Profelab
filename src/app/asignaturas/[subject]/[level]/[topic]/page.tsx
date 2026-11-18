@@ -122,7 +122,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     (prefix === 'fq' ? 'Física y Química' : 'Matemáticas');
 
   // Título SEO personalizado
-  const title = `${topicTitle} | ${subjectName} | ProfeLab`;
+  const title = `${topicTitle} | ${subjectName} | JuancaEduca`;
 
   // Descripción SEO
   const descriptionBase = dbTopic?.description?.trim()
@@ -147,7 +147,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: canonical,
-      siteName: 'ProfeLab',
+      siteName: 'JuancaEduca',
       locale: 'es_ES',
       type: 'article',
     },

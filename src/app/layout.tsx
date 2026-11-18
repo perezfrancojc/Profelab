@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Profelab - Plataforma Educativa",
+  title: "JuancaEduca - Plataforma Educativa",
   description: "Apuntes, vídeos y resoluciones en PDF",
   verification: {
     google: "FrzYWFdaXXRO0hNozcbDzEBulH2vFJUEj2elL1na5WQ"

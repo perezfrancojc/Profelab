@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { ArrowLeft, BookOpen, ChevronRight, Layers } from 'lucide-react';
 import { Metadata } from 'next';
-import { SiteHeader } from '@/components/SiteHeader';
 import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
 export const revalidate = 3600;
 
@@ -107,7 +106,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     `${subjectName} ${levelNames[mappedLevel] || level}`;
 
   // Título SEO
-  const title = `${courseName} | Apuntes y ejercicios resueltos | ProfeLab`;
+  const title = `${courseName} | Apuntes y ejercicios resueltos | JuancaEduca`;
 
   // Descripción SEO
   const descriptionBase =
@@ -133,7 +132,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: canonical,
-      siteName: 'ProfeLab',
+      siteName: 'JuancaEduca',
       locale: 'es_ES',
       type: 'website',
     },

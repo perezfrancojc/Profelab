@@ -4,6 +4,7 @@ import { YouTubeFacade } from '@/components/YouTubeFacade';
 import { Phone, ArrowRight, CheckCircle2, BookOpen, PlayCircle, Sparkles, HelpCircle } from 'lucide-react';
 import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
+import { GlassBadge, GlassGlow } from '@/components/GlassBadge';
 
 export default function HomePage() {
   return (
@@ -92,17 +93,18 @@ export default function HomePage() {
           <p className="text-sm text-slate-600 mt-2">Selecciona la materia que necesitas reforzar para ver los cursos académicos disponibles.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
           {/* Tarjeta Matemáticas */}
           <Link
             href="/asignaturas/matematicas"
-            className="bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
+            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
           >
+            <GlassGlow />
             <div>
-              <span className="inline-block text-[11px] font-extrabold px-3 py-1 rounded-md bg-slate-100 text-slate-700 uppercase tracking-wider border border-slate-200/50 mb-4">
-                Materia
-              </span>
+              <div className="mb-4">
+                <GlassBadge>Materia</GlassBadge>
+              </div>
               <h3 className="text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">
                 Matemáticas
               </h3>
@@ -119,12 +121,13 @@ export default function HomePage() {
           {/* Tarjeta Física y Química */}
           <Link
             href="/asignaturas/fisica-y-quimica"
-            className="bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
+            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
           >
+            <GlassGlow />
             <div>
-              <span className="inline-block text-[11px] font-extrabold px-3 py-1 rounded-md bg-slate-100 text-slate-700 uppercase tracking-wider border border-slate-200/50 mb-4">
-                Materia
-              </span>
+              <div className="mb-4">
+                <GlassBadge>Materia</GlassBadge>
+              </div>
               <h3 className="text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">
                 Física y Química
               </h3>

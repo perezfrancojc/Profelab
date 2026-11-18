@@ -112,7 +112,7 @@ export function HomeNavigation() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
-        <div className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-4 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding,gap] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${ expanded ? 'max-w-[1500px] max-sm:px-2 max-sm:gap-1' : 'max-w-6xl'}`}>
+        <div className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-4 max-sm:overflow-x-hidden max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding,gap] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${ expanded ? 'max-w-[1500px] max-sm:px-2 max-sm:gap-1' : 'max-w-6xl'}`}>
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"
@@ -180,15 +180,15 @@ export function HomeNavigation() {
           <nav
             aria-label="Navegación principal integrada"
             className={`min-w-0 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              expanded
-                ? 'flex-1 max-w-[1000px] max-sm:flex-none max-sm:w-max max-sm:max-w-none max-sm:min-w-max opacity-100 translate-y-0'
+                expanded
+                ? 'flex-1 max-w-[1000px] max-sm:flex-none max-sm:w-max max-sm:max-w-none max-sm:min-w-0 max-sm:ml-[-14px] opacity-100 translate-y-0'
                 : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
             }`}
-          >
-            <div className="flex items-center justify-end gap-0.5 sm:gap-1 max-sm:gap-0 whitespace-nowrap">
-              {renderLinks(true)}
+            >
+            <div className="flex items-center justify-start gap-0 whitespace-nowrap max-sm:w-max">
+                {renderLinks(true)}
             </div>
-          </nav>
+            </nav>
         </div>
       </header>
 

@@ -9,6 +9,7 @@ const navigationItems = [
   { id: 'asignaturas', label: 'Asignaturas', short: 'Materias' },
   { id: 'metodo', label: 'Metodología', short: 'Método' },
   { id: 'videos', label: 'Vídeos', short: 'Vídeos' },
+  { id: 'contacto', label: 'Contacto', short: 'Contacto' },
 ];
 
 export function HomeNavigation() {
@@ -85,7 +86,7 @@ export function HomeNavigation() {
                 : 'px-3 py-2 text-xs'
             } ${
               isActive
-                ? 'text-red-700 bg-white/35 backdrop-blur-xl border border-white/70 shadow-[0_2px_12px_rgba(15,23,42,0.07),inset_0_1px_1px_rgba(255,255,255,0.85)] before:absolute before:inset-0 before:-z-10 before:rounded-xl before:bg-gradient-to-br before:from-white/55 before:via-white/15 before:to-red-100/25 max-sm:after:absolute max-sm:after:inset-0 max-sm:after:-z-20 max-sm:after:rounded-xl max-sm:after:bg-red-500/5'
+                ? 'text-red-700 bg-white/35 backdrop-blur-xl border border-white/70 shadow-[0_2px_12px_rgba(15,23,42,0.07),inset_0_1px_1px_rgba(255,255,255,0.85)] before:absolute before:inset-0 before:-z-10 before:rounded-xl before:bg-gradient-to-br before:from-white/55 before:via-white/15 before:to-red-100/25'
                 : 'border border-transparent text-slate-600 hover:text-red-600 hover:bg-white/30 hover:backdrop-blur-md'
             }`}
           >
@@ -94,18 +95,6 @@ export function HomeNavigation() {
           </a>
         );
       })}
-
-      <a
-        href="#asignaturas"
-        className={`hidden sm:inline-flex shrink-0 rounded-lg bg-red-600 text-white font-bold uppercase tracking-wide hover:bg-red-700 transition-all shadow-sm whitespace-nowrap ${
-          compact
-            ? 'px-2.5 py-2 text-[9px] sm:px-4 sm:text-[11px]'
-            : 'px-5 py-2.5 text-xs'
-        }`}
-      >
-        <span className="hidden sm:inline">Explorar cursos</span>
-        <span className="sm:hidden">Cursos</span>
-      </a>
     </>
   );
 

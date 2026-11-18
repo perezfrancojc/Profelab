@@ -115,7 +115,6 @@ export default async function SubjectPage({ params }: Props) {
                 <div>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 font-bold flex items-center justify-center border border-red-100 shrink-0">
-                      <GraduationCap className="w-5 h-5" />
                     </div>
                     <GlassBadge>{levelLabel}</GlassBadge>
                   </div>

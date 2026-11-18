@@ -3,18 +3,24 @@ import type { ReactNode } from 'react';
 export function GlassBadge({ children }: { children: ReactNode }) {
   return (
     <span
-      className="relative inline-flex items-center overflow-hidden rounded-full px-3.5 py-1.5
-                 text-[11px] font-extrabold uppercase tracking-wider text-slate-800
-                 border border-white/90 ring-1 ring-slate-900/10
-                 bg-gradient-to-br from-white/90 via-rose-50/70 to-orange-100/70
-                 shadow-[inset_0_1.5px_0_rgba(255,255,255,1),inset_0_-1.5px_2px_rgba(220,38,38,0.12),0_1px_2px_rgba(15,23,42,0.1),0_6px_14px_-6px_rgba(220,38,38,0.35)]"
+      className="relative inline-flex items-center overflow-hidden rounded-full px-4 py-[7px]
+                 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-700
+                 bg-gradient-to-b from-white/95 via-slate-50/80 to-slate-200/60
+                 backdrop-blur-xl backdrop-saturate-150
+                 ring-1 ring-inset ring-slate-900/[0.07]
+                 shadow-[inset_0_1px_0_rgba(255,255,255,1),inset_0_-1px_0_rgba(15,23,42,0.05),0_1px_1px_rgba(15,23,42,0.04),0_8px_20px_-8px_rgba(15,23,42,0.18)]"
     >
-      {/* Luz refractada interna */}
-      <span aria-hidden className="absolute -left-3 -bottom-4 h-8 w-14 rounded-full bg-red-400/40 blur-md" />
-      <span aria-hidden className="absolute -right-2 -top-4 h-7 w-12 rounded-full bg-orange-300/50 blur-md" />
-      {/* Reflejo especular superior */}
-      <span aria-hidden className="absolute inset-x-2 top-px h-1/2 rounded-full bg-gradient-to-b from-white/95 to-white/0" />
-      <span className="relative">{children}</span>
+      {/* Reflejo especular suave en la mitad superior */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-1 top-0.5 h-[46%] rounded-full bg-gradient-to-b from-white to-white/0 opacity-90"
+      />
+      {/* Borde de luz fino en la parte inferior */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-transparent via-white to-transparent"
+      />
+      <span className="relative [text-shadow:0_1px_0_rgba(255,255,255,0.8)]">{children}</span>
     </span>
   );
 }

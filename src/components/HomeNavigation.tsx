@@ -13,10 +13,10 @@ const navigationItems = [
 ];
 
 const activeGlassClass =
-  'text-red-700 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(255,245,246,0.72)_55%,rgba(254,226,226,0.48))] border border-red-200/70 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(220,38,38,0.08),0_2px_6px_rgba(127,29,29,0.06)]';
+  'relative text-red-700 bg-[linear-gradient(145deg,rgba(255,255,255,0.68),rgba(255,255,255,0.34)_45%,rgba(255,235,238,0.30))] border border-white/55 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_1px_rgba(255,255,255,0.85),inset_0_-1px_1px_rgba(255,255,255,0.18),0_3px_12px_rgba(71,85,105,0.055)]';
 
 const inactiveGlassClass =
-  'text-slate-600 border border-transparent hover:text-red-700 hover:bg-white/45 hover:border-white/70 hover:backdrop-blur-lg';
+  'text-slate-600 border border-transparent hover:text-red-700 hover:bg-white/[0.28] hover:border-white/35 hover:backdrop-blur-xl hover:backdrop-saturate-150 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.65),0_2px_8px_rgba(71,85,105,0.035)]';
 
 export function HomeNavigation() {
   const [expanded, setExpanded] = useState(false);
@@ -91,7 +91,7 @@ export function HomeNavigation() {
               compact
                 ? 'px-2.5 py-2 max-sm:px-2'
                 : 'px-3 py-2'
-            } text-[11px] sm:text-xs font-bold whitespace-nowrap border transition-all duration-300 ease-out ${
+            } text-[11px] sm:text-xs font-bold whitespace-nowrap border backdrop-saturate-150 transition-all duration-500 ease-out ${
               isActive ? activeGlassClass : inactiveGlassClass
             }`}
           >

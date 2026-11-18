@@ -110,7 +110,7 @@ export default async function SubjectPage({ params }: Props) {
               <Link
                 key={subItem.id}
                 href={`/asignaturas/${subject}/${coursePath}`}
-                className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all group flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm group flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
               >
                 <div>
                   <div className="flex items-center gap-3 mb-4">

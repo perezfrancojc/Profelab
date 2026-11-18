@@ -98,7 +98,7 @@ export default function HomePage() {
           {/* Tarjeta Matemáticas */}
           <Link
             href="/asignaturas/matematicas"
-            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group hover:border-slate-300"
+            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm flex flex-col justify-between group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
           >
             
             <div>

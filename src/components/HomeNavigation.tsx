@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -16,7 +15,6 @@ export function HomeNavigation() {
   const [expanded, setExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState('asignaturas');
 
-  // Control de la transición mediante el scroll real.
   useEffect(() => {
     let animationFrame = 0;
 
@@ -43,7 +41,6 @@ export function HomeNavigation() {
     };
   }, []);
 
-  // Seguimiento de la sección activa.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -114,24 +111,26 @@ export function HomeNavigation() {
 
   return (
     <>
-      {/* Cabecera única */}
       <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
         <div
-          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden ${
+          className={`mx-auto h-20 px-4 sm:px-6 flex items-center gap-3 max-sm:gap-1.5 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             expanded ? 'max-w-[1500px]' : 'max-w-6xl'
           }`}
         >
-          {/* Identidad de marca: nunca desaparece */}
           <Link
             href="/"
             aria-label="JuancaEduca - Inicio"
-            className="flex items-center gap-2 sm:gap-3 group shrink-0"
+            className={`flex items-center gap-2 sm:gap-3 group shrink-0 ${
+              expanded ? 'max-sm:gap-0' : ''
+            }`}
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 bg-red-600 text-white rounded-xl font-extrabold text-lg flex items-center justify-center shadow-sm group-hover:bg-red-700 transition-colors">
               JE
             </div>
 
-            <div className="flex flex-col">
+            <div className={`flex flex-col transition-all duration-300 ${
+              expanded ? 'max-sm:max-w-0 max-sm:opacity-0 max-sm:overflow-hidden' : ''
+            }`}>
               <span className="font-black text-lg sm:text-xl text-slate-900 tracking-tight leading-none whitespace-nowrap">
                 JuancaEduca
               </span>
@@ -141,7 +140,6 @@ export function HomeNavigation() {
             </div>
           </Link>
 
-          {/* Información académica integrada en la cabecera */}
           <div
             className={`min-w-0 flex-1 flex items-center justify-center max-sm:flex-none transition-all duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               expanded
@@ -149,7 +147,7 @@ export function HomeNavigation() {
                 : 'max-w-[700px] opacity-100 scale-100'
             }`}
           >
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-3 sm:gap-4 max-sm:gap-2">
               <div className="flex flex-col shrink-0">
                 <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500">
                   Curso académico
@@ -172,10 +170,9 @@ export function HomeNavigation() {
             </div>
           </div>
 
-          {/* Contacto inicial: se sustituye por la navegación al bajar */}
           <a
             href="#contacto"
-            className={`shrink-0 flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
+            className={`shrink-0 flex items-center gap-2 max-sm:gap-1 rounded-xl px-3 py-2.5 max-sm:px-1.5 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
               expanded
                 ? 'max-w-0 opacity-0 px-0 overflow-hidden pointer-events-none'
                 : 'max-w-[230px] opacity-100'
@@ -185,26 +182,24 @@ export function HomeNavigation() {
             <span className="hidden lg:inline whitespace-nowrap">
               Resuelve tus dudas
             </span>
-            <span className="lg:hidden">Contacto</span>
+            <span className="lg:hidden whitespace-nowrap">Contacto</span>
           </a>
 
-          {/* Menú integrado: aparece en la misma fila al bajar */}
           <nav
             aria-label="Navegación principal integrada"
             className={`min-w-0 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               expanded
-                ? 'flex-1 max-w-[1000px] max-sm:flex-none max-sm:w-max max-sm:max-w-none opacity-100 translate-y-0'
+                ? 'flex-1 max-w-[1000px] max-sm:flex-none max-sm:w-max max-sm:max-w-none max-sm:min-w-max opacity-100 translate-y-0'
                 : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
             }`}
           >
-            <div className="flex items-center justify-end gap-0.5 sm:gap-1 whitespace-nowrap">
+            <div className="flex items-center justify-end gap-0.5 sm:gap-1 max-sm:gap-0 whitespace-nowrap">
               {renderLinks(true)}
             </div>
           </nav>
         </div>
       </header>
 
-      {/* Menú independiente que se integra en la cabecera */}
       <nav
         aria-label="Navegación por la página principal"
         className={`sticky top-20 z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${

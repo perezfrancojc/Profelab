@@ -102,15 +102,34 @@ export function TopicHeader({
   return (
     <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">
       <div
-        className={`mx-auto h-[72px] px-4 sm:px-6 flex items-center gap-3 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`mx-auto h-[72px] px-4 sm:px-6 flex items-center gap-3 max-sm:gap-1.5 max-sm:px-3 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:justify-start max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden transition-[max-width,padding] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           expanded ? 'max-w-[1500px]' : 'max-w-6xl'
         }`}
       >
         <Link
           href="/"
-          className="font-serif italic font-bold text-xl sm:text-2xl text-red-600 tracking-tight hover:text-red-700 transition-colors shrink-0"
+          aria-label="JuancaEduca - Inicio"
+          className="relative flex items-center shrink-0"
         >
-          JuancaEduca
+          <span
+            className={`font-serif italic font-bold text-xl sm:text-2xl text-red-600 tracking-tight hover:text-red-700 transition-all duration-300 whitespace-nowrap ${
+              expanded
+                ? 'max-sm:max-w-0 max-sm:opacity-0 max-sm:overflow-hidden'
+                : 'max-w-[200px] opacity-100'
+            }`}
+          >
+            JuancaEduca
+          </span>
+
+          <span
+            className={`hidden max-sm:flex w-9 h-9 items-center justify-center rounded-xl bg-red-600 text-white font-extrabold text-lg shadow-sm transition-all duration-300 ${
+              expanded
+                ? 'opacity-100 scale-100'
+                : 'absolute opacity-0 scale-75 pointer-events-none'
+            }`}
+          >
+            JE
+          </span>
         </Link>
 
         <span
@@ -125,11 +144,11 @@ export function TopicHeader({
           aria-label="Navegación rápida del tema"
           className={`min-w-0 flex-1 overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             expanded
-              ? 'max-w-[900px] max-sm:flex-none max-sm:w-max max-sm:max-w-none opacity-100 translate-y-0'
+              ? 'max-w-[900px] max-sm:flex-none max-sm:w-max max-sm:max-w-none max-sm:min-w-max opacity-100 translate-y-0'
               : 'max-w-0 opacity-0 translate-y-2 pointer-events-none'
           }`}
         >
-          <div className="flex items-center justify-center gap-1.5 whitespace-nowrap">
+          <div className="flex items-center justify-center gap-1.5 max-sm:gap-0 whitespace-nowrap">
             {items.map((item) => {
               const isActive = activeSection === item.id;
 
@@ -137,7 +156,7 @@ export function TopicHeader({
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`shrink-0 px-2 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-300 ${
+                  className={`shrink-0 px-2 py-2 max-sm:px-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-300 ${
                     isActive
                       ? 'text-red-600 bg-red-50'
                       : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
@@ -153,9 +172,9 @@ export function TopicHeader({
 
         <Link
           href={backHref}
-          className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0 ml-auto"
+          className="flex items-center gap-1.5 max-sm:gap-0.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0 ml-auto max-sm:ml-0"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 shrink-0" />
           <span className="hidden sm:inline">{backLabel}</span>
           <span className="sm:hidden">Volver</span>
         </Link>

@@ -172,7 +172,7 @@ export function HomeNavigation() {
 
           <a
             href="#contacto"
-            className={`shrink-0 flex items-center gap-2 max-sm:gap-1 rounded-xl px-3 py-2.5 max-sm:px-1.5 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
+            className={`shrink-0 flex items-center gap-2 max-sm:gap-1 rounded-xl px-3 py-2.5 max-sm:px-1.5 max-sm:ml-[-8px] text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 transition-all duration-500 ${
               expanded
                 ? 'max-w-0 opacity-0 px-0 overflow-hidden pointer-events-none'
                 : 'max-w-[230px] opacity-100'

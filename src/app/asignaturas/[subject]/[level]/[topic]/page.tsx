@@ -31,6 +31,7 @@ interface Props {
 }
 
 const LEVEL_MAP: Record<string, string> = {
+  
   '1-eso': '1eso',
   '2-eso': '2eso',
   '3-eso': '3eso',
@@ -41,6 +42,19 @@ const LEVEL_MAP: Record<string, string> = {
   '2-bach': '2bach',
   '1-bach-ccss': '1bachccss',
   '2-bach-ccss': '2bachccss',
+};
+
+const LEVEL_DISPLAY_MAP: Record<string, string> = {
+  '1-eso': '1.º ESO',
+  '2-eso': '2.º ESO',
+  '3-eso': '3.º ESO',
+  '4-eso': '4.º ESO',
+  '1-bachillerato': '1.º Bachillerato',
+  '2-bachillerato': '2.º Bachillerato',
+  '1-bach': '1.º Bachillerato',
+  '2-bach': '2.º Bachillerato',
+  '1-bach-ccss': '1.º Bachillerato CCSS',
+  '2-bach-ccss': '2.º Bachillerato CCSS',
 };
 
 function createSlug(text: string) {
@@ -191,6 +205,7 @@ export default async function TopicPage({ params }: Props) {
 
   const currentTopicId = currentTopic.id;
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
+  const levelTitle = LEVEL_DISPLAY_MAP[level.toLowerCase().trim()] || level.replace(/-/g, ' ').toUpperCase();
 
   const backHref = `/asignaturas/${subject}/${level}`;
 
@@ -263,14 +278,14 @@ export default async function TopicPage({ params }: Props) {
      <TopicHeader
         title={currentTopic.title}
         backHref={backHref}
-        backLabel={`${subjectTitle} ${level.replace('-', ' ').toUpperCase()}`}
+        backLabel={`${subjectTitle} ${levelTitle}`}
         hasContent={Boolean(currentTopic.content)}
       />
 
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+      <main className="max-w-4xl mx-auto px-6 py-12 space-y-12 max-sm:px-4 max-sm:py-6 max-sm:space-y-6">
         
-        <div className="border-b border-slate-200/80 pb-8">
-          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">
+        <div className="border-b border-slate-200/80 pb-8 max-sm:pb-4">
+          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 max-sm:mb-1">
             Unidad Didáctica
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">

@@ -14,7 +14,6 @@ export function middleware(req: NextRequest) {
   const ADMIN_USER = process.env.ADMIN_USER;
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-  // Sin variables configuradas, se bloquea todo (nunca hay credenciales por defecto)
   if (!ADMIN_USER || !ADMIN_PASSWORD) return unauthorized();
 
   const authHeader = req.headers.get('authorization');
@@ -22,7 +21,7 @@ export function middleware(req: NextRequest) {
 
   try {
     const decoded = atob(authHeader.split(' ')[1]);
-    const sep = decoded.indexOf(':'); // permite ':' dentro de la contraseña
+    const sep = decoded.indexOf(':');
     if (sep === -1) return unauthorized();
 
     const user = decoded.slice(0, sep);

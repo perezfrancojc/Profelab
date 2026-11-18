@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import { 
-  PlusCircle, Edit, Trash2, CheckCircle, AlertCircle, 
+import {
+  PlusCircle, Edit, Trash2, CheckCircle, AlertCircle,
   Video, BookOpen, FileText, Layers, HelpCircle, Loader2, Upload, FolderPlus
 } from 'lucide-react';
 
@@ -23,32 +23,70 @@ const INITIAL_COURSES = [
   { id: 'fq-2bach', label: 'Física y Química 2º Bach' },
 ];
 
+// Escrituras en la base de datos: van por el servidor (/admin/api/db)
+async function adminDb(body: {
+  table: string;
+  action: 'insert' | 'update' | 'upsert' | 'delete';
+  payload?: any;
+  id?: string | null;
+  onConflict?: string;
+}) {
+  const res = await fetch('/admin/api/db', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  return {
+    data: json.data ?? null,
+    error: res.ok ? null : { message: json.error || 'Error en el servidor' },
+  };
+}
+
+// Subida de archivos: URL firmada generada en el servidor
+async function adminUpload(bucket: 'exercises' | 'materials', file: File) {
+  const ext = file.name.split('.').pop() || 'pdf';
+  const res = await fetch('/admin/api/upload-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bucket, ext }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) return { path: null as string | null, error: { message: json.error || 'Error' } };
+
+  const { error } = await supabase.storage
+    .from(bucket)
+    .uploadToSignedUrl(json.path, json.token, file);
+
+  return { path: error ? null : (json.path as string), error };
+}
+
 export default function AdminPage() {
   const [actionMode, setActionMode] = useState<'create' | 'edit' | 'delete'>('create');
   const [activeTab, setActiveTab] = useState<'topic' | 'video' | 'exercise' | 'material' | 'quiz'>('topic');
-  
+
   const [status, setStatus] = useState({ type: 'idle', message: '' });
   const [loading, setLoading] = useState(false);
 
-  // Lista dinámica de asignaturas cargadas desde Supabase
   const [coursesList, setCoursesList] = useState<{ id: string; label: string }[]>(INITIAL_COURSES);
   const [selectedCourse, setSelectedCourse] = useState('mat-1eso');
   const [selectedTopicId, setSelectedTopicId] = useState('');
-  
+
   const [allTopicsList, setAllTopicsList] = useState<{ id: string; title: string; subjectId: string }[]>([]);
   const [fetchedItems, setFetchedItems] = useState<any[]>([]);
 
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
 
-  // Campos de Formularios Generales
+  // Tema
   const [topicTitle, setTopicTitle] = useState('');
   const [topicSlug, setTopicSlug] = useState('');
   const [topicDescription, setTopicDescription] = useState('');
 
+  // Vídeo
   const [videoTitle, setVideoTitle] = useState('');
   const [youtubeId, setYoutubeId] = useState('');
 
-  // --- ESTRUCTURA DE EJERCICIOS (APARTADOS + PDFS RESUELTOS) ---
+  // Ejercicios (apartados + PDFs)
   const [exerciseSections, setExerciseSections] = useState<any[]>([]);
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [selectedSectionId, setSelectedSectionId] = useState('');
@@ -72,7 +110,6 @@ export default function AdminPage() {
   const [correctOpt, setCorrectOpt] = useState(0);
   const [explanation, setExplanation] = useState('');
 
-  // Cargar asignaturas dinámicamente desde Supabase
   const loadCourses = useCallback(async () => {
     const { data: dbSubjects } = await supabase
       .from('subjects')
@@ -80,11 +117,9 @@ export default function AdminPage() {
       .order('id', { ascending: true });
 
     if (dbSubjects && dbSubjects.length > 0) {
-      const formatted = dbSubjects.map((s) => ({
-        id: s.id,
-        label: s.name || s.id,
-      }));
-      setCoursesList(formatted);
+      setCoursesList(
+        dbSubjects.map((s) => ({ id: s.id, label: s.name || s.id }))
+      );
     }
   }, []);
 
@@ -102,20 +137,23 @@ export default function AdminPage() {
       return;
     }
 
-    const formattedTopics = (dbTopics || []).map((t) => ({
-      id: t.id,
-      title: t.title,
-      subjectId: t.subject_id,
-    }));
-
-    setAllTopicsList(formattedTopics);
+    setAllTopicsList(
+      (dbTopics || []).map((t) => ({
+        id: t.id,
+        title: t.title,
+        subjectId: t.subject_id,
+      }))
+    );
   }, []);
 
   useEffect(() => {
     loadTopics();
   }, [loadTopics]);
 
-  const filteredTopics = allTopicsList.filter((t) => t.subjectId === selectedCourse);
+  const filteredTopics = useMemo(
+    () => allTopicsList.filter((t) => t.subjectId === selectedCourse),
+    [allTopicsList, selectedCourse]
+  );
 
   useEffect(() => {
     if (filteredTopics.length > 0) {
@@ -125,9 +163,8 @@ export default function AdminPage() {
     } else {
       setSelectedTopicId('');
     }
-  }, [selectedCourse, filteredTopics, selectedTopicId]);
+  }, [filteredTopics, selectedTopicId]);
 
-  // Cargar apartados del tema seleccionado para Ejercicios
   const loadExerciseSections = useCallback(async () => {
     if (!selectedTopicId) {
       setExerciseSections([]);
@@ -187,21 +224,26 @@ export default function AdminPage() {
   const ensureSubjectExists = async (courseId: string) => {
     const courseObj = coursesList.find((c) => c.id === courseId);
     const name = courseObj ? courseObj.label : courseId;
-    await supabase.from('subjects').upsert([{ id: courseId, name }], { onConflict: 'id' });
+    await adminDb({
+      table: 'subjects',
+      action: 'upsert',
+      payload: { id: courseId, name },
+      onConflict: 'id',
+    });
   };
 
-  // --- CREACIÓN DE APARTADO DE EJERCICIOS ---
+  // --- Crear apartado de ejercicios ---
   const handleCreateExerciseSection = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTopicId) return setStatus({ type: 'error', message: 'Selecciona un tema primero.' });
     if (!newSectionTitle.trim()) return;
 
     setStatus({ type: 'loading', message: 'Creando apartado...' });
-    const { data, error } = await supabase
-      .from('exercise_sections')
-      .insert([{ topic_id: selectedTopicId, title: newSectionTitle }])
-      .select()
-      .single();
+    const { data, error } = await adminDb({
+      table: 'exercise_sections',
+      action: 'insert',
+      payload: { topic_id: selectedTopicId, title: newSectionTitle },
+    });
 
     if (error) {
       setStatus({ type: 'error', message: error.message });
@@ -213,7 +255,7 @@ export default function AdminPage() {
     }
   };
 
-  // --- SUBIDA DE PDF RESUELTO A UN APARTADO DE EJERCICIOS ---
+  // --- Subir PDF de ejercicios ---
   const handleSaveExercisePdf = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTopicId) return setStatus({ type: 'error', message: 'Selecciona un tema.' });
@@ -224,22 +266,11 @@ export default function AdminPage() {
 
     let finalUrl = '';
     if (exPdfFile) {
-      const fileExt = exPdfFile.name.split('.').pop() || 'pdf';
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-      const filePath = `resueltos/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('exercises')
-        .upload(filePath, exPdfFile);
-
-      if (uploadError) {
-        return setStatus({ type: 'error', message: `Error al subir: ${uploadError.message}` });
+      const { path, error: uploadError } = await adminUpload('exercises', exPdfFile);
+      if (uploadError || !path) {
+        return setStatus({ type: 'error', message: `Error al subir: ${uploadError?.message}` });
       }
-
-      const { data: publicUrlData } = supabase.storage
-        .from('exercises')
-        .getPublicUrl(filePath);
-
+      const { data: publicUrlData } = supabase.storage.from('exercises').getPublicUrl(path);
       finalUrl = publicUrlData.publicUrl;
     }
 
@@ -247,14 +278,17 @@ export default function AdminPage() {
       section_id: selectedSectionId,
       topic_id: selectedTopicId,
       title: exPdfTitle,
-      is_premium: exPdfIsPremium
+      is_premium: exPdfIsPremium,
     };
 
     if (finalUrl) payload.file_url = finalUrl;
 
-    const { error } = editingItemId
-      ? await supabase.from('exercise_files').update(payload).eq('id', editingItemId)
-      : await supabase.from('exercise_files').insert([payload]);
+    const { error } = await adminDb({
+      table: 'exercise_files',
+      action: editingItemId ? 'update' : 'insert',
+      id: editingItemId,
+      payload,
+    });
 
     if (error) {
       setStatus({ type: 'error', message: error.message });
@@ -274,9 +308,12 @@ export default function AdminPage() {
     const id = editingItemId || `${selectedCourse}-${topicSlug}`;
     const payload = { id, subject_id: selectedCourse, title: topicTitle, slug: topicSlug, description: topicDescription };
 
-    const { error } = editingItemId
-      ? await supabase.from('topics').update(payload).eq('id', editingItemId)
-      : await supabase.from('topics').insert([payload]);
+    const { error } = await adminDb({
+      table: 'topics',
+      action: editingItemId ? 'update' : 'insert',
+      id: editingItemId,
+      payload,
+    });
 
     if (error) setStatus({ type: 'error', message: error.message });
     else {
@@ -294,9 +331,12 @@ export default function AdminPage() {
 
     const payload = { topic_id: selectedTopicId, title: videoTitle, youtube_id: youtubeId };
 
-    const { error } = editingItemId
-      ? await supabase.from('videos').update(payload).eq('id', editingItemId)
-      : await supabase.from('videos').insert([payload]);
+    const { error } = await adminDb({
+      table: 'videos',
+      action: editingItemId ? 'update' : 'insert',
+      id: editingItemId,
+      payload,
+    });
 
     if (error) setStatus({ type: 'error', message: error.message });
     else {
@@ -309,34 +349,30 @@ export default function AdminPage() {
   const handleSaveMaterial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTopicId) return setStatus({ type: 'error', message: 'Selecciona un tema primero.' });
-    
+
     let finalUrl = matUrl;
     let fileType = 'PDF';
 
     if (matFile) {
       setStatus({ type: 'loading', message: 'Subiendo archivo...' });
-      const fileExt = matFile.name.split('.').pop() || 'pdf';
-      fileType = fileExt.toUpperCase();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-      const filePath = `documents/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('materials')
-        .upload(filePath, matFile);
-
-      if (uploadError) return setStatus({ type: 'error', message: `Error: ${uploadError.message}` });
-
-      const { data: publicUrlData } = supabase.storage.from('materials').getPublicUrl(filePath);
-      finalUrl = publicUrlData.publicUrl;
+      fileType = (matFile.name.split('.').pop() || 'pdf').toUpperCase();
+      const { path, error: uploadError } = await adminUpload('materials', matFile);
+      if (uploadError || !path) {
+        return setStatus({ type: 'error', message: `Error: ${uploadError?.message}` });
+      }
+      finalUrl = supabase.storage.from('materials').getPublicUrl(path).data.publicUrl;
     }
 
     if (!finalUrl) return setStatus({ type: 'error', message: 'Selecciona un archivo o pega una URL.' });
 
     const payload = { topic_id: selectedTopicId, title: matTitle, file_url: finalUrl, is_premium: isPremium, type: fileType };
 
-    const { error } = editingItemId
-      ? await supabase.from('materials').update(payload).eq('id', editingItemId)
-      : await supabase.from('materials').insert([payload]);
+    const { error } = await adminDb({
+      table: 'materials',
+      action: editingItemId ? 'update' : 'insert',
+      id: editingItemId,
+      payload,
+    });
 
     if (error) setStatus({ type: 'error', message: error.message });
     else {
@@ -353,9 +389,12 @@ export default function AdminPage() {
     const questionsArray = [{ id: 'q1', question: qStatement, options: [opt0, opt1, opt2, opt3], correctAnswer: correctOpt, explanation }];
     const payload = { topic_id: selectedTopicId, title: quizTitle, questions: questionsArray };
 
-    const { error } = editingItemId
-      ? await supabase.from('quizzes').update(payload).eq('id', editingItemId)
-      : await supabase.from('quizzes').insert([payload]);
+    const { error } = await adminDb({
+      table: 'quizzes',
+      action: editingItemId ? 'update' : 'insert',
+      id: editingItemId,
+      payload,
+    });
 
     if (error) setStatus({ type: 'error', message: error.message });
     else {
@@ -377,7 +416,7 @@ export default function AdminPage() {
       quiz: 'quizzes',
     };
 
-    const { error } = await supabase.from(tableMap[activeTab]).delete().eq('id', id);
+    const { error } = await adminDb({ table: tableMap[activeTab], action: 'delete', id });
 
     if (error) {
       setStatus({ type: 'error', message: error.message });
@@ -391,7 +430,7 @@ export default function AdminPage() {
 
   const handleDeleteSection = async (sectionId: string) => {
     if (!confirm('¿Seguro que quieres eliminar este apartado y todos sus PDFs asociados?')) return;
-    const { error } = await supabase.from('exercise_sections').delete().eq('id', sectionId);
+    const { error } = await adminDb({ table: 'exercise_sections', action: 'delete', id: sectionId });
     if (error) {
       setStatus({ type: 'error', message: error.message });
     } else {
@@ -445,14 +484,14 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#FAF9F5] p-4 sm:p-10 font-sans text-slate-900">
       <div className="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-        
+
         {/* ENCABEZADO */}
         <div className="border-b border-slate-100 pb-4">
           <span className="text-[11px] font-extrabold uppercase tracking-widest text-red-600 block mb-1">Panel de Control</span>
           <h1 className="text-2xl font-black">Gestor de Contenidos Académicos</h1>
         </div>
 
-        {/* PASO 1: SELECCIONAR ACCIÓN */}
+        {/* PASO 1: ACCIÓN */}
         <div className="space-y-2">
           <label className="block text-xs font-black uppercase tracking-wider text-slate-400">PASO 1: Selecciona la Acción</label>
           <div className="grid grid-cols-3 gap-2 bg-slate-100 p-1.5 rounded-2xl">
@@ -480,7 +519,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* PASO 2: SELECCIONAR TIPO DE ELEMENTO */}
+        {/* PASO 2: TIPO */}
         <div className="space-y-2">
           <label className="block text-xs font-black uppercase tracking-wider text-slate-400">PASO 2: Selecciona el Tipo de Contenido</label>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
@@ -534,7 +573,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* SECCIÓN LISTAR PARA MODIFICAR O ELIMINAR */}
+        {/* LISTADO PARA MODIFICAR / ELIMINAR */}
         {(actionMode === 'edit' || actionMode === 'delete') && (
           <div className="border border-slate-200 p-4 rounded-2xl space-y-3 bg-slate-50">
             <div className="flex justify-between items-center">
@@ -573,7 +612,7 @@ export default function AdminPage() {
                         onClick={() => handleDeleteItem(item.id)}
                         className="text-xs px-3 py-1.5 bg-rose-100 text-rose-700 hover:bg-rose-600 hover:text-white rounded-lg font-extrabold transition flex items-center gap-1"
                       >
-                        <Trash2 className="w-3.5 h-3.5" /> Eliminar PDF
+                        <Trash2 className="w-3.5 h-3.5" /> Eliminar
                       </button>
                     )}
                   </div>
@@ -597,7 +636,7 @@ export default function AdminPage() {
               )}
             </div>
 
-            {/* FORMULARIO: TEMA */}
+            {/* TEMA */}
             {activeTab === 'topic' && (
               <form onSubmit={handleSaveTopic} className="space-y-3">
                 <div>
@@ -618,7 +657,7 @@ export default function AdminPage() {
               </form>
             )}
 
-            {/* FORMULARIO: VÍDEO */}
+            {/* VÍDEO */}
             {activeTab === 'video' && (
               <form onSubmit={handleSaveVideo} className="space-y-3">
                 <div>
@@ -635,11 +674,10 @@ export default function AdminPage() {
               </form>
             )}
 
-            {/* FORMULARIO: EJERCICIOS RESUELTOS EN PDF CON APARTADOS */}
+            {/* EJERCICIOS PDF */}
             {activeTab === 'exercise' && (
               <div className="space-y-6">
-                
-                {/* 1. CREAR APARTADO EN ESTE TEMA */}
+
                 <div className="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 space-y-3">
                   <label className="block text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
                     <FolderPlus className="w-4 h-4 text-amber-600" />
@@ -660,7 +698,6 @@ export default function AdminPage() {
                   </form>
                 </div>
 
-                {/* 2. SUBIR PDF DE EJERCICIOS A UN APARTADO */}
                 <form onSubmit={handleSaveExercisePdf} className="space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <label className="block text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                     <Upload className="w-4 h-4 text-red-600" />
@@ -729,7 +766,6 @@ export default function AdminPage() {
                   </button>
                 </form>
 
-                {/* VISUALIZACIÓN PREVIA DE APARTADOS Y PDFS EN ESTE TEMA */}
                 <div className="space-y-3 border-t border-slate-200 pt-4">
                   <h4 className="text-xs font-black uppercase text-slate-500">Estructura actual de este Tema:</h4>
                   {exerciseSections.length === 0 ? (
@@ -767,7 +803,7 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* FORMULARIO: MATERIAL PDF */}
+            {/* MATERIAL PDF */}
             {activeTab === 'material' && (
               <form onSubmit={handleSaveMaterial} className="space-y-4">
                 <div>
@@ -795,7 +831,7 @@ export default function AdminPage() {
               </form>
             )}
 
-            {/* FORMULARIO: TEST */}
+            {/* TEST */}
             {activeTab === 'quiz' && (
               <form onSubmit={handleSaveQuiz} className="space-y-3">
                 <div>
@@ -830,7 +866,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* NOTIFICACIONES DE ESTADO */}
+        {/* ESTADO */}
         {status.message && (
           <div className={`p-4 rounded-xl text-xs font-bold flex items-center gap-2 ${status.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : status.type === 'error' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-slate-100'}`}>
             {status.type === 'success' ? <CheckCircle className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-rose-600" />}

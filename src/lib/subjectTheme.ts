@@ -1,25 +1,27 @@
 export type SubjectKey = 'mat' | 'fq';
 
+// Matemáticas: naranja quemado  #D2560F
+// Física y Química: azul        #0A5FCC
 export const THEME = {
   mat: {
-    accent: 'text-[#A32035]',
-    accentHover: 'group-hover:text-[#A32035]',
-    iconBox: 'border-transparent bg-[#A32035]/[0.07] text-[#A32035]',
-    iconBoxHover: 'group-hover:bg-[#A32035] group-hover:text-white',
+    accent: 'text-[#D2560F]',
+    accentHover: 'group-hover:text-[#D2560F]',
+    iconBox: 'border-transparent bg-[#D2560F]/[0.09] text-[#D2560F]',
+    iconBoxHover: 'group-hover:bg-[#D2560F] group-hover:text-white',
     topicHoverBorder: 'hover:border-slate-300',
-    badgeHoverText: 'group-hover:text-[#A32035]',
-    badgeHoverBg: 'group-hover:bg-[#A32035]/[0.06]',
-    dot: 'group-hover:bg-[#A32035]',
+    badgeHoverText: 'group-hover:text-[#D2560F]',
+    badgeHoverBg: 'group-hover:bg-[#D2560F]/[0.07]',
+    dot: 'group-hover:bg-[#D2560F]',
   },
   fq: {
-    accent: 'text-[#2B5C8A]',
-    accentHover: 'group-hover:text-[#2B5C8A]',
-    iconBox: 'border-transparent bg-[#2B5C8A]/[0.07] text-[#2B5C8A]',
-    iconBoxHover: 'group-hover:bg-[#2B5C8A] group-hover:text-white',
+    accent: 'text-[#0A5FCC]',
+    accentHover: 'group-hover:text-[#0A5FCC]',
+    iconBox: 'border-transparent bg-[#0A5FCC]/[0.09] text-[#0A5FCC]',
+    iconBoxHover: 'group-hover:bg-[#0A5FCC] group-hover:text-white',
     topicHoverBorder: 'hover:border-slate-300',
-    badgeHoverText: 'group-hover:text-[#2B5C8A]',
-    badgeHoverBg: 'group-hover:bg-[#2B5C8A]/[0.06]',
-    dot: 'group-hover:bg-[#2B5C8A]',
+    badgeHoverText: 'group-hover:text-[#0A5FCC]',
+    badgeHoverBg: 'group-hover:bg-[#0A5FCC]/[0.07]',
+    dot: 'group-hover:bg-[#0A5FCC]',
   },
 } as const;
 

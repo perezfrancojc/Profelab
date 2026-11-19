@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/config';
-import { ChevronRight, GraduationCap } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHeader';
 import { GlassBadge } from '@/components/GlassBadge';
 import { themeFor } from '@/lib/subjectTheme';
@@ -103,12 +103,7 @@ export default async function SubjectPage({ params }: Props) {
                 className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm group flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
               >
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div
-                      className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center border shrink-0 ${theme.iconBox}`}
-                    >
-                      <GraduationCap className="w-5 h-5" />
-                    </div>
+                                    <div className="mb-4">
                     <GlassBadge subject={subjectKey}>{levelLabel}</GlassBadge>
                   </div>
                   <h2

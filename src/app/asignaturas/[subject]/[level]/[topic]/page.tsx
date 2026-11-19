@@ -21,6 +21,8 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { TopicSectionNav } from '@/components/TopicSectionNav';
 import { TopicHeader } from '@/components/TopicHeader';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 export const revalidate = 3600;
 
 interface Props {
@@ -317,6 +319,8 @@ export default async function TopicPage({ params }: Props) {
             
             <div className="text-slate-700 text-sm sm:text-base leading-7 space-y-4">
               <ReactMarkdown
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex]}
                 components={{
                   h2: ({ children }) => (
                     <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-8 mb-3">

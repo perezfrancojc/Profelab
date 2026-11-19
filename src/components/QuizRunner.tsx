@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CheckCircle2, XCircle, HelpCircle, RotateCcw } from 'lucide-react';
 import type { Quiz } from '@/types';
+import { MathText } from '@/components/Math';
 
 interface QuizProps {
   quiz: Quiz;
@@ -72,7 +73,7 @@ export function QuizRunner({ quiz }: QuizProps) {
       {!isCompleted ? (
         <div className="space-y-6">
           <p className="text-sm font-semibold text-slate-800 leading-relaxed">
-            {questionText}
+            <MathText text={questionText} />
           </p>
 
           <div className="space-y-2.5">
@@ -100,8 +101,7 @@ export function QuizRunner({ quiz }: QuizProps) {
                   disabled={isSubmitted}
                   className={`w-full text-left p-3.5 rounded-xl border text-xs font-medium transition flex items-center justify-between ${buttonStyle}`}
                 >
-                  <span>{option}</span>
-                  {isSubmitted && idx === correctAnswer && (
+                  <span><MathText text={option} /></span>                  {isSubmitted && idx === correctAnswer && (
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   )}
                   {isSubmitted && selectedOption === idx && idx !== correctAnswer && (
@@ -115,7 +115,7 @@ export function QuizRunner({ quiz }: QuizProps) {
           {isSubmitted && explanation && (
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-600">
               <strong className="block text-slate-900 mb-1">Explicación:</strong>
-              {explanation}
+              <MathText text={explanation} />
             </div>
           )}
 

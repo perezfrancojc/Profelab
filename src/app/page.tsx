@@ -5,6 +5,7 @@ import { Phone, ArrowRight, CheckCircle2, BookOpen, PlayCircle, Sparkles, HelpCi
 import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
 import { GlassBadge } from '@/components/GlassBadge';
+import { THEME } from '@/lib/subjectTheme';
 
 export default function HomePage() {
   return (

@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/config';
 import { ChevronRight, Layers } from 'lucide-react';
-import { TopicIcon } from '@/components/TopicIcon';
 import { Metadata } from 'next';
-import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
+import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHeader';
+import { TopicIcon } from '@/components/TopicIcon';
+import { themeFor } from '@/lib/subjectTheme';
+
 export const revalidate = 3600;
 
 interface Props {
@@ -66,7 +69,6 @@ function createSlug(text: string) {
     .replace(/(^-|-$)+/g, '');
 }
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subject, level } = await params;
 
@@ -81,7 +83,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? mappedLevel
     : `${prefix}-${mappedLevel}`;
 
-  // Obtenemos los datos reales del curso desde Supabase
   const { data: dbSubject } = await supabase
     .from('subjects')
     .select('name, description')
@@ -99,17 +100,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     '2bachccss': '2º Bachillerato CCSS',
   };
 
-  const subjectName =
-    prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
+  const subjectName = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
 
   const courseName =
     dbSubject?.name ||
     `${subjectName} ${levelNames[mappedLevel] || level}`;
 
-  // Título SEO
   const title = `${courseName} | Apuntes y ejercicios resueltos | JuancaEduca`;
 
-  // Descripción SEO
   const descriptionBase =
     dbSubject?.description?.trim() ||
     `Consulta el temario de ${courseName} con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.`;
@@ -119,16 +117,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? `${descriptionBase.slice(0, 157).trimEnd()}...`
       : descriptionBase;
 
-  // URL canónica
-  const canonical =
-    `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}`;
+  const canonical = `${SITE_URL}/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}`;
 
   return {
     title,
     description,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
@@ -137,31 +131,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: 'es_ES',
       type: 'website',
     },
-    twitter: {
-      card: 'summary',
-      title,
-      description,
-    },
+    twitter: { card: 'summary', title, description },
   };
 }
 
-
 export default async function SubjectLevelPage({ params }: Props) {
-  const resolvedParams = await params;
-  const { subject, level } = resolvedParams;
+  const { subject, level } = await params;
 
   const rawLevel = level.toLowerCase().trim();
   const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
-  const mappedLevel = LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
-  
-  // Detectar si rawLevel o mappedLevel ya incluye el ID completo de Supabase (ej: mat-1bachccss)
-  const targetSubjectId = mappedLevel.startsWith(prefix) ? mappedLevel : `${prefix}-${mappedLevel}`;
+  const mappedLevel =
+    LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
 
-  // Consultar Supabase abarcando todos los formatos posibles de subject_id
+  const targetSubjectId = mappedLevel.startsWith(prefix)
+    ? mappedLevel
+    : `${prefix}-${mappedLevel}`;
+
+  const theme = themeFor(subject);
+
   const { data: dbTopicsRaw } = await supabase
     .from('topics')
     .select('*')
-    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${mappedLevel},subject_id.eq.${prefix}-${rawLevel}`);
+    .or(
+      `subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${mappedLevel},subject_id.eq.${prefix}-${rawLevel}`
+    );
 
   const dbTopics = dbTopicsRaw || [];
 
@@ -174,15 +167,19 @@ export default async function SubjectLevelPage({ params }: Props) {
       id: t.id,
       subjectId: t.subject_id,
       title: t.title,
-      slug: slug,
+      slug,
       description: t.description,
+      icon: t.icon,
     });
   });
 
   const allTopics = Array.from(topicsMap.values());
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
   const normalizedDisplayLevel = rawLevel.replace(/^(mat|fq)-/, '');
-  const displayLevel = LEVEL_DISPLAY_MAP[rawLevel] || LEVEL_DISPLAY_MAP[normalizedDisplayLevel] || level.replace(/-/g, ' ');
+  const displayLevel =
+    LEVEL_DISPLAY_MAP[rawLevel] ||
+    LEVEL_DISPLAY_MAP[normalizedDisplayLevel] ||
+    level.replace(/-/g, ' ');
   const courseTitle = `${subjectTitle} ${displayLevel}`;
 
   return (
@@ -196,37 +193,41 @@ export default async function SubjectLevelPage({ params }: Props) {
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-8">
-       <FusionSection id="course-heading">
-        <div className="border-b border-slate-200/80 pb-6">
-          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-1">
-            Temario Oficial
-          </span>
-          <h1 className="text-3xl font-black text-slate-900">
-            {courseTitle}
-          </h1>
-        </div>
-      </FusionSection>
+        <FusionSection id="course-heading">
+          <div className="border-b border-slate-200/80 pb-6">
+            <span className={`text-xs font-bold uppercase tracking-widest block mb-1 ${theme.accent}`}>
+              Temario Oficial
+            </span>
+            <h1 className="text-3xl font-black text-slate-900">
+              {courseTitle}
+            </h1>
+          </div>
+        </FusionSection>
 
         {allTopics.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
-                        {allTopics.map((t: any) => (
+            {allTopics.map((t: any) => (
               <Link
                 key={t.id}
                 href={`/asignaturas/${subject}/${level}/${t.slug}`}
-                className="group bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:border-red-500/40 hover:shadow-md transition flex items-center justify-between"
+                className={`group bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition flex items-center justify-between ${theme.topicHoverBorder}`}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white group-hover:scale-105 transition">
-                    <TopicIcon slug={t.slug} title={t.title} className="w-6 h-6" />
+                  <div
+                    className={`w-12 h-12 rounded-xl border flex items-center justify-center transition group-hover:scale-105 ${theme.iconBox} ${theme.iconBoxHover}`}
+                  >
+                    <TopicIcon slug={t.slug} title={t.title} name={t.icon} className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900 text-base group-hover:text-red-600 transition">
+                    <h3 className={`font-bold text-slate-900 text-base transition ${theme.accentHover}`}>
                       {t.title}
                     </h3>
-                    {t.description && <p className="text-xs text-slate-500 mt-1 line-clamp-1">{t.description}</p>}
+                    {t.description && (
+                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">{t.description}</p>
+                    )}
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-red-600 transition" />
+                <ChevronRight className={`w-5 h-5 text-slate-400 transition ${theme.accentHover}`} />
               </Link>
             ))}
           </div>

@@ -2,9 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react';
-import {SectionFusionHeader, FusionSection,} from '@/components/SectionFusionHeader';
+import { SITE_URL } from '@/lib/config';
+import { ChevronRight, GraduationCap } from 'lucide-react';
+import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHeader';
 import { GlassBadge } from '@/components/GlassBadge';
+import { themeFor } from '@/lib/subjectTheme';
+
 export const revalidate = 3600;
 
 interface Props {
@@ -13,16 +16,10 @@ interface Props {
   }>;
 }
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subject } = await params;
 
-  const cleanSubject = subject.toLowerCase();
-  const isPhysics = cleanSubject.includes('fisica');
-
-  const subjectTitle = isPhysics
-    ? 'Física y Química'
-    : 'Matemáticas';
+  const isPhysics = subject.toLowerCase().includes('fisica');
 
   const title = isPhysics
     ? 'Física y Química ESO y Bachillerato | Apuntes y ejercicios | JuancaEduca'
@@ -32,15 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? 'Aprende Física y Química de ESO y Bachillerato con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.'
     : 'Aprende Matemáticas de ESO y Bachillerato con apuntes, ejercicios resueltos en PDF, explicaciones en vídeo y tests de autoevaluación.';
 
-  const canonical =
-    `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}`;
+  const canonical = `${SITE_URL}/asignaturas/${encodeURIComponent(subject)}`;
 
   return {
     title,
     description,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
@@ -49,23 +43,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: 'es_ES',
       type: 'website',
     },
-    twitter: {
-      card: 'summary',
-      title,
-      description,
-    },
+    twitter: { card: 'summary', title, description },
   };
 }
-
 
 export default async function SubjectPage({ params }: Props) {
   const { subject } = await params;
 
   const cleanSubject = subject.toLowerCase();
-  const prefix = cleanSubject.includes('fisica') ? 'fq' : 'mat';
-  const subjectTitle = cleanSubject.includes('fisica') ? 'Física y Química' : 'Matemáticas';
+  const isPhysics = cleanSubject.includes('fisica');
+  const prefix = isPhysics ? 'fq' : 'mat';
+  const subjectKey = isPhysics ? 'fq' : 'mat';
+  const subjectTitle = isPhysics ? 'Física y Química' : 'Matemáticas';
+  const theme = themeFor(subject);
 
-  // Consultar directamente las asignaturas de Supabase filtrando por prefijo (mat- o fq-)
   const { data: dbSubjects } = await supabase
     .from('subjects')
     .select('*')
@@ -77,7 +68,7 @@ export default async function SubjectPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
-      
+
       <SectionFusionHeader
         title={subjectTitle}
         compactTitle={`Cursos de ${subjectTitle}`}
@@ -88,7 +79,7 @@ export default async function SubjectPage({ params }: Props) {
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-10">
         <FusionSection id="subject-heading">
           <div className="border-b border-slate-200/80 pb-8">
-            <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">
+            <span className={`text-xs font-bold uppercase tracking-widest block mb-2 ${theme.accent}`}>
               Selecciona tu curso
             </span>
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
@@ -97,9 +88,8 @@ export default async function SubjectPage({ params }: Props) {
           </div>
         </FusionSection>
 
-        {/* Tarjetas de Cursos obtenidas dinámicamente de Supabase */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {dbSubjects.map((subItem) => {
+          {dbSubjects.map((subItem) => {
             const coursePath = subItem.slug || subItem.id;
             const levelLabel = String(subItem.level || '')
               .replace(/^(\d)-eso$/i, '$1º ESO')
@@ -114,9 +104,16 @@ export default async function SubjectPage({ params }: Props) {
               >
                 <div>
                   <div className="flex items-center gap-3 mb-4">
-                    <GlassBadge>{levelLabel}</GlassBadge>
+                    <div
+                      className={`w-10 h-10 rounded-xl font-bold flex items-center justify-center border shrink-0 ${theme.iconBox}`}
+                    >
+                      <GraduationCap className="w-5 h-5" />
+                    </div>
+                    <GlassBadge subject={subjectKey}>{levelLabel}</GlassBadge>
                   </div>
-                  <h2 className="text-xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors uppercase">
+                  <h2
+                    className={`text-xl font-extrabold text-slate-900 mb-2 transition-colors uppercase ${theme.accentHover}`}
+                  >
                     {subItem.name}
                   </h2>
                   <p className="text-sm text-slate-600 leading-relaxed mb-6">
@@ -124,9 +121,13 @@ export default async function SubjectPage({ params }: Props) {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold text-slate-800 group-hover:text-red-600">
+                <div
+                  className={`flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold text-slate-800 ${theme.accentHover}`}
+                >
                   <span>Ver temas del curso</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-red-600 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight
+                    className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform ${theme.accentHover}`}
+                  />
                 </div>
               </Link>
             );

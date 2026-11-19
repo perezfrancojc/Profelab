@@ -19,14 +19,12 @@ export function GlassBadge({
                  text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600
                  bg-white/70 backdrop-blur-md ring-1 ring-inset ring-slate-900/10
                  shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_2px_rgba(15,23,42,0.05)]
-                 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
-                 ${t.badgeHoverText} ${t.badgeHoverBg} ${t.badgeHoverRing} ${t.badgeHoverShadow}`}
+                 transition-colors duration-500 ${t.badgeHoverText} ${t.badgeHoverBg}`}
     >
       {dot && (
-        <span className="relative flex h-1.5 w-1.5">
-          <span className={`absolute inset-0 rounded-full bg-slate-400 transition-colors duration-500 ${t.dot}`} />
-          <span className={`absolute inset-0 rounded-full ${t.ping} opacity-0 group-hover:opacity-60 group-hover:animate-ping`} />
-        </span>
+        <span
+          className={`h-1.5 w-1.5 rounded-full bg-slate-400 transition-colors duration-500 ${t.dot}`}
+        />
       )}
 
       <span className="relative">{children}</span>

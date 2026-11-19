@@ -1,19 +1,22 @@
 import Link from 'next/link';
-import { SUBJECTS, TOPICS, VIDEOS } from '@/data/educationalData';
+import { VIDEOS } from '@/data/educationalData';
 import { YouTubeFacade } from '@/components/YouTubeFacade';
-import { Phone, ArrowRight, CheckCircle2, BookOpen, PlayCircle, Sparkles, HelpCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle2, PlayCircle } from 'lucide-react';
 import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
 import { GlassBadge } from '@/components/GlassBadge';
 import { THEME } from '@/lib/subjectTheme';
 
+const CARD =
+  'bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm flex flex-col justify-between group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]';
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
-      
+
       <HomeNavigation />
 
-      {/* Hero Principal con aire de publicación cuidada */}
+      {/* Hero Principal */}
       <section className="py-20 px-6 border-b border-slate-200/60">
         <div className="max-w-3xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-7">
@@ -25,24 +28,22 @@ export default function HomePage() {
           </div>
           <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
             Matemáticas, Física y Química
-            
-            {/* Salto de línea obligado con margen superior */}
+
             <span className="block mt-4 sm:mt-6">
               <span className="font-serif italic font-normal text-red-600 relative inline-block">
                 sin rodeos.
-                
-                {/* Subrayado orgánico ajustado a la anchura del texto */}
-                <svg 
-                  className="absolute -bottom-2 left-0 w-full h-3.5 text-red-500/80 pointer-events-none" 
-                  viewBox="0 0 200 20" 
-                  fill="none" 
+
+                <svg
+                  className="absolute -bottom-2 left-0 w-full h-3.5 text-red-500/80 pointer-events-none"
+                  viewBox="0 0 200 20"
+                  fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path 
-                    d="M 4 14 C 55 4, 145 4, 196 14" 
-                    stroke="currentColor" 
-                    strokeWidth="4" 
-                    strokeLinecap="round" 
+                  <path
+                    d="M 4 14 C 55 4, 145 4, 196 14"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
                   />
                 </svg>
               </span>
@@ -52,14 +53,14 @@ export default function HomePage() {
             Todo el temario oficial organizado bloque a bloque. Teoría clara, ejemplos resueltos paso a paso y colecciones de ejercicios para preparar tus exámenes con seguridad.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
-            <a 
-              href="#asignaturas" 
+            <a
+              href="#asignaturas"
               className="bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-7 rounded-xl transition shadow-sm text-sm"
             >
               Ver Temarios Disponibles
             </a>
-            <a 
-              href="#videos" 
+            <a
+              href="#videos"
               className="bg-white hover:bg-slate-100 text-slate-800 font-semibold py-3.5 px-7 rounded-xl transition border border-slate-200 text-sm flex items-center justify-center gap-2"
             >
               <PlayCircle className="w-4 h-4 text-red-600" /> Ver Clases de Muestra
@@ -68,7 +69,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Píldoras de confianza con diseño orgánico */}
+      {/* Píldoras de confianza */}
       <section className="bg-white py-6 px-6 border-b border-slate-200/80">
         <div className="max-w-5xl mx-auto flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-xs font-semibold text-slate-600">
           <div className="flex items-center gap-2">
@@ -86,7 +87,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bloque de Asignaturas (Selección de materia principal) */}
+      {/* Asignaturas */}
       <section id="asignaturas" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="max-w-xl mb-12">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Plan de estudios</span>
@@ -94,58 +95,50 @@ export default function HomePage() {
           <p className="text-sm text-slate-600 mt-2">Selecciona la materia que necesitas reforzar para ver los cursos académicos disponibles.</p>
         </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-          {/* Tarjeta Matemáticas */}
-          <Link
-            href="/asignaturas/matematicas"
-            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm flex flex-col justify-between group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
-          >
-            
+          {/* Matemáticas */}
+          <Link href="/asignaturas/matematicas" className={CARD}>
             <div>
               <div className="mb-4">
-                <GlassBadge>Materia</GlassBadge>
+                <GlassBadge subject="mat">Materia</GlassBadge>
               </div>
-              <h3 className="text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">
+              <h3 className={`text-2xl font-extrabold text-slate-900 mb-2 transition-colors ${THEME.mat.accentHover}`}>
                 Matemáticas
               </h3>
               <p className="text-sm text-slate-600 mb-6 leading-relaxed">
                 Álgebra, geometría, funciones, cálculo y estadística organizados por curso académico.
               </p>
             </div>
-            <div className="flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-bold text-slate-800 group-hover:text-red-600">
+            <div className={`flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-bold text-slate-800 transition-colors ${THEME.mat.accentHover}`}>
               <span>Seleccionar curso</span>
-              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-red-600 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-all ${THEME.mat.accentHover}`} />
             </div>
           </Link>
 
-          {/* Tarjeta Física y Química */}
-          <Link
-            href="/asignaturas/fisica-y-quimica"
-            className="relative isolate overflow-hidden bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm flex flex-col justify-between group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
-          >
-            
+          {/* Física y Química */}
+          <Link href="/asignaturas/fisica-y-quimica" className={CARD}>
             <div>
               <div className="mb-4">
-                <GlassBadge>Materia</GlassBadge>
+                <GlassBadge subject="fq">Materia</GlassBadge>
               </div>
-              <h3 className="text-2xl font-extrabold text-slate-900 mb-2 group-hover:text-red-600 transition-colors">
+              <h3 className={`text-2xl font-extrabold text-slate-900 mb-2 transition-colors ${THEME.fq.accentHover}`}>
                 Física y Química
               </h3>
               <p className="text-sm text-slate-600 mb-6 leading-relaxed">
                 Estudio de la materia, movimiento, fuerzas, energía y reacciones químicas por nivel.
               </p>
             </div>
-            <div className="flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-bold text-slate-800 group-hover:text-red-600">
+            <div className={`flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-bold text-slate-800 transition-colors ${THEME.fq.accentHover}`}>
               <span>Seleccionar curso</span>
-              <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-red-600 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-all ${THEME.fq.accentHover}`} />
             </div>
           </Link>
 
         </div>
       </section>
 
-      {/* Metodología en 3 pasos */}
+      {/* Metodología */}
       <section id="metodo" className="bg-white py-20 px-6 border-y border-slate-200/80">
         <div className="max-w-5xl mx-auto">
           <div className="text-center max-w-xl mx-auto mb-16">
@@ -181,7 +174,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Sección de Vídeos Destacados */}
+      {/* Vídeos */}
       <section id="videos" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="max-w-xl mb-12">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Clases abiertas</span>
@@ -203,6 +196,5 @@ export default function HomePage() {
       </section>
       <ContactSection />
     </div>
-    
   );
 }

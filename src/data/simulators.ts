@@ -20,6 +20,16 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['mat-3eso', 'mat-4eso'],
     keywords: ['ecuacion', 'funcion'],
   },
+    {
+    slug: 'recta',
+    title: 'La recta y la pendiente',
+    description:
+      'Mueve m y n y observa cómo cambian la inclinación, el corte con los ejes y el crecimiento de la recta.',
+    subject: 'mat',
+    levels: '2.º, 3.º y 4.º ESO',
+    subjectIds: ['mat-2eso', 'mat-3eso', 'mat-4eso'],
+    keywords: ['funcion', 'grafica'],
+  },
 ];
 
 function normalize(text: string) {

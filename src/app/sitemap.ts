@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/config';
+import { SIMULATORS } from '@/data/simulators';
 
 // Actualizar el sitemap como máximo cada hora.
 export const revalidate = 3600;
@@ -68,6 +69,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     entries.push({
       url: `${SITE_URL}/asignaturas/${groupOf(subject.id)}/${encodeURIComponent(coursePath)}/${encodeURIComponent(topicPath)}`,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    });
+  }
+
+  // Simuladores
+  entries.push({ url: `${SITE_URL}/simuladores`, changeFrequency: 'monthly', priority: 0.8 });
+  for (const s of SIMULATORS) {
+    entries.push({
+      url: `${SITE_URL}/simuladores/${s.slug}`,
       changeFrequency: 'monthly',
       priority: 0.7,
     });

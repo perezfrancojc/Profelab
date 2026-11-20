@@ -5,10 +5,11 @@ import { themeFor } from '@/lib/subjectTheme';
 
 interface Props {
   hasContent: boolean;
+  hasSimulator?: boolean;
   subject: string;
 }
 
-export function TopicSectionNav({ hasContent, subject }: Props) {
+export function TopicSectionNav({ hasContent, hasSimulator = false, subject }: Props) {
   const theme = themeFor(subject);
   const [activeSection, setActiveSection] = useState(
     hasContent ? 'sobre-el-tema' : 'videos'
@@ -21,6 +22,7 @@ export function TopicSectionNav({ hasContent, subject }: Props) {
       ? [{ id: 'sobre-el-tema', label: 'Sobre este tema' }]
       : []),
     { id: 'videos', label: 'Vídeos explicativos' },
+    ...(hasSimulator ? [{ id: 'simulador', label: 'Simulador' }] : []),
     { id: 'ejercicios-pdf', label: 'Ejercicios PDF' },
     { id: 'autoevaluacion', label: 'Tests' },
     { id: 'material-pdf', label: 'Apuntes PDF' },
@@ -63,7 +65,7 @@ export function TopicSectionNav({ hasContent, subject }: Props) {
 
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasContent]);
+  }, [hasContent, hasSimulator]);
 
   return (
     <nav

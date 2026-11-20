@@ -24,6 +24,9 @@ import rehypeKatex from 'rehype-katex';
 import { TopicSectionNav } from '@/components/TopicSectionNav';
 import { TopicHeader } from '@/components/TopicHeader';
 import { JsonLd } from '@/components/JsonLd';
+import Link from 'next/link';
+import { SlidersHorizontal, ArrowRight } from 'lucide-react';
+import { getSimulatorsForTopic } from '@/data/simulators';
 
 export const revalidate = 3600;
 
@@ -199,6 +202,11 @@ export default async function TopicPage({ params }: Props) {
   const currentTopicId = currentTopic.id;
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
   const theme = themeFor(subject);
+  const simulators = getSimulatorsForTopic(
+    currentTopic.subjectId,
+    currentTopic.slug,
+    currentTopic.title
+  );
   const levelTitle =
     LEVEL_DISPLAY_MAP[level.toLowerCase().trim()] ||
     level.replace(/-/g, ' ').toUpperCase();
@@ -328,6 +336,7 @@ export default async function TopicPage({ params }: Props) {
         backLabel={`${subjectTitle} ${levelTitle}`}
         hasContent={Boolean(currentTopic.content)}
         subject={subject}
+        hasSimulator={simulators.length > 0}
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12 max-sm:px-4 max-sm:py-6 max-sm:space-y-6">
@@ -347,7 +356,7 @@ export default async function TopicPage({ params }: Props) {
         </div>
 
         {/* MENÚ DE NAVEGACIÓN DEL TEMA */}
-        <TopicSectionNav hasContent={Boolean(currentTopic.content)} subject={subject} />
+        <TopicSectionNav hasContent={Boolean(currentTopic.content)} subject={subject} hasSimulator={simulators.length > 0} />
 
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
@@ -428,6 +437,36 @@ export default async function TopicPage({ params }: Props) {
             </div>
           )}
         </section>
+
+                {simulators.length > 0 && (
+          <section id="simulador" className="fade-up scroll-mt-36 space-y-4">
+            <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
+              <SlidersHorizontal className={`w-5 h-5 ${theme.accent}`} />
+              <h2>Simulador interactivo</h2>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {simulators.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/simuladores/${s.slug}`}
+                  className="group bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition flex items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition ${theme.iconBox} ${theme.iconBoxHover}`}>
+                      <SlidersHorizontal className="w-6 h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className={`font-bold text-slate-900 transition ${theme.accentHover}`}>{s.title}</h3>
+                      <p className="text-sm text-slate-600 mt-0.5">{s.description}</p>
+                    </div>
+                  </div>
+                  <ArrowRight className={`w-5 h-5 text-slate-400 shrink-0 transition group-hover:translate-x-1 ${theme.accentHover}`} />
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* 2. EJERCICIOS RESUELTOS EN PDF */}
         <section

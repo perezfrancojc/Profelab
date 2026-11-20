@@ -10,6 +10,7 @@ interface TopicHeaderProps {
   backHref: string;
   backLabel?: string;
   hasContent: boolean;
+  hasSimulator?: boolean;
   subject: string;
 }
 
@@ -18,6 +19,7 @@ export function TopicHeader({
   backHref,
   backLabel = 'Volver',
   hasContent,
+  hasSimulator = false,
   subject,
 }: TopicHeaderProps) {
   const theme = themeFor(subject);
@@ -31,6 +33,9 @@ export function TopicHeader({
       ? [{ id: 'sobre-el-tema', label: 'Sobre el tema', short: 'Tema' }]
       : []),
     { id: 'videos', label: 'Vídeos explicativos', short: 'Vídeos' },
+    ...(hasSimulator
+      ? [{ id: 'simulador', label: 'Simulador', short: 'Simulador' }]
+      : []),
     { id: 'ejercicios-pdf', label: 'Ejercicios PDF', short: 'Ejercicios' },
     { id: 'autoevaluacion', label: 'Tests', short: 'Tests' },
     { id: 'material-pdf', label: 'Apuntes PDF', short: 'Apuntes' },
@@ -97,7 +102,7 @@ export function TopicHeader({
 
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasContent]);
+  }, [hasContent, hasSimulator]);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#F1EFE8]/95 backdrop-blur-xl border-b border-slate-200/70">

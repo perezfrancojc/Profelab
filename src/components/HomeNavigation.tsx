@@ -7,6 +7,7 @@ import { Phone } from 'lucide-react';
 
 const navigationItems = [
   { id: 'asignaturas', label: 'Asignaturas', short: 'Materias' },
+  { id: 'simuladores', label: 'Simuladores', short: 'Simular', href: '/simuladores' },
   { id: 'metodo', label: 'Metodología', short: 'Método' },
   { id: 'videos', label: 'Vídeos', short: 'Vídeos' },
   { id: 'contacto', label: 'Contacto', short: 'Contacto' },
@@ -70,10 +71,32 @@ export function HomeNavigation() {
     return () => observer.disconnect();
   }, []);
 
-  const renderLinks = (compact = false) => (
+    const renderLinks = (compact = false) => (
     <>
       {navigationItems.map((item) => {
         const isActive = activeSection === item.id;
+        const base = `shrink-0 ${
+          compact ? 'px-2.5 py-2 max-sm:px-2' : 'px-3 py-2'
+        } rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all duration-200`;
+        const label = (
+          <>
+            <span className="hidden sm:inline">{item.label}</span>
+            <span className="sm:hidden">{item.short}</span>
+          </>
+        );
+
+        // Enlace a otra página
+        if (item.href) {
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={`${base} text-slate-600 hover:text-red-600 hover:bg-red-50`}
+            >
+              {label}
+            </Link>
+          );
+        }
 
         return (
           <a
@@ -81,18 +104,13 @@ export function HomeNavigation() {
             href={`#${item.id}`}
             aria-current={isActive ? 'location' : undefined}
             onClick={() => setActiveSection(item.id)}
-            className={`shrink-0 ${
-              compact
-                ? 'px-2.5 py-2 max-sm:px-2'
-                : 'px-3 py-2'
-            } rounded-lg text-[11px] sm:text-xs font-bold whitespace-nowrap transition-all duration-200 ${
+            className={`${base} ${
               isActive
                 ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
                 : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
             }`}
           >
-            <span className="hidden sm:inline">{item.label}</span>
-            <span className="sm:hidden">{item.short}</span>
+            {label}
           </a>
         );
       })}

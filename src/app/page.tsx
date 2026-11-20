@@ -57,7 +57,7 @@ export default async function HomePage() {
             </span>
             <span className="w-8 h-[2px] bg-red-600" />
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+          <h1 className="font-display text-4xl sm:text-6xl font-semibold text-slate-900 leading-[1.1]">
             Matemáticas, Física y Química
 
             <span className="block mt-4 sm:mt-6">
@@ -111,7 +111,7 @@ export default async function HomePage() {
             { n: stats.pdfs, label: 'PDFs resueltos' },
           ].map((s) => (
             <div key={s.label}>
-              <p className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">{s.n}</p>
+              <p className="font-display font-semibold tracking-tight text-slate-900">{s.n}</p>
               <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mt-1">{s.label}</p>
             </div>
           ))}
@@ -122,7 +122,7 @@ export default async function HomePage() {
       <section id="asignaturas" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="max-w-xl mb-12">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Plan de estudios</span>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Asignaturas y Bloques</h2>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900">Asignaturas y Bloques</h2>
           <p className="text-sm text-slate-600 mt-2">Selecciona la materia que necesitas reforzar para ver los cursos académicos disponibles.</p>
         </div>
 
@@ -174,30 +174,30 @@ export default async function HomePage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center max-w-xl mx-auto mb-16">
             <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Cómo funciona</span>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Un método pensado para entender, no solo memorizar</h2>
+            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900">Un método pensado para entender, no solo memorizar</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
             <div className="relative">
-              <span className="text-5xl font-black text-slate-200 font-serif block mb-3">01</span>
+              <span className="text-5xl font-black text-slate-200 font-display block mb-3">01</span>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Ubica tu tema</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 Navega por la asignatura según tu curso (ESO o Bachillerato) y encuentra el tema exacto que estás dando en el colegio o instituto.
               </p>
             </div>
 
             <div className="relative">
-              <span className="text-5xl font-black text-slate-200 font-serif block mb-3">02</span>
+              <span className="text-5xl font-black text-slate-200 font-display block mb-3">02</span>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Repasa la teoría esencial</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 Mira las lecciones en vídeo donde resumimos las fórmulas clave y los conceptos teóricos imprescindibles sin rodeos.
               </p>
             </div>
 
             <div className="relative">
-              <span className="text-5xl font-black text-slate-200 font-serif block mb-3">03</span>
+              <span className="text-5xl font-black text-slate-200 font-display block mb-3">03</span>
               <h3 className="text-lg font-bold text-slate-900 mb-2">Domina los ejercicios</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 Practica con ejercicios resueltos paso a paso donde te explicamos el razonamiento detrás de cada cálculo.
               </p>
             </div>
@@ -209,7 +209,7 @@ export default async function HomePage() {
       <section id="videos" className="py-20 px-6 max-w-6xl mx-auto">
         <div className="max-w-xl mb-12">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Clases abiertas</span>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Aulas en Vídeo</h2>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900">Aulas en Vídeo</h2>
           <p className="text-sm text-slate-600 mt-2">Ejemplos explicados de forma clara para resolver las dudas más frecuentes.</p>
         </div>
 
@@ -220,7 +220,7 @@ export default async function HomePage() {
                 <YouTubeFacade youtubeId={vid.youtubeId} title={vid.title} />
               </div>
               <h3 className="font-bold text-slate-900 text-base mt-4">{vid.title}</h3>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{vid.description}</p>
+              <p className="text-sm leading-relaxed">{vid.description}</p>
             </div>
           ))}
         </div>

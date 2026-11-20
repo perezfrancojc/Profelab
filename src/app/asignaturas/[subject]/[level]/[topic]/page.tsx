@@ -294,7 +294,7 @@ export default async function TopicPage({ params }: Props) {
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 max-sm:mb-1">
             Unidad Didáctica
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+          <h1 className="font-display text-4xl sm:text-5xl font-semibold text-slate-900">
             {currentTopic.title}
           </h1>
           {currentTopic.description && (
@@ -312,7 +312,7 @@ export default async function TopicPage({ params }: Props) {
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
           <section id="sobre-el-tema" className="scroll-mt-36 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-xl font-display font-semibold text-slate-900 tracking-tight">
               Sobre este tema
             </h2>
 
@@ -442,7 +442,7 @@ export default async function TopicPage({ params }: Props) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-400 italic">No hay archivos PDF disponibles en este apartado.</p>
+                    <p className="text-xs text-slate-500 italic">No hay archivos PDF disponibles en este apartado.</p>
                   )}
                 </div>
               ))}

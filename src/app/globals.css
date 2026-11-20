@@ -43,3 +43,8 @@ body {
   -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 40%, #000 30%, transparent 75%);
   mask-image: radial-gradient(ellipse 70% 80% at 50% 40%, #000 30%, transparent 75%);
 }
+
+.font-display {
+  font-family: var(--font-serif-display), Georgia, serif;
+  letter-spacing: -0.015em;
+}

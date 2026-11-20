@@ -198,7 +198,7 @@ export default async function SubjectLevelPage({ params }: Props) {
             <span className={`text-xs font-bold uppercase tracking-widest block mb-1 ${theme.accent}`}>
               Temario Oficial
             </span>
-            <h1 className="text-3xl font-black text-slate-900">
+            <h1 className="font-display text-4xl font-semibold text-slate-900">
               {courseTitle}
             </h1>
           </div>
@@ -223,7 +223,7 @@ export default async function SubjectLevelPage({ params }: Props) {
                       {t.title}
                     </h3>
                     {t.description && (
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-1">{t.description}</p>
+                      <p className="text-xs text-slate-600 mt-1 line-clamp-1">{t.description}</p>
                     )}
                   </div>
                 </div>

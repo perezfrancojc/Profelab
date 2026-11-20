@@ -107,7 +107,7 @@ export default async function SubjectPage({ params }: Props) {
             <span className={`text-xs font-bold uppercase tracking-widest block mb-2 ${theme.accent}`}>
               Selecciona tu curso
             </span>
-            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+            <h1 className="font-display text-4xl sm:text-5xl font-semibold text-slate-900">
               Cursos de {subjectTitle}
             </h1>
           </div>
@@ -135,7 +135,7 @@ export default async function SubjectPage({ params }: Props) {
                     <GlassBadge subject={subjectKey}>{levelLabel}</GlassBadge>
                   </div>
                   <h2
-                    className={`text-xl font-extrabold text-slate-900 mb-2 transition-colors uppercase ${theme.accentHover}`}
+                    className={`text-xl text-slate-900 mb-2 transition-colors ont-display text-2xl font-semibold ${theme.accentHover}`}
                   >
                     {subItem.name}
                   </h2>

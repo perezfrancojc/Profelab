@@ -772,7 +772,7 @@ export default function AdminPage() {
                 <div className="space-y-3 border-t border-slate-200 pt-4">
                   <h4 className="text-xs font-black uppercase text-slate-500">Estructura actual de este Tema:</h4>
                   {exerciseSections.length === 0 ? (
-                    <p className="text-xs text-slate-400 italic">No hay apartados ni ejercicios creados aún.</p>
+                    <p className="text-xs text-slate-500 italic">No hay apartados ni ejercicios creados aún.</p>
                   ) : (
                     exerciseSections.map((sec) => (
                       <div key={sec.id} className="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
@@ -795,7 +795,7 @@ export default function AdminPage() {
                               </li>
                             ))
                           ) : (
-                            <li className="text-[11px] text-slate-400 italic">Sin PDFs subidos todavía.</li>
+                            <li className="text-[11px] text-slate-500 italic">Sin PDFs subidos todavía.</li>
                           )}
                         </ul>
                       </div>

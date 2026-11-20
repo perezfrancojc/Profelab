@@ -7,6 +7,7 @@ import { ChevronRight } from 'lucide-react';
 import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHeader';
 import { GlassBadge } from '@/components/GlassBadge';
 import { themeFor } from '@/lib/subjectTheme';
+import { ALL_QUIZZES } from '@/data/quizzes';
 
 export const revalidate = 3600;
 
@@ -57,14 +58,38 @@ export default async function SubjectPage({ params }: Props) {
   const subjectTitle = isPhysics ? 'Física y Química' : 'Matemáticas';
   const theme = themeFor(subject);
 
-  const { data: dbSubjects } = await supabase
-    .from('subjects')
-    .select('*')
-    .like('id', `${prefix}-%`);
+  const [subjectsRes, topicsRes, dbQuizzesRes] = await Promise.all([
+    supabase.from('subjects').select('*').like('id', `${prefix}-%`),
+    supabase.from('topics').select('id, subject_id').like('subject_id', `${prefix}-%`),
+    supabase.from('quizzes').select('topic_id'),
+  ]);
+
+  const dbSubjects = subjectsRes.data;
 
   if (!dbSubjects || dbSubjects.length === 0) {
     notFound();
   }
+
+  const topics = topicsRes.data || [];
+  const topicSubject = new Map(topics.map((t) => [String(t.id), t.subject_id as string]));
+
+  // Temas por curso
+  const topicsCount: Record<string, number> = {};
+  topics.forEach((t) => {
+    topicsCount[t.subject_id] = (topicsCount[t.subject_id] || 0) + 1;
+  });
+
+  // Tests por curso: archivos .ts (llevan subjectId) + los guardados en Supabase
+  const testsCount: Record<string, number> = {};
+  ALL_QUIZZES.forEach((q) => {
+    if (q.subjectId) testsCount[q.subjectId] = (testsCount[q.subjectId] || 0) + 1;
+  });
+  (dbQuizzesRes.data || []).forEach((q) => {
+    const sid = topicSubject.get(String(q.topic_id));
+    if (sid) testsCount[sid] = (testsCount[sid] || 0) + 1;
+  });
+
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
@@ -96,6 +121,9 @@ export default async function SubjectPage({ params }: Props) {
               .replace(/^(\d)-bachillerato$/i, '$1º Bachillerato')
               .replace(/-/g, ' ');
 
+            const nTopics = topicsCount[subItem.id] || 0;
+            const nTests = testsCount[subItem.id] || 0;
+
             return (
               <Link
                 key={subItem.id}
@@ -103,7 +131,7 @@ export default async function SubjectPage({ params }: Props) {
                 className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-sm group flex flex-col justify-between transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]"
               >
                 <div>
-                                    <div className="mb-4">
+                  <div className="mb-4">
                     <GlassBadge subject={subjectKey}>{levelLabel}</GlassBadge>
                   </div>
                   <h2
@@ -111,17 +139,22 @@ export default async function SubjectPage({ params }: Props) {
                   >
                     {subItem.name}
                   </h2>
-                  <p className="text-sm text-slate-600 leading-relaxed mb-6">
+                  <p className="text-sm text-slate-600 leading-relaxed mb-5">
                     {subItem.description || 'Temas y materiales resueltos para este curso.'}
+                  </p>
+                  <p className="text-xs font-semibold text-slate-500 mb-6">
+                    {plural(nTopics, 'tema', 'temas')}
+                    <span className="mx-1.5 text-slate-300">·</span>
+                    {plural(nTests, 'test', 'tests')}
                   </p>
                 </div>
 
                 <div
-                  className={`flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold text-slate-800 ${theme.accentHover}`}
+                  className={`flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold text-slate-800 transition-colors ${theme.accentHover}`}
                 >
                   <span>Ver temas del curso</span>
                   <ChevronRight
-                    className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform ${theme.accentHover}`}
+                    className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-all ${theme.accentHover}`}
                   />
                 </div>
               </Link>

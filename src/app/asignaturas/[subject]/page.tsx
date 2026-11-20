@@ -73,13 +73,11 @@ export default async function SubjectPage({ params }: Props) {
   const topics = topicsRes.data || [];
   const topicSubject = new Map(topics.map((t) => [String(t.id), t.subject_id as string]));
 
-  // Temas por curso
   const topicsCount: Record<string, number> = {};
   topics.forEach((t) => {
     topicsCount[t.subject_id] = (topicsCount[t.subject_id] || 0) + 1;
   });
 
-  // Tests por curso: archivos .ts (llevan subjectId) + los guardados en Supabase
   const testsCount: Record<string, number> = {};
   ALL_QUIZZES.forEach((q) => {
     if (q.subjectId) testsCount[q.subjectId] = (testsCount[q.subjectId] || 0) + 1;
@@ -107,7 +105,7 @@ export default async function SubjectPage({ params }: Props) {
             <span className={`text-xs font-bold uppercase tracking-widest block mb-2 ${theme.accent}`}>
               Selecciona tu curso
             </span>
-            <h1 className="font-display text-4xl sm:text-5xl font-semibold text-slate-900">
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
               Cursos de {subjectTitle}
             </h1>
           </div>
@@ -135,7 +133,7 @@ export default async function SubjectPage({ params }: Props) {
                     <GlassBadge subject={subjectKey}>{levelLabel}</GlassBadge>
                   </div>
                   <h2
-                    className={`text-xl text-slate-900 mb-2 transition-colors ont-display text-2xl font-semibold ${theme.accentHover}`}
+                    className={`text-xl font-extrabold text-slate-900 mb-2 transition-colors uppercase ${theme.accentHover}`}
                   >
                     {subItem.name}
                   </h2>

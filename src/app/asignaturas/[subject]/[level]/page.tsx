@@ -16,7 +16,6 @@ interface Props {
   }>;
 }
 
-// Mapa de conversión universal para ESO y Bachillerato
 const LEVEL_MAP: Record<string, string> = {
   '1-eso': '1eso',
   '2-eso': '2eso',
@@ -158,7 +157,6 @@ export default async function SubjectLevelPage({ params }: Props) {
 
   const dbTopics = dbTopicsRaw || [];
 
-  // Deduplicar temas por slug
   const topicsMap = new Map<string, any>();
 
   dbTopics.forEach((t: any) => {
@@ -198,7 +196,7 @@ export default async function SubjectLevelPage({ params }: Props) {
             <span className={`text-xs font-bold uppercase tracking-widest block mb-1 ${theme.accent}`}>
               Temario Oficial
             </span>
-            <h1 className="font-display text-4xl font-semibold text-slate-900">
+            <h1 className="text-3xl font-black text-slate-900">
               {courseTitle}
             </h1>
           </div>
@@ -214,7 +212,7 @@ export default async function SubjectLevelPage({ params }: Props) {
               >
                 <div className="flex items-center gap-4">
                   <div
-                    className={`w-12 h-12 rounded-xl border flex items-center justify-center transition group-hover:scale-105 ${theme.iconBox} ${theme.iconBoxHover}`}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition group-hover:scale-105 ${theme.iconBox} ${theme.iconBoxHover}`}
                   >
                     <TopicIcon slug={t.slug} title={t.title} name={t.icon} className="w-6 h-6" />
                   </div>

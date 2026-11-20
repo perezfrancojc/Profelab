@@ -1,28 +1,28 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { SITE_URL } from '@/lib/config';
 import { YouTubeFacade } from '@/components/YouTubeFacade';
 import { QuizRunner } from '@/components/QuizRunner';
 import { VIDEOS, MATERIALS } from '@/data/educationalData';
 import { ALL_QUIZZES as QUIZZES } from '@/data/quizzes';
-import { 
-  FileText, 
-  Lock, 
-  Download, 
-  ArrowLeft, 
-  PlayCircle, 
-  BookOpen, 
-  CheckCircle2, 
+import {
+  FileText,
+  Lock,
+  Download,
+  PlayCircle,
+  BookOpen,
+  CheckCircle2,
   Inbox,
   FolderDown,
-  FileCode2
+  FileCode2,
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { TopicSectionNav } from '@/components/TopicSectionNav';
-import { TopicHeader } from '@/components/TopicHeader';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { TopicSectionNav } from '@/components/TopicSectionNav';
+import { TopicHeader } from '@/components/TopicHeader';
+
 export const revalidate = 3600;
 
 interface Props {
@@ -34,7 +34,6 @@ interface Props {
 }
 
 const LEVEL_MAP: Record<string, string> = {
-  
   '1-eso': '1eso',
   '2-eso': '2eso',
   '3-eso': '3eso',
@@ -70,7 +69,6 @@ function createSlug(text: string) {
     .replace(/(^-|-$)+/g, '');
 }
 
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subject, level, topic } = await params;
 
@@ -87,7 +85,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const rawTopicParam = decodeURIComponent(topic).toLowerCase().trim();
 
-  // Consultamos el tema y la asignatura en Supabase
   const [topicsResult, subjectResult] = await Promise.all([
     supabase
       .from('topics')
@@ -95,7 +92,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .or(
         `subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${prefix}-${rawLevel}`
       ),
-
     supabase
       .from('subjects')
       .select('name')
@@ -103,7 +99,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .maybeSingle(),
   ]);
 
-  // Buscamos el tema por slug, ID o título
   const dbTopic = (topicsResult.data || []).find((t) => {
     const tId = String(t.id || '').toLowerCase().trim();
     const tSlug = String(t.slug || '').toLowerCase().trim();
@@ -116,17 +111,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     );
   });
 
-  // Si no encontramos el tema, utilizamos un título provisional
   const topicTitle = dbTopic?.title || topic.replace(/-/g, ' ');
 
   const subjectName =
     subjectResult.data?.name ||
     (prefix === 'fq' ? 'Física y Química' : 'Matemáticas');
 
-  // Título SEO personalizado
   const title = `${topicTitle} | ${subjectName} | JuancaEduca`;
 
-  // Descripción SEO
   const descriptionBase = dbTopic?.description?.trim()
     ? `${dbTopic.description.trim()} Encuentra ejercicios resueltos, vídeos explicativos y tests de autoevaluación.`
     : `Aprende ${topicTitle} de ${subjectName} con ejercicios resueltos en PDF, vídeos explicativos y tests de autoevaluación.`;
@@ -136,15 +128,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ? `${descriptionBase.slice(0, 157).trimEnd()}...`
       : descriptionBase;
 
-  // URL canónica de esta página
-  const canonical = `https://profelabjuancaeduca.vercel.app/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}/${encodeURIComponent(topic)}`;
+  const canonical = `${SITE_URL}/asignaturas/${encodeURIComponent(subject)}/${encodeURIComponent(level)}/${encodeURIComponent(topic)}`;
 
   return {
     title,
     description,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     openGraph: {
       title,
       description,
@@ -153,33 +142,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: 'es_ES',
       type: 'article',
     },
-    twitter: {
-      card: 'summary',
-      title,
-      description,
-    },
+    twitter: { card: 'summary', title, description },
   };
 }
-
 
 export default async function TopicPage({ params }: Props) {
   const resolvedParams = await params;
   const { subject, level, topic: rawTopic } = resolvedParams;
   const rawTopicParam = decodeURIComponent(rawTopic).toLowerCase().trim();
 
-  // 1. Identificar la asignatura exacta contemplando IDs dinámicos de Supabase
+  // 1. Identificar la asignatura
   const rawLevel = level.toLowerCase().trim();
   const prefix = subject.toLowerCase().includes('fisica') ? 'fq' : 'mat';
-  const cleanLevel = LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
-  
-  // Si el nivel ya empieza con el prefijo (ej. mat-1bachccss), se mantiene tal cual
-  const targetSubjectId = cleanLevel.startsWith(prefix) ? cleanLevel : `${prefix}-${cleanLevel}`;
+  const cleanLevel =
+    LEVEL_MAP[rawLevel] || rawLevel.replace('bachillerato', 'bach').replace('-', '');
 
-  // 2. Traer el tema de Supabase buscando por los formatos de ID posibles
+  const targetSubjectId = cleanLevel.startsWith(prefix)
+    ? cleanLevel
+    : `${prefix}-${cleanLevel}`;
+
+  // 2. Traer el tema de Supabase
   const { data: dbTopicsRaw } = await supabase
     .from('topics')
     .select('*')
-    .or(`subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${prefix}-${rawLevel}`);
+    .or(
+      `subject_id.eq.${targetSubjectId},subject_id.eq.${rawLevel},subject_id.eq.${prefix}-${rawLevel}`
+    );
 
   const dbTopic = (dbTopicsRaw || []).find((t) => {
     const tId = String(t.id || '').toLowerCase().trim();
@@ -208,7 +196,9 @@ export default async function TopicPage({ params }: Props) {
 
   const currentTopicId = currentTopic.id;
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
-  const levelTitle = LEVEL_DISPLAY_MAP[level.toLowerCase().trim()] || level.replace(/-/g, ' ').toUpperCase();
+  const levelTitle =
+    LEVEL_DISPLAY_MAP[level.toLowerCase().trim()] ||
+    level.replace(/-/g, ' ').toUpperCase();
 
   const backHref = `/asignaturas/${subject}/${level}`;
 
@@ -225,7 +215,9 @@ export default async function TopicPage({ params }: Props) {
   ]);
 
   const topicVideos = VIDEOS.filter(
-    (v) => String(v.topicId) === currentTopicId || createSlug(String(v.topicId)) === createSlug(currentTopic.slug)
+    (v) =>
+      String(v.topicId) === currentTopicId ||
+      createSlug(String(v.topicId)) === createSlug(currentTopic.slug)
   );
   const allVideos = [
     ...topicVideos,
@@ -233,13 +225,16 @@ export default async function TopicPage({ params }: Props) {
       id: v.id,
       topicId: v.topic_id || v.topicId,
       title: v.title,
-      youtubeId: v.youtube_id || v.video_url || v.youtube_url || v.url || v.youtubeId || v.link || '',
+      youtubeId:
+        v.youtube_id || v.video_url || v.youtube_url || v.url || v.youtubeId || v.link || '',
       description: v.description,
     })),
   ];
 
   const topicMaterials = MATERIALS.filter(
-    (m) => String(m.topicId) === currentTopicId || createSlug(String(m.topicId)) === createSlug(currentTopic.slug)
+    (m) =>
+      String(m.topicId) === currentTopicId ||
+      createSlug(String(m.topicId)) === createSlug(currentTopic.slug)
   );
   const allMaterials = [
     ...topicMaterials,
@@ -253,7 +248,7 @@ export default async function TopicPage({ params }: Props) {
     })),
   ];
 
-    const topicQuizzes = QUIZZES.filter((q) => {
+  const topicQuizzes = QUIZZES.filter((q) => {
     // Si el test indica curso, debe coincidir con el del tema
     if (q.subjectId && q.subjectId !== currentTopic.subjectId) return false;
 
@@ -280,8 +275,8 @@ export default async function TopicPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
-      
-     <TopicHeader
+
+      <TopicHeader
         title={currentTopic.title}
         backHref={backHref}
         backLabel={`${subjectTitle} ${levelTitle}`}
@@ -289,12 +284,12 @@ export default async function TopicPage({ params }: Props) {
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12 max-sm:px-4 max-sm:py-6 max-sm:space-y-6">
-        
+
         <div className="border-b border-slate-200/80 pb-8 max-sm:pb-4">
           <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 max-sm:mb-1">
             Unidad Didáctica
           </span>
-          <h1 className="font-black text-4xl sm:text-5xl font-semibold text-slate-900">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {currentTopic.title}
           </h1>
           {currentTopic.description && (
@@ -304,23 +299,24 @@ export default async function TopicPage({ params }: Props) {
           )}
         </div>
 
-
         {/* MENÚ DE NAVEGACIÓN DEL TEMA */}
         <TopicSectionNav hasContent={Boolean(currentTopic.content)} />
 
-
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
-          <section id="sobre-el-tema" className="scroll-mt-36 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
-            <h2 className="text-xl font-black font-semibold text-slate-900 tracking-tight">
+          <section
+            id="sobre-el-tema"
+            className="fade-up scroll-mt-36 bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4"
+            style={{ animationDelay: '0.05s' }}
+          >
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
               Sobre este tema
             </h2>
 
-            
             <div className="text-slate-700 text-sm sm:text-base leading-7 space-y-4">
               <ReactMarkdown
-              remarkPlugins={[remarkMath]}
-              rehypePlugins={[rehypeKatex]}
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
                 components={{
                   h2: ({ children }) => (
                     <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-8 mb-3">
@@ -332,27 +328,17 @@ export default async function TopicPage({ params }: Props) {
                       {children}
                     </h4>
                   ),
-                  p: ({ children }) => (
-                    <p className="mb-4">{children}</p>
-                  ),
+                  p: ({ children }) => <p className="mb-4">{children}</p>,
                   strong: ({ children }) => (
-                    <strong className="font-bold text-slate-900">
-                      {children}
-                    </strong>
+                    <strong className="font-bold text-slate-900">{children}</strong>
                   ),
                   ul: ({ children }) => (
-                    <ul className="list-disc pl-6 space-y-2 mb-4">
-                      {children}
-                    </ul>
+                    <ul className="list-disc pl-6 space-y-2 mb-4">{children}</ul>
                   ),
                   ol: ({ children }) => (
-                    <ol className="list-decimal pl-6 space-y-2 mb-4">
-                      {children}
-                    </ol>
+                    <ol className="list-decimal pl-6 space-y-2 mb-4">{children}</ol>
                   ),
-                  li: ({ children }) => (
-                    <li className="pl-1">{children}</li>
-                  ),
+                  li: ({ children }) => <li className="pl-1">{children}</li>,
                   blockquote: ({ children }) => (
                     <blockquote className="border-l-4 border-red-300 pl-4 italic text-slate-600 my-4">
                       {children}
@@ -363,12 +349,15 @@ export default async function TopicPage({ params }: Props) {
                 {currentTopic.content}
               </ReactMarkdown>
             </div>
-
           </section>
         )}
 
-        {/* 1. SECCIÓN: VÍDEOS EXPLICATIVOS */}
-        <section id="videos" className="scroll-mt-36 space-y-4">
+        {/* 1. VÍDEOS EXPLICATIVOS */}
+        <section
+          id="videos"
+          className="fade-up scroll-mt-36 space-y-4"
+          style={{ animationDelay: '0.1s' }}
+        >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <PlayCircle className="w-5 h-5 text-red-600" />
             <h2>Vídeos Explicativos</h2>
@@ -393,8 +382,12 @@ export default async function TopicPage({ params }: Props) {
           )}
         </section>
 
-        {/* 2. SECCIÓN: EJERCICIOS RESUELTOS EN PDF POR APARTADOS */}
-        <section id="ejercicios-pdf" className="scroll-mt-36 space-y-6">
+        {/* 2. EJERCICIOS RESUELTOS EN PDF */}
+        <section
+          id="ejercicios-pdf"
+          className="fade-up scroll-mt-36 space-y-6"
+          style={{ animationDelay: '0.15s' }}
+        >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <BookOpen className="w-5 h-5 text-red-600" />
             <h2>Ejercicios Resueltos a Mano (PDF)</h2>
@@ -412,7 +405,10 @@ export default async function TopicPage({ params }: Props) {
                   {sec.exercise_files && sec.exercise_files.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {sec.exercise_files.map((file: any) => (
-                        <div key={file.id} className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70 flex items-center justify-between hover:border-slate-300 transition">
+                        <div
+                          key={file.id}
+                          className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70 flex items-center justify-between hover:border-slate-300 transition"
+                        >
                           <div className="flex items-center gap-3 min-w-0 pr-2">
                             <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                               <FileCode2 className="w-4 h-4" />
@@ -455,8 +451,12 @@ export default async function TopicPage({ params }: Props) {
           )}
         </section>
 
-        {/* 3. SECCIÓN: AUTOEVALUACIÓN EN LÍNEA */}
-        <section id="autoevaluacion" className="scroll-mt-36 space-y-4">
+        {/* 3. AUTOEVALUACIÓN EN LÍNEA */}
+        <section
+          id="autoevaluacion"
+          className="fade-up scroll-mt-36 space-y-4"
+          style={{ animationDelay: '0.2s' }}
+        >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <CheckCircle2 className="w-5 h-5 text-red-600" />
             <h2>Autoevaluación en Línea</h2>
@@ -472,8 +472,12 @@ export default async function TopicPage({ params }: Props) {
           )}
         </section>
 
-        {/* 4. SECCIÓN: MATERIAL Y DOCUMENTOS */}
-        <section id="material-pdf" className="scroll-mt-36 space-y-4">
+        {/* 4. MATERIAL Y DOCUMENTOS */}
+        <section
+          id="material-pdf"
+          className="fade-up scroll-mt-36 space-y-4"
+          style={{ animationDelay: '0.25s' }}
+        >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
             <FileText className="w-5 h-5 text-red-600" />
             <h2>Material y Documentos</h2>
@@ -482,8 +486,8 @@ export default async function TopicPage({ params }: Props) {
           {allMaterials.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {allMaterials.map((m) => (
-                <div 
-                  key={m.id} 
+                <div
+                  key={m.id}
                   className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-sm flex items-center justify-between transition hover:border-slate-300"
                 >
                   <div className="flex items-center gap-3.5">
@@ -500,11 +504,11 @@ export default async function TopicPage({ params }: Props) {
                       <Lock className="w-3.5 h-3.5" /> Plus
                     </span>
                   ) : (
-                    <a 
-                      href={m.fileUrl} 
+                    <a
+                      href={m.fileUrl}
                       target="_blank"
                       rel="noreferrer"
-                      download 
+                      download
                       className="p-2.5 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 transition border border-slate-200/60"
                       title="Descargar archivo"
                     >

@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import {
-  PlusCircle, Edit, Trash2, CheckCircle, AlertCircle,
-  Video, BookOpen, FileText, Layers, HelpCircle, Loader2, Upload, FolderPlus
-} from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import {
+  PlusCircle, Edit, Trash2, CheckCircle, AlertCircle,
+  Video, BookOpen, FileText, Layers, HelpCircle, Loader2, Upload, FolderPlus, X
+} from 'lucide-react';
 
 const INITIAL_COURSES = [
   { id: 'mat-1eso', label: 'Matemáticas 1º ESO' },
@@ -25,6 +25,20 @@ const INITIAL_COURSES = [
   { id: 'fq-1bach', label: 'Física y Química 1º Bach' },
   { id: 'fq-2bach', label: 'Física y Química 2º Bach' },
 ];
+
+type QuizQuestionForm = {
+  text: string;
+  options: string[];
+  correct: number;
+  explanation: string;
+};
+
+const emptyQuestion = (): QuizQuestionForm => ({
+  text: '',
+  options: ['', '', '', ''],
+  correct: 0,
+  explanation: '',
+});
 
 // Escrituras en la base de datos: van por el servidor (/admin/api/db)
 async function adminDb(body: {
@@ -79,11 +93,12 @@ export default function AdminPage() {
   const [fetchedItems, setFetchedItems] = useState<any[]>([]);
 
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const [topicContent, setTopicContent] = useState('');
+
   // Tema
   const [topicTitle, setTopicTitle] = useState('');
   const [topicSlug, setTopicSlug] = useState('');
   const [topicDescription, setTopicDescription] = useState('');
+  const [topicContent, setTopicContent] = useState('');
 
   // Vídeo
   const [videoTitle, setVideoTitle] = useState('');
@@ -103,15 +118,26 @@ export default function AdminPage() {
   const [matFile, setMatFile] = useState<File | null>(null);
   const [isPremium, setIsPremium] = useState(false);
 
-  // Quiz
+  // Test (varias preguntas)
   const [quizTitle, setQuizTitle] = useState('');
-  const [qStatement, setQStatement] = useState('');
-  const [opt0, setOpt0] = useState('');
-  const [opt1, setOpt1] = useState('');
-  const [opt2, setOpt2] = useState('');
-  const [opt3, setOpt3] = useState('');
-  const [correctOpt, setCorrectOpt] = useState(0);
-  const [explanation, setExplanation] = useState('');
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestionForm[]>([emptyQuestion()]);
+
+  const updateQuestion = (index: number, patch: Partial<QuizQuestionForm>) => {
+    setQuizQuestions((prev) => prev.map((q, i) => (i === index ? { ...q, ...patch } : q)));
+  };
+
+  const updateOption = (qIndex: number, oIndex: number, value: string) => {
+    setQuizQuestions((prev) =>
+      prev.map((q, i) =>
+        i === qIndex ? { ...q, options: q.options.map((o, j) => (j === oIndex ? value : o)) } : q
+      )
+    );
+  };
+
+  const addQuestion = () => setQuizQuestions((prev) => [...prev, emptyQuestion()]);
+
+  const removeQuestion = (index: number) =>
+    setQuizQuestions((prev) => (prev.length === 1 ? prev : prev.filter((_, i) => i !== index)));
 
   const loadCourses = useCallback(async () => {
     const { data: dbSubjects } = await supabase
@@ -294,7 +320,7 @@ export default function AdminPage() {
     });
 
     if (error) {
-    if (finalUrl) await adminDb({ table: 'exercise_files', action: 'cleanup', payload: { fileUrl: finalUrl } });
+      if (finalUrl) await adminDb({ table: 'exercise_files', action: 'cleanup', payload: { fileUrl: finalUrl } });
       setStatus({ type: 'error', message: error.message });
     } else {
       setStatus({ type: 'success', message: editingItemId ? '¡PDF actualizado!' : '¡PDF resuelto añadido con éxito!' });
@@ -310,7 +336,7 @@ export default function AdminPage() {
     await ensureSubjectExists(selectedCourse);
 
     const id = editingItemId || `${selectedCourse}-${topicSlug}`;
-        const payload = {
+    const payload = {
       id,
       subject_id: selectedCourse,
       title: topicTitle,
@@ -318,6 +344,7 @@ export default function AdminPage() {
       description: topicDescription,
       content: topicContent,
     };
+
     const { error } = await adminDb({
       table: 'topics',
       action: editingItemId ? 'update' : 'insert',
@@ -398,7 +425,27 @@ export default function AdminPage() {
     e.preventDefault();
     if (!selectedTopicId) return setStatus({ type: 'error', message: 'Selecciona un tema primero.' });
 
-    const questionsArray = [{ id: 'q1', question: qStatement, options: [opt0, opt1, opt2, opt3], correctAnswer: correctOpt, explanation }];
+    // Validación: cada pregunta debe tener enunciado y las 4 opciones
+    for (let i = 0; i < quizQuestions.length; i++) {
+      const q = quizQuestions[i];
+      if (!q.text.trim() || q.options.some((o) => !o.trim())) {
+        return setStatus({
+          type: 'error',
+          message: `La pregunta ${i + 1} está incompleta (enunciado y las 4 opciones).`,
+        });
+      }
+    }
+
+    const questionsArray = quizQuestions.map((q, i) => ({
+      id: `q${i + 1}`,
+      text: q.text.trim(),
+      options: q.options.map((o) => o.trim()),
+      correctAnswer: q.correct,
+      explanation: q.explanation.trim(),
+    }));
+
+    setStatus({ type: 'loading', message: 'Guardando test...' });
+
     const payload = { topic_id: selectedTopicId, title: quizTitle, questions: questionsArray };
 
     const { error } = await adminDb({
@@ -410,7 +457,12 @@ export default function AdminPage() {
 
     if (error) setStatus({ type: 'error', message: error.message });
     else {
-      setStatus({ type: 'success', message: editingItemId ? '¡Test actualizado!' : '¡Test publicado!' });
+      setStatus({
+        type: 'success',
+        message: editingItemId
+          ? `¡Test actualizado (${questionsArray.length} preguntas)!`
+          : `¡Test publicado (${questionsArray.length} preguntas)!`,
+      });
       resetForm();
       if (actionMode !== 'create') loadResourceItems();
     }
@@ -472,16 +524,16 @@ export default function AdminPage() {
       setIsPremium(item.is_premium || false);
     } else if (activeTab === 'quiz') {
       setQuizTitle(item.title || '');
-      const q = item.questions?.[0];
-      if (q) {
-        setQStatement(q.question || '');
-        setOpt0(q.options?.[0] || '');
-        setOpt1(q.options?.[1] || '');
-        setOpt2(q.options?.[2] || '');
-        setOpt3(q.options?.[3] || '');
-        setCorrectOpt(q.correctAnswer || 0);
-        setExplanation(q.explanation || '');
-      }
+      const loaded: QuizQuestionForm[] = (item.questions || []).map((q: any) => {
+        const opts: string[] = Array.isArray(q.options) ? q.options : [];
+        return {
+          text: q.text ?? q.question ?? '',
+          options: [0, 1, 2, 3].map((i) => opts[i] ?? ''),
+          correct: Number(q.correctAnswer ?? q.correctOptionIndex ?? 0) || 0,
+          explanation: q.explanation ?? '',
+        };
+      });
+      setQuizQuestions(loaded.length > 0 ? loaded : [emptyQuestion()]);
     }
   };
 
@@ -491,7 +543,7 @@ export default function AdminPage() {
     setVideoTitle(''); setYoutubeId('');
     setExPdfTitle(''); setExPdfFile(null); setExPdfIsPremium(false);
     setMatTitle(''); setMatUrl(''); setMatFile(null); setIsPremium(false);
-    setQuizTitle(''); setQStatement(''); setOpt0(''); setOpt1(''); setOpt2(''); setOpt3(''); setExplanation('');
+    setQuizTitle(''); setQuizQuestions([emptyQuestion()]);
   };
 
   return (
@@ -664,7 +716,8 @@ export default function AdminPage() {
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Descripción</label>
                   <textarea placeholder="Resumen del tema..." value={topicDescription} onChange={(e) => setTopicDescription(e.target.value)} className="w-full p-3 rounded-xl border border-slate-200 text-xs font-medium h-20" />
                 </div>
-                                <div>
+
+                <div>
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
                     Contenido del tema (Markdown + fórmulas con $...$)
                   </label>
@@ -696,6 +749,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                 </div>
+
                 <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs transition">
                   {editingItemId ? 'Guardar Cambios del Tema' : 'Publicar Tema'}
                 </button>
@@ -814,7 +868,7 @@ export default function AdminPage() {
                 <div className="space-y-3 border-t border-slate-200 pt-4">
                   <h4 className="text-xs font-black uppercase text-slate-500">Estructura actual de este Tema:</h4>
                   {exerciseSections.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic">No hay apartados ni ejercicios creados aún.</p>
+                    <p className="text-xs text-slate-400 italic">No hay apartados ni ejercicios creados aún.</p>
                   ) : (
                     exerciseSections.map((sec) => (
                       <div key={sec.id} className="p-3 bg-white border border-slate-200 rounded-xl space-y-2">
@@ -837,7 +891,7 @@ export default function AdminPage() {
                               </li>
                             ))
                           ) : (
-                            <li className="text-[11px] text-slate-500 italic">Sin PDFs subidos todavía.</li>
+                            <li className="text-[11px] text-slate-400 italic">Sin PDFs subidos todavía.</li>
                           )}
                         </ul>
                       </div>
@@ -876,35 +930,88 @@ export default function AdminPage() {
               </form>
             )}
 
-            {/* TEST */}
+            {/* TEST (VARIAS PREGUNTAS) */}
             {activeTab === 'quiz' && (
-              <form onSubmit={handleSaveQuiz} className="space-y-3">
+              <form onSubmit={handleSaveQuiz} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Título del Test</label>
                   <input type="text" placeholder="Ej. Test de Autoevaluación" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} className="w-full p-3 rounded-xl border border-slate-200 text-xs font-medium" required />
                 </div>
-                <div className="border-t border-slate-100 pt-3 space-y-2">
-                  <label className="block text-xs font-bold text-red-600 uppercase">Pregunta</label>
-                  <input type="text" placeholder="Pregunta..." value={qStatement} onChange={(e) => setQStatement(e.target.value)} className="w-full p-3 rounded-xl border border-slate-200 text-xs font-medium" required />
-                  <div className="grid grid-cols-2 gap-2">
-                    <input type="text" placeholder="Opción A" value={opt0} onChange={(e) => setOpt0(e.target.value)} className="p-2.5 rounded-xl border border-slate-200 text-xs" required />
-                    <input type="text" placeholder="Opción B" value={opt1} onChange={(e) => setOpt1(e.target.value)} className="p-2.5 rounded-xl border border-slate-200 text-xs" required />
-                    <input type="text" placeholder="Opción C" value={opt2} onChange={(e) => setOpt2(e.target.value)} className="p-2.5 rounded-xl border border-slate-200 text-xs" required />
-                    <input type="text" placeholder="Opción D" value={opt3} onChange={(e) => setOpt3(e.target.value)} className="p-2.5 rounded-xl border border-slate-200 text-xs" required />
+
+                <p className="text-[11px] text-slate-500">
+                  Puedes usar fórmulas entre <code className="font-mono">$...$</code>, por ejemplo <code className="font-mono">{'$\\frac{1}{2}$'}</code>. Aquí escribe una sola barra invertida.
+                </p>
+
+                {quizQuestions.map((q, qi) => (
+                  <div key={qi} className="border border-slate-200 rounded-2xl p-4 space-y-3 bg-slate-50/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black uppercase text-red-600">Pregunta {qi + 1}</span>
+                      {quizQuestions.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeQuestion(qi)}
+                          className="flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:underline"
+                        >
+                          <X className="w-3.5 h-3.5" /> Quitar
+                        </button>
+                      )}
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="Enunciado..."
+                      value={q.text}
+                      onChange={(e) => updateQuestion(qi, { text: e.target.value })}
+                      className="w-full p-3 rounded-xl border border-slate-200 bg-white text-xs font-medium"
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {q.options.map((opt, oi) => (
+                        <input
+                          key={oi}
+                          type="text"
+                          placeholder={`Opción ${['A', 'B', 'C', 'D'][oi]}`}
+                          value={opt}
+                          onChange={(e) => updateOption(qi, oi, e.target.value)}
+                          className="p-2.5 rounded-xl border border-slate-200 bg-white text-xs"
+                        />
+                      ))}
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-500 mb-1">Respuesta correcta</label>
+                      <select
+                        value={q.correct}
+                        onChange={(e) => updateQuestion(qi, { correct: Number(e.target.value) })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold"
+                      >
+                        <option value={0}>Opción A</option>
+                        <option value={1}>Opción B</option>
+                        <option value={2}>Opción C</option>
+                        <option value={3}>Opción D</option>
+                      </select>
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="Explicación breve"
+                      value={q.explanation}
+                      onChange={(e) => updateQuestion(qi, { explanation: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs"
+                    />
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-slate-500 mb-1">Respuesta Correcta</label>
-                    <select value={correctOpt} onChange={(e) => setCorrectOpt(Number(e.target.value))} className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold">
-                      <option value={0}>Opción A</option>
-                      <option value={1}>Opción B</option>
-                      <option value={2}>Opción C</option>
-                      <option value={3}>Opción D</option>
-                    </select>
-                  </div>
-                  <input type="text" placeholder="Explicación breve" value={explanation} onChange={(e) => setExplanation(e.target.value)} className="w-full p-2.5 rounded-xl border border-slate-200 text-xs" />
-                </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={addQuestion}
+                  className="w-full border-2 border-dashed border-slate-300 hover:border-slate-400 text-slate-600 font-bold py-3 rounded-xl text-xs transition flex items-center justify-center gap-2"
+                >
+                  <PlusCircle className="w-4 h-4" /> Añadir otra pregunta
+                </button>
+
                 <button type="submit" disabled={!selectedTopicId} className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white font-bold py-3 rounded-xl text-xs transition">
-                  {editingItemId ? 'Guardar Cambios del Test' : 'Publicar Test'}
+                  {editingItemId ? 'Guardar Cambios del Test' : `Publicar Test (${quizQuestions.length} ${quizQuestions.length === 1 ? 'pregunta' : 'preguntas'})`}
                 </button>
               </form>
             )}

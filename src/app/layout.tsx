@@ -4,6 +4,7 @@ import "./globals.css";
 import "katex/dist/katex.min.css";
 import { Analytics } from '@vercel/analytics/react';
 import { SITE_URL } from '@/lib/config';
+import { JsonLd } from '@/components/JsonLd';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,7 +64,28 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@graph': [
+              {
+                '@type': 'Organization',
+                '@id': `${SITE_URL}/#organization`,
+                name: 'JuancaEduca',
+                url: SITE_URL,
+                logo: `${SITE_URL}/icon`,
+              },
+              {
+                '@type': 'WebSite',
+                '@id': `${SITE_URL}/#website`,
+                url: SITE_URL,
+                name: 'JuancaEduca',
+                inLanguage: 'es-ES',
+                publisher: { '@id': `${SITE_URL}/#organization` },
+              },
+            ],
+          }}
+        />
         <Analytics />
       </body>
     </html>

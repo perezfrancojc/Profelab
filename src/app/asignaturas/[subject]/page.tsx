@@ -8,6 +8,7 @@ import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHe
 import { GlassBadge } from '@/components/GlassBadge';
 import { themeFor } from '@/lib/subjectTheme';
 import { ALL_QUIZZES } from '@/data/quizzes';
+import { JsonLd } from '@/components/JsonLd';
 
 export const revalidate = 3600;
 
@@ -92,6 +93,22 @@ export default async function SubjectPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
 
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: subjectTitle,
+              item: `${SITE_URL}/asignaturas/${subject}`,
+            },
+          ],
+        }}
+      />
+      
       <SectionFusionHeader
         title={subjectTitle}
         compactTitle={`Cursos de ${subjectTitle}`}

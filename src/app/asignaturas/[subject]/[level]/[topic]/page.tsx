@@ -23,6 +23,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { TopicSectionNav } from '@/components/TopicSectionNav';
 import { TopicHeader } from '@/components/TopicHeader';
+import { JsonLd } from '@/components/JsonLd';
 
 export const revalidate = 3600;
 
@@ -277,6 +278,49 @@ export default async function TopicPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
+
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: subjectTitle,
+                  item: `${SITE_URL}/asignaturas/${subject}`,
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 3,
+                  name: levelTitle,
+                  item: `${SITE_URL}/asignaturas/${subject}/${level}`,
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 4,
+                  name: currentTopic.title,
+                  item: `${SITE_URL}/asignaturas/${subject}/${level}/${rawTopic}`,
+                },
+              ],
+            },
+            {
+              '@type': 'LearningResource',
+              name: currentTopic.title,
+              description: currentTopic.description || undefined,
+              inLanguage: 'es-ES',
+              educationalLevel: levelTitle,
+              teaches: currentTopic.title,
+              isAccessibleForFree: true,
+              url: `${SITE_URL}/asignaturas/${subject}/${level}/${rawTopic}`,
+              provider: { '@id': `${SITE_URL}/#organization` },
+            },
+          ],
+        }}
+      />
 
       <TopicHeader
         title={currentTopic.title}

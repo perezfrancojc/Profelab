@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import { SectionFusionHeader, FusionSection } from '@/components/SectionFusionHeader';
 import { TopicIcon } from '@/components/TopicIcon';
 import { themeFor } from '@/lib/subjectTheme';
+import { JsonLd } from '@/components/JsonLd';
 
 export const revalidate = 3600;
 
@@ -182,6 +183,29 @@ export default async function SubjectLevelPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased">
+      
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: subjectTitle,
+              item: `${SITE_URL}/asignaturas/${subject}`,
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: displayLevel,
+              item: `${SITE_URL}/asignaturas/${subject}/${level}`,
+            },
+          ],
+        }}
+      />
+      
       <SectionFusionHeader
         title={courseTitle}
         compactTitle={`Temario Oficial · ${courseTitle}`}

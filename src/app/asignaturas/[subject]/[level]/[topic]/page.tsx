@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SITE_URL } from '@/lib/config';
+import { themeFor } from '@/lib/subjectTheme';
 import { YouTubeFacade } from '@/components/YouTubeFacade';
 import { QuizRunner } from '@/components/QuizRunner';
 import { VIDEOS, MATERIALS } from '@/data/educationalData';
@@ -196,6 +197,7 @@ export default async function TopicPage({ params }: Props) {
 
   const currentTopicId = currentTopic.id;
   const subjectTitle = prefix === 'fq' ? 'Física y Química' : 'Matemáticas';
+  const theme = themeFor(subject);
   const levelTitle =
     LEVEL_DISPLAY_MAP[level.toLowerCase().trim()] ||
     level.replace(/-/g, ' ').toUpperCase();
@@ -281,12 +283,13 @@ export default async function TopicPage({ params }: Props) {
         backHref={backHref}
         backLabel={`${subjectTitle} ${levelTitle}`}
         hasContent={Boolean(currentTopic.content)}
+        subject={subject}
       />
 
       <main className="max-w-4xl mx-auto px-6 py-12 space-y-12 max-sm:px-4 max-sm:py-6 max-sm:space-y-6">
 
         <div className="border-b border-slate-200/80 pb-8 max-sm:pb-4">
-          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2 max-sm:mb-1">
+          <span className={`text-xs font-bold uppercase tracking-widest block mb-2 max-sm:mb-1 ${theme.accent}`}>
             Unidad Didáctica
           </span>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
@@ -300,7 +303,7 @@ export default async function TopicPage({ params }: Props) {
         </div>
 
         {/* MENÚ DE NAVEGACIÓN DEL TEMA */}
-        <TopicSectionNav hasContent={Boolean(currentTopic.content)} />
+        <TopicSectionNav hasContent={Boolean(currentTopic.content)} subject={subject} />
 
         {/* SECCIÓN: CONTENIDO EDUCATIVO */}
         {currentTopic.content && (
@@ -340,7 +343,7 @@ export default async function TopicPage({ params }: Props) {
                   ),
                   li: ({ children }) => <li className="pl-1">{children}</li>,
                   blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-red-300 pl-4 italic text-slate-600 my-4">
+                    <blockquote className="border-l-4 border-slate-300 pl-4 italic text-slate-600 my-4">
                       {children}
                     </blockquote>
                   ),
@@ -359,7 +362,7 @@ export default async function TopicPage({ params }: Props) {
           style={{ animationDelay: '0.1s' }}
         >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
-            <PlayCircle className="w-5 h-5 text-red-600" />
+            <PlayCircle className={`w-5 h-5 ${theme.accent}`} />
             <h2>Vídeos Explicativos</h2>
           </div>
 
@@ -389,7 +392,7 @@ export default async function TopicPage({ params }: Props) {
           style={{ animationDelay: '0.15s' }}
         >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
-            <BookOpen className="w-5 h-5 text-red-600" />
+            <BookOpen className={`w-5 h-5 ${theme.accent}`} />
             <h2>Ejercicios Resueltos a Mano (PDF)</h2>
           </div>
 
@@ -410,7 +413,7 @@ export default async function TopicPage({ params }: Props) {
                           className="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/70 flex items-center justify-between hover:border-slate-300 transition"
                         >
                           <div className="flex items-center gap-3 min-w-0 pr-2">
-                            <div className="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${theme.iconBox}`}>
                               <FileCode2 className="w-4 h-4" />
                             </div>
                             <p className="text-xs font-bold text-slate-800 truncate" title={file.title}>
@@ -428,7 +431,7 @@ export default async function TopicPage({ params }: Props) {
                               target="_blank"
                               rel="noreferrer"
                               download
-                              className="p-2 rounded-lg bg-white text-slate-700 hover:text-red-600 hover:bg-red-50 border border-slate-200 transition shrink-0"
+                              className={`p-2 rounded-lg bg-white text-slate-700 border border-slate-200 transition shrink-0 ${theme.textHover} ${theme.softHoverBg}`}
                               title="Ver o Descargar PDF"
                             >
                               <Download className="w-4 h-4" />
@@ -458,7 +461,7 @@ export default async function TopicPage({ params }: Props) {
           style={{ animationDelay: '0.2s' }}
         >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
-            <CheckCircle2 className="w-5 h-5 text-red-600" />
+            <CheckCircle2 className={`w-5 h-5 ${theme.accent}`} />
             <h2>Autoevaluación en Línea</h2>
           </div>
 
@@ -479,7 +482,7 @@ export default async function TopicPage({ params }: Props) {
           style={{ animationDelay: '0.25s' }}
         >
           <div className="flex items-center gap-2.5 text-slate-900 font-black text-xl tracking-tight">
-            <FileText className="w-5 h-5 text-red-600" />
+            <FileText className={`w-5 h-5 ${theme.accent}`} />
             <h2>Material y Documentos</h2>
           </div>
 
@@ -491,7 +494,7 @@ export default async function TopicPage({ params }: Props) {
                   className="p-5 bg-white rounded-2xl border border-slate-200/90 shadow-sm flex items-center justify-between transition hover:border-slate-300"
                 >
                   <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-600 shrink-0 border border-red-100">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${theme.iconBox}`}>
                       <FileText className="w-5 h-5" />
                     </div>
                     <div>
@@ -509,7 +512,7 @@ export default async function TopicPage({ params }: Props) {
                       target="_blank"
                       rel="noreferrer"
                       download
-                      className="p-2.5 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 transition border border-slate-200/60"
+                      className={`p-2.5 rounded-xl bg-slate-50 text-slate-600 transition border border-slate-200/60 ${theme.textHover} ${theme.softHoverBg}`}
                       title="Descargar archivo"
                     >
                       <Download className="w-4 h-4" />

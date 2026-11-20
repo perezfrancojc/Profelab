@@ -1,13 +1,15 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
+import { themeFor } from '@/lib/subjectTheme';
 
 interface Props {
   hasContent: boolean;
+  subject: string;
 }
 
-export function TopicSectionNav({ hasContent }: Props) {
+export function TopicSectionNav({ hasContent, subject }: Props) {
+  const theme = themeFor(subject);
   const [activeSection, setActiveSection] = useState(
     hasContent ? 'sobre-el-tema' : 'videos'
   );
@@ -42,10 +44,7 @@ export function TopicSectionNav({ hasContent }: Props) {
       (entries) => {
         const visibleSections = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              a.boundingClientRect.top - b.boundingClientRect.top
-          );
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visibleSections.length > 0) {
           setActiveSection(visibleSections[0].target.id);
@@ -63,6 +62,7 @@ export function TopicSectionNav({ hasContent }: Props) {
     });
 
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasContent]);
 
   return (
@@ -87,8 +87,8 @@ export function TopicSectionNav({ hasContent }: Props) {
               onClick={() => setActiveSection(item.id)}
               className={`shrink-0 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                 isActive
-                  ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
+                  ? `${theme.solidBg} text-white shadow-sm`
+                  : `text-slate-600 ${theme.textHover} ${theme.softHoverBg}`
               }`}
             >
               {item.label}
@@ -99,6 +99,5 @@ export function TopicSectionNav({ hasContent }: Props) {
     </nav>
   );
 }
-
 
 

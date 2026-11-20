@@ -1,15 +1,16 @@
-
 'use client';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { themeFor } from '@/lib/subjectTheme';
 
 interface TopicHeaderProps {
   title: string;
   backHref: string;
   backLabel?: string;
   hasContent: boolean;
+  subject: string;
 }
 
 export function TopicHeader({
@@ -17,7 +18,9 @@ export function TopicHeader({
   backHref,
   backLabel = 'Volver',
   hasContent,
+  subject,
 }: TopicHeaderProps) {
+  const theme = themeFor(subject);
   const [expanded, setExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState(
     hasContent ? 'sobre-el-tema' : 'videos'
@@ -41,7 +44,6 @@ export function TopicHeader({
 
       animationFrame = requestAnimationFrame(() => {
         const originalNav = document.getElementById('topic-section-nav');
-
         if (!originalNav) return;
 
         const navTop = originalNav.getBoundingClientRect().top;
@@ -76,10 +78,7 @@ export function TopicHeader({
       (entries) => {
         const visibleSections = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              a.boundingClientRect.top - b.boundingClientRect.top
-          );
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visibleSections.length > 0) {
           setActiveSection(visibleSections[0].target.id);
@@ -97,6 +96,7 @@ export function TopicHeader({
     });
 
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasContent]);
 
   return (
@@ -160,8 +160,8 @@ export function TopicHeader({
                   onClick={() => setActiveSection(item.id)}
                   className={`shrink-0 px-2 py-2 max-sm:px-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all duration-200 ${
                     isActive
-                      ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-red-600 hover:bg-red-50'
+                      ? `${theme.solidBg} text-white shadow-sm`
+                      : `text-slate-600 ${theme.textHover} ${theme.softHoverBg}`
                   }`}
                 >
                   <span className="hidden xl:inline">{item.label}</span>
@@ -174,7 +174,7 @@ export function TopicHeader({
 
         <Link
           href={backHref}
-          className="flex items-center gap-1.5 max-sm:gap-0.5 text-xs sm:text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors shrink-0 ml-auto"
+          className={`flex items-center gap-1.5 max-sm:gap-0.5 text-xs sm:text-sm font-semibold text-slate-600 transition-colors shrink-0 ml-auto ${theme.textHover}`}
         >
           <ArrowLeft className="w-4 h-4 shrink-0" />
           <span className="hidden sm:inline">{backLabel}</span>

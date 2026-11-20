@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
+import "katex/dist/katex.min.css";
 import { Analytics } from '@vercel/analytics/react';
 import { SITE_URL } from '@/lib/config';
-import "katex/dist/katex.min.css";
-import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

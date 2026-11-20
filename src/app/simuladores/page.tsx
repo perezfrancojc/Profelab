@@ -49,7 +49,7 @@ export default function SimulatorsHub() {
           const theme = THEME[section.key];
 
           return (
-            <section key={section.key} className="space-y-4">
+            <section key={section.key} id={section.key} className="space-y-4 scroll-mt-28">
               <h2 className={`text-xl font-black tracking-tight ${theme.accent}`}>{section.title}</h2>
 
               {items.length > 0 ? (

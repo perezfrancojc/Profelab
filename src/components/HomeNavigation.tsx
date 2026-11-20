@@ -7,7 +7,7 @@ import { Phone } from 'lucide-react';
 
 const navigationItems = [
   { id: 'asignaturas', label: 'Asignaturas', short: 'Materias' },
-  { id: 'simuladores', label: 'Simuladores', short: 'Simular', href: '/simuladores' },
+  { id: 'simuladores', label: 'Simuladores', short: 'Simular' },
   { id: 'metodo', label: 'Metodología', short: 'Método' },
   { id: 'videos', label: 'Vídeos', short: 'Vídeos' },
   { id: 'contacto', label: 'Contacto', short: 'Contacto' },
@@ -84,19 +84,6 @@ export function HomeNavigation() {
             <span className="sm:hidden">{item.short}</span>
           </>
         );
-
-        // Enlace a otra página
-        if (item.href) {
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={`${base} text-slate-600 hover:text-red-600 hover:bg-red-50`}
-            >
-              {label}
-            </Link>
-          );
-        }
 
         return (
           <a

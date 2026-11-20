@@ -8,6 +8,8 @@ import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
 import { GlassBadge } from '@/components/GlassBadge';
 import { THEME } from '@/lib/subjectTheme';
+import { SIMULATORS } from '@/data/simulators';
+import { SlidersHorizontal } from 'lucide-react';
 
 export const revalidate = 3600;
 
@@ -165,6 +167,41 @@ export default async function HomePage() {
             </div>
           </Link>
 
+        </div>
+      </section>
+
+            {/* Simuladores */}
+      <section id="simuladores" className="py-20 px-6 max-w-6xl mx-auto">
+        <div className="max-w-xl mb-12">
+          <span className="text-xs font-bold text-red-600 uppercase tracking-widest block mb-2">Aprende explorando</span>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Simuladores interactivos</h2>
+          <p className="text-sm text-slate-600 mt-2">Mueve los parámetros, observa qué cambia y entiende cada concepto de forma visual.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {([
+            { key: 'mat', title: 'Matemáticas', text: 'Funciones, ecuaciones, trigonometría y más, en gráficas que puedes manipular.' },
+            { key: 'fq', title: 'Física y Química', text: 'Movimiento, fuerzas, gases y reacciones, simulados paso a paso.' },
+          ] as const).map((s) => {
+            const n = SIMULATORS.filter((x) => x.subject === s.key).length;
+            return (
+              <Link key={s.key} href={`/simuladores#${s.key}`} className={CARD}>
+                <div>
+                  <div className="mb-4">
+                    <GlassBadge subject={s.key}>{n > 0 ? `${n} ${n === 1 ? 'simulador' : 'simuladores'}` : 'Próximamente'}</GlassBadge>
+                  </div>
+                  <h3 className={`text-2xl font-extrabold text-slate-900 mb-2 transition-colors ${THEME[s.key].accentHover}`}>
+                    {s.title}
+                  </h3>
+                  <p className="text-sm text-slate-600 mb-6 leading-relaxed">{s.text}</p>
+                </div>
+                <div className={`flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-bold text-slate-800 transition-colors ${THEME[s.key].accentHover}`}>
+                  <span>Ver simuladores</span>
+                  <ArrowRight className={`w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-all ${THEME[s.key].accentHover}`} />
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

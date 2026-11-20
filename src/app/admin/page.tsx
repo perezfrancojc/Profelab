@@ -6,6 +6,9 @@ import {
   PlusCircle, Edit, Trash2, CheckCircle, AlertCircle,
   Video, BookOpen, FileText, Layers, HelpCircle, Loader2, Upload, FolderPlus
 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const INITIAL_COURSES = [
   { id: 'mat-1eso', label: 'Matemáticas 1º ESO' },
@@ -76,7 +79,7 @@ export default function AdminPage() {
   const [fetchedItems, setFetchedItems] = useState<any[]>([]);
 
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-
+  const [topicContent, setTopicContent] = useState('');
   // Tema
   const [topicTitle, setTopicTitle] = useState('');
   const [topicSlug, setTopicSlug] = useState('');
@@ -307,8 +310,14 @@ export default function AdminPage() {
     await ensureSubjectExists(selectedCourse);
 
     const id = editingItemId || `${selectedCourse}-${topicSlug}`;
-    const payload = { id, subject_id: selectedCourse, title: topicTitle, slug: topicSlug, description: topicDescription };
-
+        const payload = {
+      id,
+      subject_id: selectedCourse,
+      title: topicTitle,
+      slug: topicSlug,
+      description: topicDescription,
+      content: topicContent,
+    };
     const { error } = await adminDb({
       table: 'topics',
       action: editingItemId ? 'update' : 'insert',
@@ -448,6 +457,7 @@ export default function AdminPage() {
       setTopicTitle(item.title || '');
       setTopicSlug(item.slug || '');
       setTopicDescription(item.description || '');
+      setTopicContent(item.content || '');
     } else if (activeTab === 'video') {
       setVideoTitle(item.title || '');
       setYoutubeId(item.youtube_id || '');
@@ -477,7 +487,7 @@ export default function AdminPage() {
 
   const resetForm = () => {
     setEditingItemId(null);
-    setTopicTitle(''); setTopicSlug(''); setTopicDescription('');
+    setTopicTitle(''); setTopicSlug(''); setTopicDescription(''); setTopicContent('');
     setVideoTitle(''); setYoutubeId('');
     setExPdfTitle(''); setExPdfFile(null); setExPdfIsPremium(false);
     setMatTitle(''); setMatUrl(''); setMatFile(null); setIsPremium(false);
@@ -653,6 +663,38 @@ export default function AdminPage() {
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Descripción</label>
                   <textarea placeholder="Resumen del tema..." value={topicDescription} onChange={(e) => setTopicDescription(e.target.value)} className="w-full p-3 rounded-xl border border-slate-200 text-xs font-medium h-20" />
+                </div>
+                                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    Contenido del tema (Markdown + fórmulas con $...$)
+                  </label>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    <textarea
+                      placeholder={'## Título de sección\n\nTexto con fórmula $x^2 + 1$.\n\n$$\\frac{a}{b}$$'}
+                      value={topicContent}
+                      onChange={(e) => setTopicContent(e.target.value)}
+                      className="w-full p-3 rounded-xl border border-slate-200 text-xs font-mono h-72 resize-y"
+                    />
+                    <div className="p-3 rounded-xl border border-slate-200 bg-slate-50 h-72 overflow-y-auto text-sm text-slate-700 leading-7">
+                      {topicContent.trim() ? (
+                        <ReactMarkdown
+                          remarkPlugins={[remarkMath]}
+                          rehypePlugins={[rehypeKatex]}
+                          components={{
+                            h2: ({ children }) => <h3 className="text-lg font-extrabold text-slate-900 mt-4 mb-2">{children}</h3>,
+                            h3: ({ children }) => <h4 className="text-base font-bold text-slate-900 mt-3 mb-1">{children}</h4>,
+                            p: ({ children }) => <p className="mb-3">{children}</p>,
+                            ul: ({ children }) => <ul className="list-disc pl-6 space-y-1 mb-3">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal pl-6 space-y-1 mb-3">{children}</ol>,
+                          }}
+                        >
+                          {topicContent}
+                        </ReactMarkdown>
+                      ) : (
+                        <p className="text-xs text-slate-400 italic">La vista previa aparecerá aquí.</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs transition">
                   {editingItemId ? 'Guardar Cambios del Tema' : 'Publicar Tema'}

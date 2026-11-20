@@ -1,24 +1,55 @@
 import Link from 'next/link';
 import { VIDEOS } from '@/data/educationalData';
 import { YouTubeFacade } from '@/components/YouTubeFacade';
-import { ArrowRight, CheckCircle2, PlayCircle } from 'lucide-react';
+import { ArrowRight, PlayCircle } from 'lucide-react';
 import { ContactSection } from '@/components/ContactSection';
 import { HomeNavigation } from '@/components/HomeNavigation';
 import { GlassBadge } from '@/components/GlassBadge';
 import { THEME } from '@/lib/subjectTheme';
+import { supabase } from '@/lib/supabase';
+import { ALL_QUIZZES } from '@/data/quizzes';
+
+export const revalidate = 3600;
+
+async function getStats() {
+  const count = async (table: string) => {
+    const { count } = await supabase
+      .from(table)
+      .select('*', { count: 'exact', head: true });
+    return count ?? 0;
+  };
+
+  const [topics, videos, exerciseFiles, materials, dbQuizzes] = await Promise.all([
+    count('topics'),
+    count('videos'),
+    count('exercise_files'),
+    count('materials'),
+    count('quizzes'),
+  ]);
+
+  return {
+    topics,
+    tests: ALL_QUIZZES.length + dbQuizzes,
+    videos: videos + VIDEOS.length,
+    pdfs: exerciseFiles + materials,
+  };
+}
 
 const CARD =
   'bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 shadow-sm flex flex-col justify-between group transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_24px_48px_-24px_rgba(15,23,42,0.28)]';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const stats = await getStats();
+
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-slate-900 font-sans antialiased selection:bg-red-100 selection:text-red-900">
 
       <HomeNavigation />
 
       {/* Hero Principal */}
-      <section className="py-20 px-6 border-b border-slate-200/60">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="relative py-20 px-6 border-b border-slate-200/60 overflow-hidden">
+        <div aria-hidden className="hero-dots absolute inset-0 pointer-events-none" />
+        <div className="relative max-w-3xl mx-auto text-center">
           <div className="flex items-center justify-center gap-3 mb-7">
             <span className="w-8 h-[2px] bg-red-600" />
             <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
@@ -70,20 +101,20 @@ export default function HomePage() {
       </section>
 
       {/* Píldoras de confianza */}
-      <section className="bg-white py-6 px-6 border-b border-slate-200/80">
-        <div className="max-w-5xl mx-auto flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-xs font-semibold text-slate-600">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-red-600 shrink-0" />
-            <span>Explicaciones adaptadas al currículo oficial</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-red-600 shrink-0" />
-            <span>Paso a paso en problemas tipo examen</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-red-600 shrink-0" />
-            <span>Sin registros ni suscripciones complejas</span>
-          </div>
+            {/* Cifras */}
+      <section className="bg-white py-8 px-6 border-b border-slate-200/80">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+          {[
+            { n: stats.topics, label: 'Temas' },
+            { n: stats.tests, label: 'Tests' },
+            { n: stats.videos, label: 'Vídeos' },
+            { n: stats.pdfs, label: 'PDFs resueltos' },
+          ].map((s) => (
+            <div key={s.label}>
+              <p className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900">{s.n}</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
       </section>
 

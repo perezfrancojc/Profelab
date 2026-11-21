@@ -148,15 +148,4 @@ export const MATERIALS: Material[] = [
     isPremium: false,
     topicId: 'topic-ecuaciones-3eso'
   }
-
-    {
-    slug: 'estadistica-probabilidad',
-    title: 'Estadística y probabilidad',
-    description:
-      'Analiza tus propios datos (media, mediana, moda, histograma, caja) y lanza monedas y dados para ver la ley de los grandes números.',
-    subject: 'mat',
-    levels: '1.º a 4.º ESO',
-    subjectIds: ['mat-1eso', 'mat-2eso', 'mat-3eso', 'mat-4eso'],
-    keywords: ['estadistic', 'probabilidad'],
-  },
 ];

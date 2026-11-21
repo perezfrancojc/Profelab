@@ -37,6 +37,7 @@ const QUESTIONS: Record<Mode, { q: string; a: string }[]> = {
 
 /* ---------- Modo 1: cuadrados sobre los lados ---------- */
 function SquaresView({ a, b }: { a: number; b: number }) {
+  const c = Math.hypot(a, b);
   const minX = -b, maxX = a + b, minY = -a, maxY = a + b;
   const span = Math.max(maxX - minX, maxY - minY);
   const k = (SIZE - 60) / span;
@@ -56,19 +57,19 @@ function SquaresView({ a, b }: { a: number; b: number }) {
   const cA = cen(sqA), cB = cen(sqB), cC = cen(sqC);
   const m = Math.min(a, b) * 0.2;
 
-  const lines: React.ReactNode[] = [];
-  if (Number.isInteger(a) && a <= 20) {
-    for (let i = 1; i < a; i++) {
-      lines.push(<line key={`av${i}`} x1={px(i)} y1={py(0)} x2={px(i)} y2={py(-a)} stroke="#fff" strokeOpacity={0.7} />);
-      lines.push(<line key={`ah${i}`} x1={px(0)} y1={py(-i)} x2={px(a)} y2={py(-i)} stroke="#fff" strokeOpacity={0.7} />);
+  // Cuadrícula unitaria de un cuadrado de origen O y lados u, v (de longitud len)
+  const grid = (O: number[], u: number[], v: number[], len: number, key: string) => {
+    if (len > 25) return null;
+    const out: React.ReactNode[] = [];
+    for (let i = 1; i < len - 1e-9; i++) {
+      const f = i / len;
+      out.push(
+        <line key={`${key}u${i}`} x1={px(O[0] + u[0] * f)} y1={py(O[1] + u[1] * f)} x2={px(O[0] + u[0] * f + v[0])} y2={py(O[1] + u[1] * f + v[1])} stroke="#fff" strokeOpacity={0.75} />,
+        <line key={`${key}v${i}`} x1={px(O[0] + v[0] * f)} y1={py(O[1] + v[1] * f)} x2={px(O[0] + v[0] * f + u[0])} y2={py(O[1] + v[1] * f + u[1])} stroke="#fff" strokeOpacity={0.75} />
+      );
     }
-  }
-  if (Number.isInteger(b) && b <= 20) {
-    for (let i = 1; i < b; i++) {
-      lines.push(<line key={`bv${i}`} x1={px(-i)} y1={py(0)} x2={px(-i)} y2={py(b)} stroke="#fff" strokeOpacity={0.7} />);
-      lines.push(<line key={`bh${i}`} x1={px(-b)} y1={py(i)} x2={px(0)} y2={py(i)} stroke="#fff" strokeOpacity={0.7} />);
-    }
-  }
+    return out;
+  };
 
   const label = (x: number, y: number, t: string) => (
     <text x={x} y={y} textAnchor="middle" fontSize="14" fontWeight="700" fill="#0f172a" stroke="#fff" strokeWidth={4} paintOrder="stroke">
@@ -81,7 +82,9 @@ function SquaresView({ a, b }: { a: number; b: number }) {
       <polygon points={poly(sqA)} fill={ACCENT} fillOpacity={0.55} stroke={ACCENT} strokeWidth={2} />
       <polygon points={poly(sqB)} fill={BLUE} fillOpacity={0.55} stroke={BLUE} strokeWidth={2} />
       <polygon points={poly(sqC)} fill={VIOLET} fillOpacity={0.5} stroke={VIOLET} strokeWidth={2} />
-      {lines}
+      {grid([0, 0], [a, 0], [0, -a], a, 'A')}
+      {grid([0, 0], [0, b], [-b, 0], b, 'B')}
+      {grid([a, 0], [-a, b], [b, a], c, 'C')}
       <polygon points={poly([[0, 0], [a, 0], [0, b]])} fill="#f1f5f9" stroke="#0f172a" strokeWidth={2.5} strokeLinejoin="round" />
       <polyline points={poly([[m, 0], [m, m], [0, m]])} fill="none" stroke="#0f172a" strokeWidth={1.5} />
       {label(cA.x, cA.y - 2, 'a²')}
@@ -92,7 +95,7 @@ function SquaresView({ a, b }: { a: number; b: number }) {
       {label(cC.x, cC.y + 16, fmt(a * a + b * b))}
       {label(px(a / 2), py(0) + 4, `a = ${fmt(a)}`)}
       {label(px(0) - 22, py(b / 2), `b = ${fmt(b)}`)}
-      {label(px(a / 2) + 22, py(b / 2) - 6, `c = ${fmt(Math.hypot(a, b))}`)}
+      {label(px(a / 2) + 22, py(b / 2) - 6, `c = ${fmt(c)}`)}
     </svg>
   );
 }
@@ -103,8 +106,8 @@ type Tri = { R: V2; A: V2; B: V2 };
 
 function ProofView({ a, b, t }: { a: number; b: number; t: number }) {
   const s = a + b;
-  const k = (SIZE - 40) / s;
-  const o = 20;
+  const o = 34;
+  const k = (SIZE - 2 * o) / s;
   const px = (x: number) => o + x * k;
   const py = (y: number) => o + y * k;
 
@@ -127,6 +130,11 @@ function ProofView({ a, b, t }: { a: number; b: number; t: number }) {
       {tx}
     </text>
   );
+  const side = (x: number, y: number, tx: string, color: string, anchor: 'middle' | 'start' | 'end' = 'middle') => (
+    <text x={x} y={y} textAnchor={anchor} fontSize="15" fontWeight="800" fill={color}>{tx}</text>
+  );
+
+  const hypOp = Math.max(0, 1 - 3 * t);
 
   return (
     <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="w-full h-auto max-w-[560px] mx-auto select-none" role="img" aria-label="Demostración del teorema de Pitágoras por reordenación">
@@ -147,21 +155,30 @@ function ProofView({ a, b, t }: { a: number; b: number; t: number }) {
         const dy = (d.R[1] - tri.R[1]) * t * k;
         const deg = ((th * t) * 180) / Math.PI;
         return (
-          <polygon
-            key={i}
-            points={pts([tri.R, tri.A, tri.B])}
-            fill="#e2e8f0"
-            stroke="#0f172a"
-            strokeWidth={2}
-            strokeLinejoin="round"
-            transform={`translate(${dx} ${dy}) rotate(${deg} ${px(tri.R[0])} ${py(tri.R[1])})`}
-          />
+          <polygon key={i} points={pts([tri.R, tri.A, tri.B])} fill="#e2e8f0" stroke="#0f172a" strokeWidth={2} strokeLinejoin="round" transform={`translate(${dx} ${dy}) rotate(${deg} ${px(tri.R[0])} ${py(tri.R[1])})`} />
         );
       })}
+
+      {/* c sobre las hipotenusas de la figura inicial */}
+      {hypOp > 0 && S.map((tri, i) => (
+        <text key={`c${i}`} x={px((tri.A[0] + tri.B[0]) / 2)} y={py((tri.A[1] + tri.B[1]) / 2)} textAnchor="middle" dominantBaseline="middle" fontSize="14" fontWeight="800" fill={VIOLET} opacity={hypOp} stroke="#fff" strokeWidth={3} paintOrder="stroke">
+          c
+        </text>
+      ))}
 
       {txt(s / 2, s / 2, 'c²', 1 - t, VIOLET)}
       {txt(a / 2, a / 2, 'a²', t, ACCENT)}
       {txt(a + b / 2, a + b / 2, 'b²', t, BLUE)}
+
+      {/* Medidas a y b en los cuatro lados del cuadrado grande */}
+      {side(px(a / 2), py(0) - 10, `a = ${fmt(a)}`, ACCENT)}
+      {side(px(a + b / 2), py(0) - 10, `b = ${fmt(b)}`, BLUE)}
+      {side(px(s) + 8, py(a / 2) + 5, 'a', ACCENT, 'start')}
+      {side(px(s) + 8, py(a + b / 2) + 5, 'b', BLUE, 'start')}
+      {side(px(b / 2), py(s) + 22, 'b', BLUE)}
+      {side(px(b + a / 2), py(s) + 22, 'a', ACCENT)}
+      {side(px(0) - 8, py(b / 2) + 5, 'b', BLUE, 'end')}
+      {side(px(0) - 8, py(b + a / 2) + 5, 'a', ACCENT, 'end')}
     </svg>
   );
 }
@@ -169,27 +186,118 @@ function ProofView({ a, b, t }: { a: number; b: number; t: number }) {
 /* ---------- Modo 3: escalera ---------- */
 function LadderView({ L, d }: { L: number; d: number }) {
   const h = Math.sqrt(Math.max(L * L - d * d, 0));
-  const k = 30, gy = 330, wx = 60;
+  const W = 520, H = 400, gy = 345, wx = 150, k = 29;
   const top = { x: wx, y: gy - h * k };
   const base = { x: wx + d * k, y: gy };
-  const t = (x: number, y: number, s: string, anchor: 'middle' | 'start' = 'middle') => (
-    <text x={x} y={y} textAnchor={anchor} fontSize="14" fontWeight="700" fill="#0f172a" stroke="#fff" strokeWidth={4} paintOrder="stroke">
-      {s}
-    </text>
-  );
+  const len = Math.hypot(base.x - top.x, base.y - top.y) || 1;
+  const u = { x: (top.x - base.x) / len, y: (top.y - base.y) / len };
+  const nrm = { x: -u.y, y: u.x };
+
+  const theta = Math.atan2(h, d);
+  const ang = (theta * 180) / Math.PI;
+  const safe = ang >= 70 && ang <= 80;
+  const status = safe ? '#16a34a' : ang < 70 ? '#dc2626' : '#d97706';
+
+  const dirPoint = (deg: number, r: number) => ({
+    x: base.x - r * Math.cos((deg * Math.PI) / 180),
+    y: base.y - r * Math.sin((deg * Math.PI) / 180),
+  });
+  const w70 = dirPoint(70, L * k), w80 = dirPoint(80, L * k);
+
+  const arcR = 38;
+  const arcA = { x: base.x - arcR, y: base.y };
+  const arcB = { x: base.x - arcR * Math.cos(theta), y: base.y - arcR * Math.sin(theta) };
+  const bis = { x: base.x - 66 * Math.cos(theta / 2), y: base.y - 66 * Math.sin(theta / 2) };
+
+  const rungs = Math.max(3, Math.floor(L * 2.2));
+
+  const Pill = ({ x, y, text, fill = '#fff', color = '#0f172a' }: { x: number; y: number; text: string; fill?: string; color?: string }) => {
+    const w = text.length * 7.4 + 18;
+    return (
+      <g>
+        <rect x={x - w / 2} y={y - 12} width={w} height={24} rx={12} fill={fill} stroke="#cbd5e1" />
+        <text x={x} y={y + 5} textAnchor="middle" fontSize="13" fontWeight="700" fill={color}>{text}</text>
+      </g>
+    );
+  };
+
+  const mid = { x: (base.x + top.x) / 2, y: (base.y + top.y) / 2 };
+  const lPos = { x: mid.x + (h / L) * 40, y: mid.y - (d / L) * 40 };
 
   return (
-    <svg viewBox={`0 0 ${SIZE} 360`} className="w-full h-auto max-w-[560px] mx-auto select-none" role="img" aria-label="Escalera apoyada en una pared">
-      <rect x={20} y={10} width={40} height={gy - 10} fill="#e2e8f0" />
-      <line x1={20} y1={gy} x2={SIZE - 10} y2={gy} stroke="#475569" strokeWidth={3} />
-      <polygon points={`${wx},${gy} ${base.x},${gy} ${top.x},${top.y}`} fill="#f1f5f9" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="6 5" />
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto max-w-[560px] mx-auto select-none rounded-xl" role="img" aria-label="Escalera apoyada en la pared de un edificio">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8ec9f5" />
+          <stop offset="1" stopColor="#e6f4fd" />
+        </linearGradient>
+        <radialGradient id="sun">
+          <stop offset="0" stopColor="#fff7c2" />
+          <stop offset="1" stopColor="#fde68a" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Cielo, sol y nubes */}
+      <rect x={0} y={0} width={W} height={H} fill="url(#sky)" />
+      <circle cx={450} cy={62} r={64} fill="url(#sun)" />
+      <circle cx={450} cy={62} r={26} fill="#fde047" />
+      {[[270, 68, 1], [390, 150, 0.75], [215, 150, 0.6]].map(([cx, cy, sc], i) => (
+        <g key={i} fill="#fff" opacity={0.92} transform={`translate(${cx} ${cy}) scale(${sc})`}>
+          <ellipse cx={0} cy={0} rx={34} ry={13} />
+          <ellipse cx={-16} cy={-9} rx={18} ry={14} />
+          <ellipse cx={8} cy={-14} rx={22} ry={17} />
+        </g>
+      ))}
+
+      {/* Zona segura 70°–80° */}
+      <path d={`M${base.x},${base.y} L${w70.x},${w70.y} A${L * k},${L * k} 0 0 1 ${w80.x},${w80.y} Z`} fill="#22c55e" opacity={0.22} />
+
+      {/* Edificio */}
+      <rect x={10} y={30} width={140} height={gy - 30} fill="#d9c9b0" stroke="#a8946f" strokeWidth={2} />
+      <rect x={4} y={20} width={152} height={12} fill="#8b7355" />
+      {[0, 1, 2].flatMap((i) => [0, 1, 2, 3, 4].map((j) => (
+        <rect key={`${i}-${j}`} x={24 + i * 42} y={48 + j * 48} width={26} height={30} rx={2} fill={(i + j) % 3 === 0 ? '#fde68a' : '#9ecbe8'} stroke="#7a8ba0" strokeWidth={1.5} />
+      )))}
+      <rect x={64} y={gy - 46} width={32} height={46} rx={2} fill="#7c5a3a" stroke="#5b4129" strokeWidth={1.5} />
+
+      {/* Suelo */}
+      <rect x={0} y={gy} width={W} height={14} fill="#86c166" />
+      <rect x={0} y={gy + 14} width={W} height={H - gy - 14} fill="#8a6a43" />
+
+      {/* Triángulo de apoyo */}
+      <polygon points={`${wx},${gy} ${base.x},${gy} ${top.x},${top.y}`} fill="#ffffff" fillOpacity={0.25} stroke="#475569" strokeWidth={1.5} strokeDasharray="6 5" />
       <polyline points={`${wx + 14},${gy} ${wx + 14},${gy - 14} ${wx},${gy - 14}`} fill="none" stroke="#475569" strokeWidth={1.5} />
-      <line x1={base.x} y1={base.y} x2={top.x} y2={top.y} stroke={ACCENT} strokeWidth={6} strokeLinecap="round" />
-      <circle cx={base.x} cy={base.y} r={5} fill="#0f172a" />
-      <circle cx={top.x} cy={top.y} r={5} fill="#0f172a" />
-      {t((wx + base.x) / 2, gy + 22, `d = ${fmt(d)} m`)}
-      {t(wx + 8, (gy + top.y) / 2, `h = ${fmt(h)} m`, 'start')}
-      {t((base.x + top.x) / 2 + 28, (base.y + top.y) / 2 - 6, `L = ${fmt(L)} m`)}
+
+      {/* Escalera */}
+      <g strokeLinecap="round">
+        {Array.from({ length: rungs - 1 }, (_, i) => {
+          const f = (i + 1) / rungs;
+          const p = { x: base.x + u.x * len * f, y: base.y + u.y * len * f };
+          return <line key={i} x1={p.x + nrm.x * 5} y1={p.y + nrm.y * 5} x2={p.x - nrm.x * 5} y2={p.y - nrm.y * 5} stroke="#92602b" strokeWidth={3} />;
+        })}
+        <line x1={base.x + nrm.x * 5} y1={base.y + nrm.y * 5} x2={top.x + nrm.x * 5} y2={top.y + nrm.y * 5} stroke="#b7791f" strokeWidth={5} />
+        <line x1={base.x - nrm.x * 5} y1={base.y - nrm.y * 5} x2={top.x - nrm.x * 5} y2={top.y - nrm.y * 5} stroke="#b7791f" strokeWidth={5} />
+      </g>
+      <circle cx={base.x} cy={gy} r={5} fill="#334155" />
+      <circle cx={top.x} cy={top.y} r={4} fill="#334155" />
+
+      {/* Ángulo */}
+      <path d={`M${arcA.x},${arcA.y} A${arcR},${arcR} 0 0 1 ${arcB.x},${arcB.y}`} fill="none" stroke={status} strokeWidth={3} />
+      <Pill x={bis.x} y={bis.y} text={`${fmt(ang)}°`} fill={status} color="#fff" />
+
+      {/* Cotas */}
+      <line x1={wx} y1={gy + 22} x2={base.x} y2={gy + 22} stroke="#fff" strokeWidth={2} />
+      <line x1={wx} y1={gy + 16} x2={wx} y2={gy + 28} stroke="#fff" strokeWidth={2} />
+      <line x1={base.x} y1={gy + 16} x2={base.x} y2={gy + 28} stroke="#fff" strokeWidth={2} />
+      <Pill x={(wx + base.x) / 2} y={gy + 42} text={`d = ${fmt(d)} m`} />
+
+      <line x1={wx - 14} y1={gy} x2={wx - 14} y2={top.y} stroke="#0f172a" strokeWidth={2} />
+      <line x1={wx - 20} y1={top.y} x2={wx - 8} y2={top.y} stroke="#0f172a" strokeWidth={2} />
+      <line x1={wx - 20} y1={gy} x2={wx - 8} y2={gy} stroke="#0f172a" strokeWidth={2} />
+      <Pill x={wx - 66} y={(gy + top.y) / 2} text={`h = ${fmt(h)} m`} />
+
+      <Pill x={lPos.x} y={lPos.y} text={`L = ${fmt(L)} m`} />
+      {safe && <Pill x={W - 80} y={H - 22} text="Zona segura" fill="#dcfce7" color="#166534" />}
     </svg>
   );
 }
@@ -284,7 +392,7 @@ export default function PythagorasSimulator() {
   const [target, setTarget] = useState<0 | 1 | null>(null);
 
   const [L, setL] = useState(6);
-  const [dRaw, setD] = useState(2);
+  const [dRaw, setD] = useState(1.5);
   const d = Math.min(dRaw, L - 0.1);
 
   const [P, setP] = useState<Pt>({ x: -4, y: -2 });
@@ -338,9 +446,7 @@ export default function PythagorasSimulator() {
               key={`${x}-${y}`}
               type="button"
               onClick={() => { setA(x); setB(y); }}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${
-                a === x && b === y ? 'text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition ${a === x && b === y ? 'text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
               style={a === x && b === y ? { backgroundColor: ACCENT } : undefined}
             >
               {x}, {y}, {Math.round(Math.hypot(x, y))}
@@ -372,7 +478,12 @@ export default function PythagorasSimulator() {
           {mode === 'distance' && <DistanceView P={P} Q={Q} setP={setP} setQ={setQ} />}
           {mode === 'squares' && (
             <p className="text-[11px] text-slate-500 text-center mt-2">
-              Si a y b son enteros, los cuadrados muestran su cuadrícula unitaria: cuenta los cuadraditos.
+              Cada cuadrado tiene cuadrícula unitaria: cuenta los cuadraditos de a² y b² y compáralos con los de c².
+            </p>
+          )}
+          {mode === 'proof' && (
+            <p className="text-[11px] text-slate-500 text-center mt-2">
+              Los cuatro triángulos grises son iguales (catetos a y b). Reordénalos y mira qué queda.
             </p>
           )}
           {mode === 'distance' && (
@@ -435,9 +546,11 @@ export default function PythagorasSimulator() {
             )}
             {mode === 'proof' && (
               <>
-                <p>El cuadrado grande tiene lado <MathText text="$a+b$" /> en las dos figuras, y contiene 4 triángulos iguales.</p>
+                <p>El cuadrado grande tiene lado <MathText text={`$a+b = ${fmt(a)} + ${fmt(b)} = ${fmt(a + b)}$`} /> en las dos figuras y contiene 4 triángulos iguales.</p>
                 <p>Quitando los triángulos: <MathText text="$c^2 = a^2 + b^2$" />.</p>
-                <p className="font-semibold" style={{ color: ACCENT }}>Lado del cuadrado grande: {fmt(a + b)}</p>
+                <p className="font-semibold" style={{ color: ACCENT }}>
+                  <MathText text={`$${fmt(c * c)} = ${fmt(a * a)} + ${fmt(b * b)}$`} />
+                </p>
               </>
             )}
             {mode === 'ladder' && (

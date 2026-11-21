@@ -30,6 +30,38 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['mat-2eso', 'mat-3eso', 'mat-4eso'],
     keywords: ['funcion', 'grafica'],
   },
+
+    {
+    slug: 'circunferencia-goniometrica',
+    title: 'La circunferencia goniométrica',
+    description:
+      'Arrastra el ángulo y observa en vivo el seno, el coseno y la tangente, junto a sus gráficas.',
+    subject: 'mat',
+    levels: '4.º ESO y 1.º Bachillerato',
+    subjectIds: ['mat-4eso', 'mat-1bach'],
+    keywords: ['trigonometr'],
+  },
+
+    {
+    slug: 'pitagoras',
+    title: 'El teorema de Pitágoras',
+    description:
+      'Cuadrados sobre los lados, demostración animada, una escalera apoyada y la distancia entre dos puntos.',
+    subject: 'mat',
+    levels: '1.º a 4.º ESO',
+    subjectIds: ['mat-1eso', 'mat-2eso', 'mat-3eso', 'mat-4eso'],
+    keywords: ['pitagoras', 'geometr'],
+  },
+  {
+    slug: 'sistemas-ecuaciones',
+    title: 'Sistemas de ecuaciones e inecuaciones',
+    description:
+      'Resuelve y visualiza sistemas de 2 o 3 incógnitas, y las regiones solución de sus inecuaciones.',
+    subject: 'mat',
+    levels: '2.º a 4.º ESO y 1.º Bachillerato',
+    subjectIds: ['mat-2eso', 'mat-3eso', 'mat-4eso', 'mat-1bach'],
+    keywords: ['sistema', 'inecuacion'],
+  },
 ];
 
 function normalize(text: string) {

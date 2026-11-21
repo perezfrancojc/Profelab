@@ -2,7 +2,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-[#FAF9F5]">
       <div className="h-[72px] border-b border-slate-200/70 bg-[#F1EFE8]" />
-      <main className="max-w-4xl mx-auto px-6 py-12 space-y-10 animate-pulse max-sm:px-4 max-sm:py-6">
+      <main className="skeleton-delay max-w-4xl mx-auto px-6 py-12 space-y-10 animate-pulse max-sm:px-4 max-sm:py-6">
         <div className="border-b border-slate-200/80 pb-8 space-y-3">
           <div className="h-3 w-28 rounded bg-slate-200" />
           <div className="h-10 w-3/4 rounded bg-slate-200" />

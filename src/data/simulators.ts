@@ -62,6 +62,17 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['mat-2eso', 'mat-3eso', 'mat-4eso', 'mat-1bach'],
     keywords: ['sistema', 'inecuacion'],
   },
+
+    {
+    slug: 'estadistica-probabilidad',
+    title: 'Estadística y probabilidad',
+    description:
+      'Analiza tus propios datos (media, mediana, moda, histograma, caja) y lanza monedas y dados para ver la ley de los grandes números.',
+    subject: 'mat',
+    levels: '1.º a 4.º ESO',
+    subjectIds: ['mat-1eso', 'mat-2eso', 'mat-3eso', 'mat-4eso'],
+    keywords: ['estadistic', 'probabilidad'],
+  },
 ];
 
 function normalize(text: string) {

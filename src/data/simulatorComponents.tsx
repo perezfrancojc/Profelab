@@ -10,4 +10,5 @@ export const SIMULATOR_COMPONENTS: Record<string, ComponentType> = {
   'estadistica-probabilidad': dynamic(() => import('@/components/simulators/StatsProbSimulator')),
   derivadas: dynamic(() => import('@/components/simulators/DerivativeSimulator')),
   intervalos: dynamic(() => import('@/components/simulators/IntervalsSimulator')),
+  cinematica: dynamic(() => import('@/components/simulators/KinematicsSimulator')),
 };

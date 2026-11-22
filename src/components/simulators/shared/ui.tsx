@@ -21,6 +21,7 @@ export function Slider({
   max,
   step,
   unit,
+  color,
 }: {
   label: string;
   value: number;
@@ -29,6 +30,7 @@ export function Slider({
   max: number;
   step: number;
   unit?: string;
+  color?: string;
 }) {
   return (
     <div>
@@ -36,7 +38,7 @@ export function Slider({
         <span className="text-sm font-bold text-slate-800">
           <MathText text={`$${label}$`} />
         </span>
-        <span className="text-sm font-semibold tabular-nums" style={{ color: ACCENT }}>
+        <span className="text-sm font-semibold tabular-nums" style={{ color: color ?? ACCENT }}>
           {fmt(value)}
           {unit ? ` ${unit}` : ''}
         </span>
@@ -50,7 +52,7 @@ export function Slider({
         aria-label={label}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full h-8 cursor-pointer"
-        style={{ accentColor: ACCENT }}
+        style={{ accentColor: color ?? ACCENT }}
       />
     </div>
   );

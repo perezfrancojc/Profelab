@@ -94,6 +94,17 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['mat-3eso', 'mat-4eso', 'mat-1bach'],
     keywords: ['intervalo', 'real', 'racional'],
   },
+
+    {
+    slug: 'cinematica',
+    title: 'MRU y MRUA: movimiento de un coche',
+    description:
+      'Anima un coche (o dos) y observa a la vez las gráficas de posición, velocidad y aceleración. Calcula cuándo se encuentran.',
+    subject: 'fq',
+    levels: '2.º ESO a 1.º Bachillerato',
+    subjectIds: ['fq-2eso', 'fq-3eso', 'fq-4eso', 'fq-1bach'],
+    keywords: ['cinematic', 'movimiento', 'velocidad'],
+  },
 ];
 
 function normalize(text: string) {

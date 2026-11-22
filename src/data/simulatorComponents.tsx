@@ -11,4 +11,9 @@ export const SIMULATOR_COMPONENTS: Record<string, ComponentType> = {
   derivadas: dynamic(() => import('@/components/simulators/DerivativeSimulator')),
   intervalos: dynamic(() => import('@/components/simulators/IntervalsSimulator')),
   cinematica: dynamic(() => import('@/components/simulators/KinematicsSimulator')),
+  'fracciones-porcentajes': dynamic(() => import('@/components/simulators/FractionsSimulator')),
+  'transformaciones-funciones': dynamic(() => import('@/components/simulators/FunctionTransformSimulator')),
+  integrales: dynamic(() => import('@/components/simulators/RiemannSimulator')),
+  'tales-semejanza': dynamic(() => import('@/components/simulators/ThalesSimulator')),
+  'cuerpos-geometricos': dynamic(() => import('@/components/simulators/SolidsSimulator')),
 };

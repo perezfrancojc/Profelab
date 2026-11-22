@@ -105,6 +105,52 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['fq-2eso', 'fq-3eso', 'fq-4eso', 'fq-1bach'],
     keywords: ['cinematic', 'movimiento', 'velocidad'],
   },
+
+    {
+    slug: 'fracciones-porcentajes',
+    title: 'Fracciones y porcentajes',
+    description: 'Visualiza fracciones con barras y tartas, opera con ellas y descubre por qué subir y bajar un 20 % no devuelve el precio inicial.',
+    subject: 'mat',
+    levels: '1.º y 2.º ESO',
+    subjectIds: ['mat-1eso', 'mat-2eso'],
+    keywords: ['fraccion', 'porcentaje', 'decimal'],
+  },
+  {
+    slug: 'transformaciones-funciones',
+    title: 'Transformaciones de funciones, exponencial y logaritmo',
+    description: 'Desplaza, estira y refleja funciones con a, b, h y k, y comprueba que la exponencial y el logaritmo son inversas.',
+    subject: 'mat',
+    levels: '4.º ESO y 1.º Bachillerato',
+    subjectIds: ['mat-4eso', 'mat-1bach', 'mat-1bachccss'],
+    keywords: ['funcion', 'logaritm', 'exponencial'],
+  },
+  {
+    slug: 'integrales',
+    title: 'Integrales y sumas de Riemann',
+    description: 'Aproxima el área bajo una curva con rectángulos y trapecios, y mira cómo converge a la integral definida al aumentar n.',
+    subject: 'mat',
+    levels: '2.º Bachillerato',
+    subjectIds: ['mat-2bach', 'mat-2bachccss'],
+    keywords: ['integral'],
+  },
+  {
+    slug: 'tales-semejanza',
+    title: 'Teorema de Tales y semejanza',
+    description: 'Comprueba las proporciones de Tales, la relación entre longitudes, áreas y volúmenes, y mide un árbol con su sombra.',
+    subject: 'mat',
+    levels: '2.º a 4.º ESO',
+    subjectIds: ['mat-2eso', 'mat-3eso', 'mat-4eso'],
+    keywords: ['tales', 'semejanza', 'geometr'],
+  },
+  {
+    slug: 'cuerpos-geometricos',
+    title: 'Cuerpos geométricos',
+    description: 'Gira prismas, pirámides, cilindros, conos y esferas en 3D, mira su desarrollo plano y calcula áreas y volúmenes.',
+    subject: 'mat',
+    levels: '1.º a 4.º ESO',
+    subjectIds: ['mat-1eso', 'mat-2eso', 'mat-3eso', 'mat-4eso'],
+    keywords: ['cuerpo', 'volumen', 'geometr'],
+  },
 ];
 
 function normalize(text: string) {

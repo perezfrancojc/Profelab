@@ -73,6 +73,27 @@ export const SIMULATORS: SimulatorMeta[] = [
     subjectIds: ['mat-1eso', 'mat-2eso', 'mat-3eso', 'mat-4eso'],
     keywords: ['estadistic', 'probabilidad'],
   },
+
+    {
+    slug: 'derivadas',
+    title: 'Derivadas y recta tangente',
+    description:
+      'Convierte una secante en tangente al acercar h a 0, calcula la pendiente y compara la función con su derivada.',
+    subject: 'mat',
+    levels: '1.º y 2.º Bachillerato',
+    subjectIds: ['mat-1bach', 'mat-2bach', 'mat-1bachccss', 'mat-2bachccss'],
+    keywords: ['derivad'],
+  },
+  {
+    slug: 'intervalos',
+    title: 'Intervalos en la recta real',
+    description:
+      'Dibuja intervalos abiertos, cerrados e infinitos y calcula uniones, intersecciones, diferencias y complementarios.',
+    subject: 'mat',
+    levels: '3.º ESO a 1.º Bachillerato',
+    subjectIds: ['mat-3eso', 'mat-4eso', 'mat-1bach'],
+    keywords: ['intervalo', 'real', 'racional'],
+  },
 ];
 
 function normalize(text: string) {
